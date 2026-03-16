@@ -52,5 +52,4 @@ Vì vậy, dự án này được xây dựng nhằm tạo ra một nền tảng
 ## Mục tiêu của dự án
 - Xây dựng một nền tảng học ngoại ngữ đơn giản và dễ sử dụng
 - Giúp người học cải thiện khả năng ghi nhớ từ vựng
-- Tạo động lực học tập thông qua các yếu tố gamification
 - Giúp người dùng theo dõi tiến độ học tập một cách trực quan
