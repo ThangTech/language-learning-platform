@@ -3,7 +3,7 @@
 ## Giới thiệu
 Language Learning Platform là một ứng dụng học ngoại ngữ trên nền tảng web, được xây dựng nhằm giúp người học cải thiện vốn từ vựng thông qua phương pháp học bằng flashcard và các bài kiểm tra nhanh (quiz).
 
-Hệ thống giúp người học luyện tập từ vựng thường xuyên, kiểm tra khả năng ghi nhớ và theo dõi tiến độ học tập theo thời gian. Ngoài ra, các yếu tố gamification như streak và bảng xếp hạng được tích hợp nhằm tạo động lực học tập và giúp người dùng duy trì thói quen học tập mỗi ngày.
+Hệ thống giúp người học luyện tập từ vựng thường xuyên, kiểm tra khả năng ghi nhớ và theo dõi tiến độ học tập theo thời gian. Ngoài ra, các yếu tố như streak và bảng xếp hạng được tích hợp nhằm tạo động lực học tập và giúp người dùng duy trì thói quen học tập mỗi ngày.
 
 ---
 
