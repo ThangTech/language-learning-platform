@@ -1,78 +1,56 @@
-Mô tả bài toán
+# Language Learning Platform
 
-Xây dựng một nền tảng học ngoại ngữ trên web giúp người học cải thiện vốn từ vựng thông qua phương pháp flashcard và các bài kiểm tra nhanh (quiz). Hệ thống cho phép người dùng học từ vựng theo từng chủ đề, luyện tập thường xuyên và kiểm tra khả năng ghi nhớ thông qua các bài quiz ngắn.
+## Giới thiệu
+Language Learning Platform là một ứng dụng học ngoại ngữ trên nền tảng web, được xây dựng nhằm giúp người học cải thiện vốn từ vựng thông qua phương pháp học bằng flashcard và các bài kiểm tra nhanh (quiz).
 
-Ngoài ra, hệ thống còn cung cấp các công cụ theo dõi tiến độ học tập như số lượng từ đã học, thời gian học mỗi ngày, tỷ lệ trả lời đúng sai và chuỗi ngày học liên tiếp (streak). Những thông tin này được hiển thị dưới dạng biểu đồ và thống kê để giúp người học dễ dàng theo dõi sự tiến bộ của mình.
+Hệ thống giúp người học luyện tập từ vựng thường xuyên, kiểm tra khả năng ghi nhớ và theo dõi tiến độ học tập theo thời gian. Ngoài ra, các yếu tố gamification như streak và bảng xếp hạng được tích hợp nhằm tạo động lực học tập và giúp người dùng duy trì thói quen học tập mỗi ngày.
 
-Bên cạnh đó, hệ thống áp dụng các yếu tố gamification như bảng xếp hạng người học và streak nhằm tạo động lực học tập, giúp người dùng duy trì thói quen học tập mỗi ngày và nâng cao hiệu quả ghi nhớ từ vựng.
+---
 
-Các vai trò
+## Mô tả bài toán
+Trong quá trình học ngoại ngữ, việc ghi nhớ từ vựng là một trong những khó khăn lớn đối với người học. Nhiều người gặp khó khăn trong việc duy trì việc học thường xuyên và dễ quên những từ đã học trước đó.
 
-Admin
+Vì vậy, dự án này được xây dựng nhằm tạo ra một nền tảng học tập đơn giản, trực quan và dễ sử dụng, giúp người học có thể ôn luyện từ vựng mỗi ngày thông qua flashcard và các bài quiz kiểm tra nhanh. Đồng thời, hệ thống cung cấp các công cụ thống kê và theo dõi tiến độ học tập để người dùng có thể đánh giá sự tiến bộ của mình theo thời gian.
 
-Quản lý toàn bộ hệ thống
+---
 
-Quản lý tài khoản người dùng
+## Chức năng chính
 
-Quản lý bộ từ vựng và chủ đề học
+### 1. Học từ vựng bằng Flashcard
+- Hiển thị từ vựng dưới dạng flashcard
+- Cho phép người dùng lật thẻ để xem nghĩa của từ
+- Hỗ trợ việc ghi nhớ từ vựng một cách trực quan
 
-Xem báo cáo và thống kê hoạt động học tập
+### 2. Quiz kiểm tra từ vựng
+- Các câu hỏi trắc nghiệm về từ vựng
+- Kiểm tra khả năng ghi nhớ của người học
+- Hiển thị kết quả sau mỗi bài quiz
 
-Người học (User)
+### 3. Theo dõi Streak (chuỗi ngày học)
+- Ghi nhận số ngày học liên tiếp của người dùng
+- Tạo động lực duy trì thói quen học tập mỗi ngày
 
-Học từ vựng bằng flashcard
+### 4. Thống kê hoạt động học tập
+- Thống kê thời gian học
+- Số lượng từ vựng đã học
+- Số bài quiz đã hoàn thành
 
-Làm các bài quiz kiểm tra từ vựng
+### 5. Tỷ lệ trả lời đúng / sai
+- Theo dõi số câu trả lời đúng và sai
+- Đánh giá mức độ ghi nhớ từ vựng của người học
 
-Theo dõi tiến độ học tập cá nhân
+### 6. Bảng xếp hạng
+- Xếp hạng người học dựa trên điểm số hoặc số lượng bài học hoàn thành
+- Tạo sự cạnh tranh và động lực học tập giữa các người dùng
 
-Xem bảng xếp hạng và thành tích học tập
+### 7. Biểu đồ tiến độ học tập
+- Hiển thị biểu đồ học tập theo ngày, tuần hoặc tháng
+- Giúp người học dễ dàng theo dõi tiến độ của mình theo thời gian
 
-Chức năng chính
-1. Học từ vựng bằng Flashcard
+---
 
-Hiển thị từ vựng dưới dạng flashcard
-
-Hiển thị nghĩa, ví dụ và phát âm của từ
-
-Cho phép lật thẻ để xem nghĩa và ghi nhớ từ
-
-2. Làm Quiz kiểm tra từ vựng
-
-Các câu hỏi trắc nghiệm về từ vựng
-
-Kiểm tra khả năng ghi nhớ của người học
-
-Hiển thị kết quả sau mỗi bài quiz
-
-3. Theo dõi Streak (chuỗi ngày học)
-
-Ghi nhận số ngày học liên tiếp của người dùng
-
-Tạo động lực duy trì việc học mỗi ngày
-
-4. Thống kê hoạt động học tập
-
-Thời gian học mỗi ngày
-
-Số lượng từ đã học
-
-Số bài quiz đã hoàn thành
-
-5. Tỷ lệ đúng / sai
-
-Thống kê số câu trả lời đúng và sai
-
-Đánh giá mức độ ghi nhớ từ vựng của người học
-
-6. Bảng xếp hạng người học
-
-Xếp hạng người dùng dựa trên điểm số hoặc số lượng bài học hoàn thành
-
-Tạo sự cạnh tranh và động lực học tập
-
-7. Biểu đồ và báo cáo tiến độ
-
-Hiển thị biểu đồ học tập theo ngày, tuần hoặc tháng
-
-Giúp người dùng theo dõi sự tiến bộ của mình theo thời gian
+## Mục tiêu của dự án
+- Xây dựng một nền tảng học ngoại ngữ đơn giản và dễ sử dụng
+- Giúp người học cải thiện khả năng ghi nhớ từ vựng
+- Tạo động lực học tập thông qua các yếu tố gamification
+- Giúp người dùng theo dõi tiến độ học tập một cách trực quan
