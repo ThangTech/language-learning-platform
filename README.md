@@ -12,8 +12,6 @@ Xuất phát từ thực tế đó, **WinLex** được xây dựng nhằm cung 
 
 Việc học từ vựng ngoại ngữ không chỉ đòi hỏi sự kiên trì mà còn cần phương pháp phù hợp và môi trường học tập có tính tương tác cao. Trên thực tế, nhiều người học gặp phải những khó khăn phổ biến như: dễ quên những từ đã học trước đó, thiếu động lực để duy trì việc học hàng ngày, và không có cách nào để tự đánh giá tiến độ của bản thân một cách rõ ràng.
 
-Các ứng dụng học ngoại ngữ trên thị trường hiện nay tuy đa dạng nhưng thường rơi vào một trong hai thái cực: hoặc quá đơn giản, thiếu chiều sâu; hoặc quá phức tạp, khiến người mới bắt đầu dễ nản lòng. Hầu hết cũng chưa kết hợp đủ các kỹ năng bổ trợ như phát âm, ngữ pháp và tra cứu từ điển trong cùng một nền tảng.
-
 **WinLex** được xây dựng để giải quyết những vấn đề đó. Hệ thống tập trung vào việc giúp người học tiếp cận từ vựng theo nhiều hình thức khác nhau — học qua flashcard, kiểm tra qua quiz, luyện phát âm, tra từ điển và học ngữ pháp — tất cả trong một giao diện thống nhất, dễ sử dụng. Đồng thời, các cơ chế như streak, điểm số và bảng xếp hạng được tích hợp để biến việc học hàng ngày trở thành một thói quen thú vị và có mục tiêu.
 
 ---
