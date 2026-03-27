@@ -49,6 +49,7 @@ Hệ thống phục vụ hai nhóm người dùng chính:
 - **Quản lý người dùng:**
   - Xem danh sách người dùng
   - Khóa / mở tài khoản
+  - Tạo tài khoản người dùng
   - Cập nhật thông tin người dùng khi cần
 - **Theo dõi và quản lý hệ thống:**
   - Xem thống kê hoạt động (số người dùng, tần suất học, v.v.)
