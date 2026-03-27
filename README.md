@@ -28,28 +28,32 @@ Hệ thống phục vụ hai nhóm người dùng chính:
 
 ## Chức năng chính
 
-# Chức năng của User (Người học)
-Đăng ký, đăng nhập và quản lý tài khoản cá nhân
-Học từ vựng thông qua flashcard
-Làm bài quiz để kiểm tra kiến thức
-Tra cứu từ điển (nghĩa, ví dụ, phát âm)
-Luyện phát âm theo bảng IPA và audio mẫu
-Học các bài ngữ pháp
-Lưu từ vựng vào danh sách yêu thích
-Theo dõi tiến độ học tập (số từ đã học, điểm số, thời gian học)
-Theo dõi streak (chuỗi ngày học liên tiếp)
-Xem bảng xếp hạng và so sánh với người dùng khác
-# Chức năng của Admin (Quản trị viên)
-Quản lý nội dung học:
-Thêm, chỉnh sửa, xóa từ vựng
-Quản lý bài học ngữ pháp
-Quản lý người dùng:
-Xem danh sách người dùng
-Khóa / mở tài khoản
-Cập nhật thông tin người dùng khi cần
-Theo dõi và quản lý hệ thống:
-Xem thống kê hoạt động (số người dùng, tần suất học, v.v.)
-Giám sát hoạt động toàn hệ thống
+### Chức năng của User (Người học)
+
+- Đăng ký, đăng nhập và quản lý tài khoản cá nhân
+- Học từ vựng thông qua flashcard
+- Làm bài quiz để kiểm tra kiến thức
+- Tra cứu từ điển (nghĩa, ví dụ, phát âm)
+- Luyện phát âm theo bảng IPA và audio mẫu
+- Học các bài ngữ pháp
+- Lưu từ vựng vào danh sách yêu thích
+- Theo dõi tiến độ học tập (số từ đã học, điểm số, thời gian học)
+- Theo dõi streak (chuỗi ngày học liên tiếp)
+- Xem bảng xếp hạng và so sánh với người dùng khác
+
+### Chức năng của Admin (Quản trị viên)
+
+- **Quản lý nội dung học:**
+  - Thêm, chỉnh sửa, xóa từ vựng
+  - Quản lý bài học ngữ pháp
+- **Quản lý người dùng:**
+  - Xem danh sách người dùng
+  - Khóa / mở tài khoản
+  - Cập nhật thông tin người dùng khi cần
+- **Theo dõi và quản lý hệ thống:**
+  - Xem thống kê hoạt động (số người dùng, tần suất học, v.v.)
+  - Giám sát hoạt động toàn hệ thống
+
 
 ---
 
