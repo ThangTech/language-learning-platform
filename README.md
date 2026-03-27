@@ -28,32 +28,28 @@ Hệ thống phục vụ hai nhóm người dùng chính:
 
 ## Chức năng chính
 
-### 1. Học từ vựng bằng Flashcard
-Người học được tiếp cận từ vựng thông qua các thẻ flashcard trực quan. Mỗi thẻ hiển thị từ tiếng Anh ở mặt trước; người học có thể lật thẻ để xem nghĩa tiếng Việt, ví dụ minh họa và nghe phát âm chuẩn (giọng Anh-Anh hoặc Anh-Mỹ tùy lựa chọn). Phương pháp này giúp người học ghi nhớ từ vựng theo ngữ cảnh thay vì học thuộc lòng đơn thuần.
-
-### 2. Quiz kiểm tra từ vựng
-Sau mỗi phiên học flashcard, người dùng có thể kiểm tra mức độ ghi nhớ thông qua các bài quiz trắc nghiệm. Hệ thống hỗ trợ nhiều dạng câu hỏi, bao gồm chọn nghĩa đúng của từ, điền từ vào chỗ trống và dạng nghe — chọn từ tương ứng. Kết quả được hiển thị ngay sau mỗi bài, kèm theo phân tích từ nào người dùng trả lời sai để ôn lại.
-
-### 3. Học phát âm / Bảng IPA
-Người học có thể tra cứu và luyện tập phát âm thông qua bảng ký hiệu phiên âm quốc tế (IPA). Mỗi ký hiệu đi kèm với âm thanh mẫu, giúp người học làm quen với cách đọc chuẩn. Tính năng này cũng được tích hợp trực tiếp vào flashcard và từ điển, đảm bảo người học tiếp xúc với phát âm trong suốt quá trình học.
-
-### 4. Tra từ điển
-Hệ thống cung cấp tính năng tra từ điển tích hợp, cho phép người dùng tìm kiếm nghĩa, ví dụ sử dụng và phát âm của bất kỳ từ nào. Dữ liệu từ điển được lấy từ cơ sở dữ liệu nội bộ kết hợp với API từ điển bên ngoài. Sau khi tra xong, người dùng có thể lưu từ vào danh sách yêu thích hoặc thêm thẳng vào bộ flashcard để ôn luyện, tạo ra vòng học khép kín tự nhiên.
-
-### 5. Học ngữ pháp
-Ngoài từ vựng, nền tảng cũng cung cấp các bài học ngữ pháp tiếng Anh cơ bản đến nâng cao, được trình bày ngắn gọn, có ví dụ minh họa cụ thể. Người dùng có thể học ngữ pháp song song với từ vựng, giúp củng cố khả năng sử dụng ngôn ngữ trong thực tế.
-
-### 6. Thêm từ vựng yêu thích
-Người học có thể đánh dấu và lưu lại những từ họ muốn ghi nhớ đặc biệt. Danh sách từ yêu thích có thể được dùng để tạo bộ flashcard riêng hoặc ôn luyện độc lập, giúp cá nhân hóa trải nghiệm học tập theo nhu cầu của từng người.
-
-### 7. Theo dõi Streak (chuỗi ngày học liên tiếp)
-Hệ thống ghi nhận và hiển thị số ngày học liên tiếp của người dùng. Streak bị reset nếu người dùng bỏ qua một ngày mà không hoàn thành bất kỳ hoạt động học nào. Cơ chế này tạo ra áp lực tích cực, khuyến khích người học duy trì thói quen học tập đều đặn mỗi ngày.
-
-### 8. Thống kê & Biểu đồ tiến độ học tập
-Người dùng có thể xem thống kê học tập chi tiết bao gồm: tổng số từ đã học, số bài quiz đã hoàn thành, tỷ lệ câu trả lời đúng/sai và thời gian học tích lũy. Bên cạnh đó, biểu đồ tiến độ theo ngày, tuần hoặc tháng giúp người học dễ dàng nhận ra xu hướng học tập của mình và điều chỉnh kế hoạch phù hợp.
-
-### 9. Bảng xếp hạng
-Người học được xếp hạng dựa trên điểm số tích lũy từ các bài quiz và số ngày streak duy trì được. Bảng xếp hạng cộng đồng tạo ra môi trường cạnh tranh lành mạnh, vừa là nguồn động lực, vừa là nơi người học có thể so sánh tiến độ với những người dùng khác trong cộng đồng.
+# Chức năng của User (Người học)
+Đăng ký, đăng nhập và quản lý tài khoản cá nhân
+Học từ vựng thông qua flashcard
+Làm bài quiz để kiểm tra kiến thức
+Tra cứu từ điển (nghĩa, ví dụ, phát âm)
+Luyện phát âm theo bảng IPA và audio mẫu
+Học các bài ngữ pháp
+Lưu từ vựng vào danh sách yêu thích
+Theo dõi tiến độ học tập (số từ đã học, điểm số, thời gian học)
+Theo dõi streak (chuỗi ngày học liên tiếp)
+Xem bảng xếp hạng và so sánh với người dùng khác
+# Chức năng của Admin (Quản trị viên)
+Quản lý nội dung học:
+Thêm, chỉnh sửa, xóa từ vựng
+Quản lý bài học ngữ pháp
+Quản lý người dùng:
+Xem danh sách người dùng
+Khóa / mở tài khoản
+Cập nhật thông tin người dùng khi cần
+Theo dõi và quản lý hệ thống:
+Xem thống kê hoạt động (số người dùng, tần suất học, v.v.)
+Giám sát hoạt động toàn hệ thống
 
 ---
 
