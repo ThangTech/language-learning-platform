@@ -20,119 +20,48 @@ const Header = () => {
 
   return (
     <nav
-      className="glass-nav"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        backgroundColor: scrolled
-          ? 'rgba(250, 248, 255, 0.85)'
-          : 'rgba(250, 248, 255, 0.70)',
-        borderBottom: scrolled ? '1px solid rgba(195,198,215,0.3)' : 'none',
-        transition: 'background-color 0.3s, border-color 0.3s',
-      }}
+      className={`fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300 ${
+        scrolled ? 'bg-surface/85 border-b border-outline/30' : 'bg-surface/70'
+      }`}
     >
-      <div
-        className="container-page"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingTop: '1rem',
-          paddingBottom: '1rem',
-        }}
-      >
-        {/* Logo */}
+      <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
         <Link
           to="/"
-          style={{
-            fontFamily: 'var(--font-headline)',
-            fontWeight: 800,
-            fontSize: '1.25rem',
-            letterSpacing: '-0.03em',
-            color: 'var(--color-on-surface)',
-            textDecoration: 'none',
-          }}
+          className="font-headline text-xl font-extrabold tracking-tight text-on-surface no-underline"
         >
-          Fluency
+          WinLex
         </Link>
 
-        {/* Desktop nav */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '2rem',
-            alignItems: 'center',
-          }}
-          className="hidden md:flex"
-        >
+        <div className="hidden md:flex gap-8 items-center">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               to={link.href}
-              style={{
-                fontFamily: 'var(--font-headline)',
-                fontWeight: 500,
-                fontSize: '0.875rem',
-                letterSpacing: '-0.01em',
-                color: 'var(--color-on-surface-variant)',
-                textDecoration: 'none',
-                transition: 'color 0.2s',
-              }}
-              onMouseEnter={(e) =>
-                ((e.target as HTMLAnchorElement).style.color =
-                  'var(--color-primary)')
-              }
-              onMouseLeave={(e) =>
-                ((e.target as HTMLAnchorElement).style.color =
-                  'var(--color-on-surface-variant)')
-              }
+              className="font-headline text-sm font-medium text-on-surface-variant no-underline hover:text-primary transition-colors"
             >
               {link.label}
             </Link>
           ))}
         </div>
 
-        {/* CTA */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/login')}
-            style={{
-              fontFamily: 'var(--font-headline)',
-              fontWeight: 600,
-              fontSize: '0.875rem',
-              color: 'var(--color-primary)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0.5rem 1rem',
-            }}
-            className="hidden md:block"
+            className="hidden md:block font-headline text-sm font-semibold text-primary bg-transparent border-none cursor-pointer px-4 py-2"
           >
             Đăng nhập
           </button>
 
           <button
-            className="btn-primary"
+            className="btn-primary px-6 py-2.5 text-sm font-headline font-semibold"
             onClick={() => navigate('/register')}
-            style={{ padding: '0.625rem 1.5rem', fontSize: '0.875rem' }}
           >
             Bắt đầu miễn phí
           </button>
 
-          {/* Mobile hamburger */}
           <button
-            className="md:hidden"
+            className="md:hidden bg-transparent border-none cursor-pointer text-on-surface p-2"
             onClick={() => setMenuOpen(!menuOpen)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--color-on-surface)',
-              lineHeight: 1,
-            }}
           >
             <span className="material-symbols-outlined">
               {menuOpen ? 'close' : 'menu'}
@@ -141,31 +70,14 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {menuOpen && (
-        <div
-          style={{
-            backgroundColor: 'var(--color-surface-container-lowest)',
-            borderTop: '1px solid var(--color-outline-variant)',
-            padding: '1rem 2rem 1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-          }}
-          className="md:hidden"
-        >
+        <div className="md:hidden bg-surface-container-lowest border-t border-outline-variant px-8 py-4 flex flex-col gap-4">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               to={link.href}
               onClick={() => setMenuOpen(false)}
-              style={{
-                fontFamily: 'var(--font-headline)',
-                fontWeight: 500,
-                fontSize: '0.9375rem',
-                color: 'var(--color-on-surface)',
-                textDecoration: 'none',
-              }}
+              className="font-headline text-base font-medium text-on-surface no-underline"
             >
               {link.label}
             </Link>
@@ -173,13 +85,7 @@ const Header = () => {
           <Link
             to="/login"
             onClick={() => setMenuOpen(false)}
-            style={{
-              fontFamily: 'var(--font-headline)',
-              fontWeight: 500,
-              fontSize: '0.9375rem',
-              color: 'var(--color-primary)',
-              textDecoration: 'none',
-            }}
+            className="font-headline text-base font-medium text-primary no-underline"
           >
             Đăng nhập
           </Link>

@@ -19,168 +19,70 @@ const FOOTER_LINKS = {
 
 const Footer = () => {
   return (
-    <footer
-      style={{
-        backgroundColor: '#f8fafc',
-        borderTop: '1px solid rgba(195,198,215,0.3)',
-      }}
-    >
-      {/* Main footer grid */}
-      <div
-        className="container-page"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-          gap: '2rem',
-          paddingTop: '3rem',
-          paddingBottom: '3rem',
-        }}
-      >
-        {/* Brand */}
-        <div style={{ gridColumn: 'span 1' }}>
-          <Link
-            to="/"
-            style={{
-              fontFamily: 'var(--font-headline)',
-              fontWeight: 800,
-              fontSize: '1.125rem',
-              color: 'var(--color-on-surface)',
-              textDecoration: 'none',
-              display: 'block',
-              marginBottom: '0.75rem',
-            }}
-          >
-            Fluency
+    <footer className="bg-slate-50 border-t border-outline/30">
+      <div className="max-w-7xl mx-auto px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="col-span-2 md:col-span-1">
+          <Link to="/" className="font-headline text-lg font-extrabold text-on-surface no-underline block mb-3">
+            WinLex
           </Link>
-          <p
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.875rem',
-              color: 'var(--color-on-surface-variant)',
-              lineHeight: 1.7,
-              maxWidth: '220px',
-            }}
-          >
-            Nâng giáo dục ngôn ngữ lên thành nghệ thuật. Công cụ tinh tế cho người học hiện đại.
+          <p className="font-body text-sm text-on-surface-variant max-w-[220px]">
+            Nâng cao giáo dục ngôn ngữ lên thành nghệ thuật.
           </p>
         </div>
 
-        {/* Platform */}
-        <FooterColumn title="Nền tảng" links={FOOTER_LINKS.platform} />
+        <div>
+          <h4 className="font-headline text-sm font-bold text-on-surface mb-4">Nền tảng</h4>
+          <ul className="flex flex-col gap-3">
+            {FOOTER_LINKS.platform.map((link) => (
+              <li key={link.href}>
+                <Link to={link.href} className="font-body text-sm text-on-surface-variant hover:text-on-surface">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        {/* Company */}
-        <FooterColumn title="Công ty" links={FOOTER_LINKS.company} />
+        <div>
+          <h4 className="font-headline text-sm font-bold text-on-surface mb-4">Công ty</h4>
+          <ul className="flex flex-col gap-3">
+            {FOOTER_LINKS.company.map((link) => (
+              <li key={link.href}>
+                <Link to={link.href} className="font-body text-sm text-on-surface-variant hover:text-on-surface">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        {/* Legal */}
-        <FooterColumn title="Pháp lý" links={FOOTER_LINKS.legal} />
+        <div>
+          <h4 className="font-headline text-sm font-bold text-on-surface mb-4">Pháp lý</h4>
+          <ul className="flex flex-col gap-3">
+            {FOOTER_LINKS.legal.map((link) => (
+              <li key={link.href}>
+                <Link to={link.href} className="font-body text-sm text-on-surface-variant hover:text-on-surface">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
-      {/* Bottom bar */}
-      <div
-        className="container-page"
-        style={{
-          paddingTop: '1.25rem',
-          paddingBottom: '1.25rem',
-          borderTop: '1px solid rgba(195,198,215,0.3)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '0.75rem',
-        }}
-      >
-        <p
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.75rem',
-            color: 'var(--color-outline)',
-          }}
-        >
-          © 2024 Fluency. Bản quyền thuộc về chúng tôi.
-        </p>
-
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          {[
-            { icon: 'facebook', label: 'Facebook' },
-            { icon: 'public', label: 'Website' },
-          ].map(({ icon, label }) => (
-            <button
-              key={label}
-              aria-label={label}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: 'var(--color-outline)',
-                transition: 'color 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-              onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.color =
-                  'var(--color-primary)')
-              }
-              onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.color =
-                  'var(--color-outline)')
-              }
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: '1.2rem' }}>
-                {icon}
-              </span>
-            </button>
-          ))}
+      <div className="max-w-7xl mx-auto px-8 py-5 border-t border-outline/30 flex justify-between items-center">
+        <p className="font-body text-xs text-outline">© 2024 WinLex</p>
+        <div className="flex gap-4">
+          <button className="text-outline hover:text-primary">
+            <span className="material-symbols-outlined">facebook</span>
+          </button>
+          <button className="text-outline hover:text-primary">
+            <span className="material-symbols-outlined">public</span>
+          </button>
         </div>
       </div>
     </footer>
   );
 };
-
-// Helper sub-component
-interface FooterColumnProps {
-  title: string;
-  links: { label: string; href: string }[];
-}
-
-const FooterColumn = ({ title, links }: FooterColumnProps) => (
-  <div>
-    <h4
-      style={{
-        fontFamily: 'var(--font-headline)',
-        fontWeight: 700,
-        fontSize: '0.875rem',
-        color: 'var(--color-on-surface)',
-        marginBottom: '1rem',
-      }}
-    >
-      {title}
-    </h4>
-    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-      {links.map((link) => (
-        <li key={link.href}>
-          <Link
-            to={link.href}
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.875rem',
-              color: 'var(--color-on-surface-variant)',
-              textDecoration: 'none',
-              transition: 'color 0.2s',
-            }}
-            onMouseEnter={(e) =>
-              ((e.target as HTMLAnchorElement).style.color = 'var(--color-on-surface)')
-            }
-            onMouseLeave={(e) =>
-              ((e.target as HTMLAnchorElement).style.color =
-                'var(--color-on-surface-variant)')
-            }
-          >
-            {link.label}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
 
 export default Footer;
