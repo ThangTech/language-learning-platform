@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const NAV_LINKS = [
-  { label: 'Khóa học', href: '/courses' },
-  { label: 'Tính năng', href: '/features' },
-  { label: 'Bảng giá', href: '/pricing' },
+  { label: 'Từ vựng', href: '/vocabulary' },
+  { label: 'Ngữ pháp', href: '/grammar' },
+  { label: 'Luyện tập', href: '/quiz' },
+  { label: 'Bảng xếp hạng', href: '/leaderboard' },
 ];
 
 const Header = () => {
