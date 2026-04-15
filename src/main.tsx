@@ -11,6 +11,8 @@ import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import AdminDashboardPage from "./pages/dashboard/AdminDashboardPage";
+import UserDashboardPage from "./pages/dashboard/UserDashboardPage";
+import DashboardLayout from "./components/layout/DashboardLayout";
 import VocabularyPage from "./pages/vocabulary/VocabularyPage";
 import GrammarPage from "./pages/grammar/GrammarPage";
 import QuizPage from "./pages/quiz/QuizPage";
@@ -59,9 +61,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <App />,
+    element: <DashboardLayout />,
     children: [
-      { index: true, element: <div className="p-8">Dashboard</div> },
+      { index: true, element: <UserDashboardPage /> },
+      { path: "user", element: <UserDashboardPage /> },
       {
         path: "admin",
         element: <AdminDashboardPage />,
@@ -72,7 +75,7 @@ const router = createBrowserRouter([
     path: "*",
     element: <NotFoundPage />,
   },
-]);
+], { basename: import.meta.env.BASE_URL });
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     {/* StyleProvider layer: ép antd inject CSS vào @layer antd
