@@ -34,15 +34,18 @@ const router = createBrowserRouter([
         path: "courses",
         element: <CoursesPage />,
       },
+    ],
+  },
+  {
+    element: <DashboardLayout />,
+    errorElement: <ErrorPage />,
+    children: [
       { path: "vocabulary", element: <VocabularyPage /> },
       { path: "grammar", element: <GrammarPage /> },
       { path: "quiz", element: <QuizPage /> },
       { path: "progress", element: <ProgressPage /> },
       { path: "streaks", element: <StreaksPage /> },
-      {
-        path: "leaderboard",
-        element: <LeaderboardPage />,
-      },
+      { path: "leaderboard", element: <LeaderboardPage /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "notifications", element: <NotificationsPage /> },
     ],
