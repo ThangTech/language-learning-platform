@@ -21,7 +21,7 @@ const FeaturesSection = () => {
             </p>
             <div className="bg-surface-container-low rounded-xl p-6">
               <div className="flex justify-between items-start mb-4">
-                <span className="text-[10px] uppercase font-bold tracking-widest text-primary/60">Tiếng Pháp Nâng cao</span>
+                <span className="text-[10px] uppercase font-bold tracking-widest text-primary/60">Tiếng Anh Nâng cao</span>
                 <span className="material-symbols-outlined text-xs text-on-surface-variant">volume_up</span>
               </div>
               <p className="font-headline text-2xl font-extrabold mb-1">Éphémère</p>

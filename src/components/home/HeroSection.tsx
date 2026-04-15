@@ -9,11 +9,11 @@ const HeroSection = () => {
           <h1 className="font-headline text-5xl md:text-7xl font-extrabold tracking-tight text-on-surface leading-[1.1] mb-8">
             Chinh phục <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-              Nghệ thuật Ngôn ngữ.
+              Thành thạo ngoại ngữ.
             </span>
           </h1>
           <p className="font-body text-lg md:text-xl text-on-surface-variant max-w-xl mb-10 leading-relaxed">
-            Trải nghiệm chương trình học được thiết kế chu đáo dành cho người học tinh tiến. Vượt xa những điều cơ bản để bước vào thế giới ngôn ngữ chuyên nghiệp.
+            Trải nghiệm chương trình học được thiết kế chu đáo dành cho người học tinh tiến. Vượt xa những điều cơ bản để bước vào thế giới ngoại ngữ chuyên nghiệp.
           </p>
           <div className="flex flex-wrap gap-4">
             <button className="bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-full font-headline font-bold text-base ambient-shadow hover:scale-105 active:scale-95 transition-all">
