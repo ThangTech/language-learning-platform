@@ -12,7 +12,7 @@ Xuất phát từ thực tế đó, **WinLex** được xây dựng nhằm cung 
 
 Việc học từ vựng ngoại ngữ không chỉ đòi hỏi sự kiên trì mà còn cần phương pháp phù hợp và môi trường học tập có tính tương tác cao. Trên thực tế, nhiều người học gặp phải những khó khăn phổ biến như: dễ quên những từ đã học trước đó, thiếu động lực để duy trì việc học hàng ngày, và không có cách nào để tự đánh giá tiến độ của bản thân một cách rõ ràng.
 
-**WinLex** được xây dựng để giải quyết những vấn đề đó. Hệ thống tập trung vào việc giúp người học tiếp cận từ vựng theo nhiều hình thức khác nhau — học qua flashcard, kiểm tra qua quiz, luyện phát âm, tra từ điển và học ngữ pháp — tất cả trong một giao diện thống nhất, dễ sử dụng. Đồng thời, các cơ chế như streak, điểm số và bảng xếp hạng được tích hợp để biến việc học hàng ngày trở thành một thói quen thú vị và có mục tiêu.
+**WinLex** được xây dựng để giải quyết những vấn đề đó. Hệ thống tập trung vào việc giúp người học tiếp cận từ vựng theo nhiều hình thức khác nhau — học qua flashcard, kiểm tra qua quiz, luyện nghe, tra từ điển và học ngữ pháp — tất cả trong một giao diện thống nhất, dễ sử dụng. Đồng thời, các cơ chế như streak, điểm số và bảng xếp hạng được tích hợp để biến việc học hàng ngày trở thành một thói quen thú vị và có mục tiêu.
 
 ---
 
@@ -20,9 +20,9 @@ Việc học từ vựng ngoại ngữ không chỉ đòi hỏi sự kiên trì 
 
 Hệ thống phục vụ hai nhóm người dùng chính:
 
-**User (Người học)** là đối tượng trung tâm của nền tảng. Người học có thể tạo tài khoản, truy cập các bài học từ vựng, luyện phát âm, làm quiz, tra từ điển, theo dõi tiến độ cá nhân và tham gia bảng xếp hạng cộng đồng.
+**User (Người học)** là đối tượng trung tâm của nền tảng. Người học có thể tạo tài khoản, truy cập các bài học từ vựng, luyện nghe, làm quiz, tra từ điển, theo dõi tiến độ cá nhân và tham gia bảng xếp hạng cộng đồng.
 
-**Admin (Quản trị viên)** chịu trách nhiệm quản lý nội dung của hệ thống, bao gồm việc thêm, chỉnh sửa và xóa từ vựng, bài học ngữ pháp, cũng như quản lý tài khoản người dùng và theo dõi hoạt động toàn hệ thống.
+**Admin (Quản trị viên)** chịu trách nhiệm quản lý nội dung của hệ thống, bao gồm việc thêm, chỉnh sửa và xóa từ vựng, bài học nghe, cũng như quản lý tài khoản người dùng và theo dõi hoạt động toàn hệ thống.
 
 ---
 
@@ -32,9 +32,9 @@ Hệ thống phục vụ hai nhóm người dùng chính:
 
 - Đăng ký, đăng nhập và quản lý tài khoản cá nhân
 - Học từ vựng thông qua flashcard
-- Làm bài quiz để kiểm tra kiến thức
+- Làm bài nghe để kiểm tra kiến thức
 - Tra cứu từ điển (nghĩa, ví dụ, phát âm)
-- Luyện phát âm theo bảng IPA và audio mẫu
+- Luyện nghe
 - Học các bài ngữ pháp
 - Lưu từ vựng vào danh sách yêu thích
 - Theo dõi tiến độ học tập (số từ đã học, điểm số, thời gian học)
@@ -46,6 +46,7 @@ Hệ thống phục vụ hai nhóm người dùng chính:
 - **Quản lý nội dung học:**
   - Thêm, chỉnh sửa, xóa từ vựng
   - Quản lý bài học ngữ pháp
+  - Quản lý bài nghe
 - **Quản lý người dùng:**
   - Xem danh sách người dùng
   - Khóa / mở tài khoản
@@ -64,5 +65,5 @@ Dự án hướng đến việc xây dựng một nền tảng học tiếng Anh
 
 - Giúp người học cải thiện vốn từ vựng thông qua phương pháp học lặp lại có hệ thống kết hợp với kiểm tra định kỳ.
 - Cung cấp đầy đủ các kỹ năng bổ trợ (phát âm, ngữ pháp, tra từ điển) trong cùng một nền tảng, giảm thiểu việc người học phải chuyển đổi qua lại giữa nhiều ứng dụng khác nhau.
-- Tạo động lực học tập bền vững thông qua các cơ chế gamification như streak, điểm số và bảng xếp hạng.
+- Tạo động lực học tập bền vững thông qua các cơ chế như streak, điểm số và bảng xếp hạng.
 - Cung cấp dữ liệu học tập minh bạch để người học tự đánh giá và điều chỉnh kế hoạch học tập của mình.
