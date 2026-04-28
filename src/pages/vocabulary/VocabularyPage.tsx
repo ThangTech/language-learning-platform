@@ -2,6 +2,7 @@ import { useState } from 'react';
 import VocabularyHero from '../../components/vocabulary/VocabularyHero';
 import VocabularyFilters from '../../components/vocabulary/VocabularyFilters';
 import VocabularyGrid from '../../components/vocabulary/VocabularyGrid';
+import AddWordModal from '../../components/vocabulary/AddWordModal';
 import type { WordData } from '../../components/vocabulary/WordCard';
 
 // Initial Mock Data based on HTML
@@ -77,19 +78,22 @@ const VocabularyPage = () => {
   const [words, setWords] = useState<WordData[]>(INITIAL_WORDS);
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [selectedDifficulty, setSelectedDifficulty] = useState('All');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleToggleFavorite = (id: string) => {
     setWords(words.map(w => w.id === id ? { ...w, isFavorite: !w.isFavorite } : w));
   };
 
   const handlePlayAudio = (id: string) => {
-    // Implement audio playback logic here
     console.log(`Play audio for word ID: ${id}`);
   };
 
   const handleAddNewWord = () => {
-    // Implement add new word logic (e.g., open a modal)
-    console.log('Add new word clicked');
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddWord = (newWord: WordData) => {
+    setWords([newWord, ...words]);
   };
 
   // Filter words based on local state (for demonstration)
@@ -127,9 +131,7 @@ const VocabularyPage = () => {
         onAddNewWord={handleAddNewWord}
       />
       
-      {/* Floating Progress Jewel - Now in DashboardLayout or localized if needed. 
-          As requested by HTML context, it exists on this page but since we have a global
-          layout, this might be page specific. Let's add it here. */}
+      {/* Floating Progress Jewel */}
       <div className="fixed bottom-10 right-10 z-50">
         <div className="bg-surface/60 backdrop-blur-md p-2 rounded-full shadow-2xl border border-outline-variant/20 flex items-center gap-4 pr-6">
           <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-tertiary to-tertiary-fixed flex items-center justify-center text-white shadow-lg">
@@ -145,6 +147,12 @@ const VocabularyPage = () => {
           </div>
         </div>
       </div>
+
+      <AddWordModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAdd={handleAddWord}
+      />
     </div>
   );
 };

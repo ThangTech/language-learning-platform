@@ -24,8 +24,8 @@ const FeaturesSection = () => {
                 <span className="text-[10px] uppercase font-bold tracking-widest text-primary/60">Tiếng Anh Nâng cao</span>
                 <span className="material-symbols-outlined text-xs text-on-surface-variant">volume_up</span>
               </div>
-              <p className="font-headline text-2xl font-extrabold mb-1">Éphémère</p>
-              <p className="text-xs text-on-surface-variant italic mb-4">/e.fe.mɛʁ/</p>
+              <p className="font-headline text-2xl font-extrabold mb-1">Serendipity</p>
+              <p className="text-xs text-on-surface-variant italic mb-4">/ser.əndɪp.ə.ti/</p>
               <div className="bg-secondary-container/30 text-on-secondary-container text-[10px] px-2 py-0.5 rounded-full inline-block">
                 Tính từ
               </div>

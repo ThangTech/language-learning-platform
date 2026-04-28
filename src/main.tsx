@@ -15,6 +15,9 @@ import UserDashboardPage from "./pages/dashboard/UserDashboardPage";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import VocabularyPage from "./pages/vocabulary/VocabularyPage";
 import GrammarPage from "./pages/grammar/GrammarPage";
+import ListeningPage from "./pages/listening/ListeningPage";
+import LessonDetailPage from "./pages/listening/LessonDetailPage";
+import DictationPage from "./pages/listening/DictationPage";
 import QuizPage from "./pages/quiz/QuizPage";
 import ProgressPage from "./pages/ProgressPage";
 import StreaksPage from "./pages/streak/StreaksPage";
@@ -42,6 +45,9 @@ const router = createBrowserRouter([
     children: [
       { path: "vocabulary", element: <VocabularyPage /> },
       { path: "grammar", element: <GrammarPage /> },
+      { path: "listening", element: <ListeningPage /> },
+      { path: "listening/:lessonId", element: <LessonDetailPage /> },
+      { path: "listening/dictation/:lessonId", element: <DictationPage /> },
       { path: "quiz", element: <QuizPage /> },
       { path: "progress", element: <ProgressPage /> },
       { path: "streaks", element: <StreaksPage /> },
