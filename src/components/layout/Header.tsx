@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { getToken } from '../../services/auth';
 
 const NAV_LINKS = [
   { label: 'Từ vựng', href: '/vocabulary' },
@@ -12,6 +13,7 @@ const NAV_LINKS = [
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const isLoggedIn = !!getToken();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,26 +49,32 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate('/login')}
-            className="hidden md:block font-headline text-sm font-semibold text-primary bg-transparent border-none cursor-pointer px-4 py-2"
-          >
-            Đăng nhập
-          </button>
+          {!isLoggedIn && (
+            <button
+              onClick={() => navigate('/login')}
+              className="hidden md:block font-headline text-sm font-semibold text-primary bg-transparent border-none cursor-pointer px-4 py-2"
+            >
+              Đăng nhập
+            </button>
+          )}
 
-          <button
-            onClick={() => navigate('/dashboard/user')}
-            className="hidden md:block font-headline text-sm font-semibold text-on-surface-variant bg-surface-container-low border border-outline-variant px-5 py-2.5 rounded-full cursor-pointer hover:bg-surface-container transition-colors"
-          >
-            Dashboard
-          </button>
+          {isLoggedIn && (
+            <button
+              onClick={() => navigate('/dashboard/user')}
+              className="hidden md:block font-headline text-sm font-semibold text-on-surface-variant bg-surface-container-low border border-outline-variant px-5 py-2.5 rounded-full cursor-pointer hover:bg-surface-container transition-colors"
+            >
+              Dashboard
+            </button>
+          )}
 
-          <button
-            className="btn-primary px-6 py-2.5 text-sm font-headline font-semibold"
-            onClick={() => navigate('/register')}
-          >
-            Bắt đầu miễn phí
-          </button>
+          {!isLoggedIn && (
+            <button
+              className="btn-primary px-6 py-2.5 text-sm font-headline font-semibold"
+              onClick={() => navigate('/register')}
+            >
+              Bắt đầu miễn phí
+            </button>
+          )}
 
           <button
             className="md:hidden bg-transparent border-none cursor-pointer text-on-surface p-2"
