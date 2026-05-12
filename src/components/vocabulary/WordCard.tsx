@@ -1,3 +1,5 @@
+import { Button, Popconfirm } from 'antd';
+
 export interface LevelInfo {
   label: string;
   bgColor: string;
@@ -18,11 +20,21 @@ export interface WordData {
 
 interface WordCardProps {
   word: WordData;
+  isAdmin?: boolean;
   onToggleFavorite: (id: string) => void;
   onPlayAudio: (id: string) => void;
+  onEdit?: (word: WordData) => void;
+  onDelete?: (id: string) => void;
 }
 
-const WordCard = ({ word, onToggleFavorite, onPlayAudio }: WordCardProps) => {
+const WordCard = ({
+  word,
+  isAdmin = false,
+  onToggleFavorite,
+  onPlayAudio,
+  onEdit,
+  onDelete,
+}: WordCardProps) => {
   return (
     <div
       className={`bg-surface-container-lowest rounded-[1.5rem] p-8 shadow-sm hover:shadow-xl transition-all duration-300 group
@@ -38,19 +50,21 @@ const WordCard = ({ word, onToggleFavorite, onPlayAudio }: WordCardProps) => {
             {word.pronunciation}
           </p>
         </div>
-        <button
-          onClick={() => onToggleFavorite(word.id)}
-          className={`transition-colors focus:outline-none 
-                     ${word.isFavorite ? 'text-error' : 'text-outline hover:text-error'}`}
-          aria-label={word.isFavorite ? "Bỏ yêu thích" : "Yêu thích"}
-        >
-          <span
-            className="material-symbols-outlined text-[1.5rem]"
-            style={{ fontVariationSettings: `'FILL' ${word.isFavorite ? 1 : 0}` }}
+        {!isAdmin && (
+          <button
+            onClick={() => onToggleFavorite(word.id)}
+            className={`transition-colors focus:outline-none
+                       ${word.isFavorite ? 'text-error' : 'text-outline hover:text-error'}`}
+            aria-label={word.isFavorite ? "Bỏ yêu thích" : "Yêu thích"}
           >
-            favorite
-          </span>
-        </button>
+            <span
+              className="material-symbols-outlined text-[1.5rem]"
+              style={{ fontVariationSettings: `'FILL' ${word.isFavorite ? 1 : 0}` }}
+            >
+              favorite
+            </span>
+          </button>
+        )}
       </div>
 
       <p className="text-on-surface font-body mb-6 text-sm leading-relaxed">
@@ -69,17 +83,39 @@ const WordCard = ({ word, onToggleFavorite, onPlayAudio }: WordCardProps) => {
         >
           Nghe phát âm <span className="material-symbols-outlined text-lg">volume_up</span>
         </button>
-        <div className="flex -space-x-2">
-          {word.levels.map((level, idx) => (
-            <div
-              key={idx}
-              className={`w-8 h-8 rounded-full border-2 border-surface-container-lowest 
-                         flex items-center justify-center font-headline text-[10px] font-bold shadow-sm
-                         ${level.bgColor} ${level.textColor}`}
-            >
-              {level.label}
-            </div>
-          ))}
+
+        <div className="flex items-center gap-2">
+          {isAdmin && (
+            <>
+              <Button size="small" onClick={() => onEdit?.(word)}>
+                Sửa
+              </Button>
+              <Popconfirm
+                title="Xóa từ vựng?"
+                description="Hành động này không thể hoàn tác."
+                onConfirm={() => onDelete?.(word.id)}
+                okText="Xóa"
+                cancelText="Hủy"
+              >
+                <Button size="small" danger>
+                  Xóa
+                </Button>
+              </Popconfirm>
+            </>
+          )}
+
+          <div className="flex -space-x-2">
+            {word.levels.map((level, idx) => (
+              <div
+                key={idx}
+                className={`w-8 h-8 rounded-full border-2 border-surface-container-lowest
+                           flex items-center justify-center font-headline text-[10px] font-bold shadow-sm
+                           ${level.bgColor} ${level.textColor}`}
+              >
+                {level.label}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

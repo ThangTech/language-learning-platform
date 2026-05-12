@@ -14,6 +14,35 @@ export const getWordById = async (id: string) => {
   return response.data;
 };
 
+export const createWord = async (data: {
+  term: string;
+  pronunciation?: string;
+  definition: string;
+  exampleSentence?: string;
+  topic: string;
+  levels: string[];
+}) => {
+  const response = await api.post<ApiResponse<WordDto>>("/api/words", data);
+  return response.data;
+};
+
+export const updateWord = async (id: string, data: Partial<{
+  term: string;
+  pronunciation: string;
+  definition: string;
+  exampleSentence: string;
+  topic: string;
+  levels: string[];
+}>) => {
+  const response = await api.put<ApiResponse<WordDto>>(`/api/words/${id}`, data);
+  return response.data;
+};
+
+export const deleteWord = async (id: string) => {
+  const response = await api.delete<ApiResponse<boolean>>(`/api/words/${id}`);
+  return response.data;
+};
+
 export const getFavorites = async () => {
   const response = await api.get<ApiResponse<WordDto[]>>("/api/favorites");
   return response.data;

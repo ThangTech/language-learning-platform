@@ -1,10 +1,22 @@
+import { useEffect } from 'react';
 import { Modal, Form, Input, Select, Button } from 'antd';
 import type { WordData, LevelInfo } from './WordCard';
 
+export interface WordFormValues {
+  word: string;
+  pronunciation?: string;
+  definition: string;
+  example?: string;
+  category: string;
+  level: string;
+}
+
 interface AddWordModalProps {
   isOpen: boolean;
+  loading?: boolean;
+  editingWord?: WordData | null;
   onClose: () => void;
-  onAdd: (word: WordData) => void;
+  onSave: (values: WordFormValues) => void;
 }
 
 const LEVEL_OPTIONS: LevelInfo[] = [
@@ -18,27 +30,34 @@ const LEVEL_OPTIONS: LevelInfo[] = [
 
 const CATEGORIES = ['Văn học', 'Triết học', 'Kinh doanh', 'Công nghệ', 'Học thuật'];
 
-const AddWordModal = ({ isOpen, onClose, onAdd }: AddWordModalProps) => {
+const AddWordModal = ({
+  isOpen,
+  loading = false,
+  editingWord,
+  onClose,
+  onSave,
+}: AddWordModalProps) => {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (editingWord) {
+      form.setFieldsValue({
+        word: editingWord.word,
+        pronunciation: editingWord.pronunciation,
+        definition: editingWord.definition,
+        example: editingWord.example,
+        category: editingWord.category,
+        level: editingWord.levels[0]?.label || 'A1',
+      });
+      return;
+    }
+
+    form.resetFields();
+  }, [editingWord, form, isOpen]);
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      const levelInfo = LEVEL_OPTIONS.find(l => l.label === values.level) || LEVEL_OPTIONS[0];
-
-      const newWord: WordData = {
-        id: `w${Date.now()}`,
-        category: values.category,
-        word: values.word.trim(),
-        pronunciation: values.pronunciation?.trim() || '/.../',
-        definition: values.definition.trim(),
-        example: values.example?.trim() || '-',
-        levels: [levelInfo],
-        isFavorite: false,
-      };
-
-      onAdd(newWord);
-      form.resetFields();
-      onClose();
+      onSave(values);
     });
   };
 
@@ -47,7 +66,7 @@ const AddWordModal = ({ isOpen, onClose, onAdd }: AddWordModalProps) => {
       open={isOpen}
       onCancel={onClose}
       footer={null}
-      title="Thêm từ mới"
+      title={editingWord ? 'Sửa từ vựng' : 'Thêm từ mới'}
       centered
       destroyOnClose
     >
@@ -102,8 +121,8 @@ const AddWordModal = ({ isOpen, onClose, onAdd }: AddWordModalProps) => {
           <Button onClick={onClose} className="flex-1">
             Hủy
           </Button>
-          <Button type="primary" htmlType="submit" className="flex-1">
-            Thêm từ
+          <Button type="primary" htmlType="submit" loading={loading} className="flex-1">
+            {editingWord ? 'Lưu' : 'Thêm từ'}
           </Button>
         </Form.Item>
       </Form>
