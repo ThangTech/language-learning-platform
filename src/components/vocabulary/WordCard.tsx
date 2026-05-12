@@ -1,4 +1,4 @@
-interface LevelInfo {
+export interface LevelInfo {
   label: string;
   bgColor: string;
   textColor: string;
