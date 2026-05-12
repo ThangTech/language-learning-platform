@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 const NAV_LINKS = [
   { label: 'Từ vựng', href: '/vocabulary' },
   { label: 'Ngữ pháp', href: '/grammar' },
+  { label: 'Luyện nghe', href: '/listening' },
   { label: 'Luyện tập', href: '/quiz' },
   { label: 'Bảng xếp hạng', href: '/leaderboard' },
 ];
@@ -51,6 +52,13 @@ const Header = () => {
             className="hidden md:block font-headline text-sm font-semibold text-primary bg-transparent border-none cursor-pointer px-4 py-2"
           >
             Đăng nhập
+          </button>
+
+          <button
+            onClick={() => navigate('/dashboard/user')}
+            className="hidden md:block font-headline text-sm font-semibold text-on-surface-variant bg-surface-container-low border border-outline-variant px-5 py-2.5 rounded-full cursor-pointer hover:bg-surface-container transition-colors"
+          >
+            Dashboard
           </button>
 
           <button
