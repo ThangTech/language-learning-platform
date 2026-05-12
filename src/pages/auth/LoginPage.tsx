@@ -10,16 +10,28 @@ type LoginFormValues = {
   remember?: boolean;
 };
 
+const ADMIN_CREDENTIALS = {
+  username: 'admin',
+  password: 'admin123',
+};
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values: LoginFormValues) => {
-    console.log(values);
     setLoading(true);
     setTimeout(() => {
-      message.success('Đăng nhập thành công!');
-      navigate('/');
+      if (
+        values.TenDangNhap === ADMIN_CREDENTIALS.username &&
+        values.MatKhau === ADMIN_CREDENTIALS.password
+      ) {
+        message.success('Đăng nhập quản trị viên thành công!');
+        navigate('/dashboard/admin');
+      } else {
+        message.success('Đăng nhập thành công!');
+        navigate('/');
+      }
       setLoading(false);
     }, 1000);
   };
