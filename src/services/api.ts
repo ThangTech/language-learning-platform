@@ -15,12 +15,7 @@ instance.interceptors.request.use(
 );
 
 instance.interceptors.response.use(
-  (response) => {
-    if (response.data && response.data.data !== undefined && "success" in response.data) {
-      return response.data;
-    }
-    return response;
-  },
+  (response) => response,
   (error) => Promise.reject(error),
 );
 
