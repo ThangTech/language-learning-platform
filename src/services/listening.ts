@@ -14,13 +14,44 @@ export const getLessonById = async (id: string) => {
   return response.data;
 };
 
+export const createLesson = async (data: {
+  title: string;
+  description: string;
+  audioUrl: string;
+  level: string;
+  topic: string;
+  duration: number;
+  transcriptJson?: string;
+}) => {
+  const response = await api.post<ApiResponse<ListeningLessonDto>>("/api/listening", data);
+  return response.data;
+};
+
+export const updateLesson = async (id: string, data: Partial<{
+  title: string;
+  description: string;
+  audioUrl: string;
+  level: string;
+  topic: string;
+  duration: number;
+  transcriptJson?: string;
+}>) => {
+  const response = await api.put<ApiResponse<ListeningLessonDto>>(`/api/listening/${id}`, data);
+  return response.data;
+};
+
+export const deleteLesson = async (id: string) => {
+  const response = await api.delete<ApiResponse<boolean>>(`/api/listening/${id}`);
+  return response.data;
+};
+
 export const submitListeningResult = async (lessonId: string, score: number) => {
-  const response = await api.post<ApiResponse<any>>("/api/listening/result", { lessonId, score });
+  const response = await api.post<ApiResponse<any>>("/api/listening/results", { lessonId, score });
   return response.data;
 };
 
 export const getUserListeningResults = async () => {
-  const response = await api.get<ApiResponse<any[]>>("/api/listening/results");
+  const response = await api.get<ApiResponse<any[]>>("/api/listening/results/my");
   return response.data;
 };
 
