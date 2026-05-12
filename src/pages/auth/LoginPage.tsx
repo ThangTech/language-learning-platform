@@ -3,16 +3,12 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Flex, Form, Input, message } from 'antd';
 import { useNavigate, Link } from 'react-router-dom';
 import backgroundImg from '../../assets/background.jpg';
+import { login } from '../../services/auth';
 
 type LoginFormValues = {
   TenDangNhap: string;
   MatKhau: string;
   remember?: boolean;
-};
-
-const ADMIN_CREDENTIALS = {
-  username: 'admin',
-  password: 'admin123',
 };
 
 const LoginPage = () => {
@@ -21,19 +17,24 @@ const LoginPage = () => {
 
   const onFinish = async (values: LoginFormValues) => {
     setLoading(true);
-    setTimeout(() => {
-      if (
-        values.TenDangNhap === ADMIN_CREDENTIALS.username &&
-        values.MatKhau === ADMIN_CREDENTIALS.password
-      ) {
-        message.success('Đăng nhập quản trị viên thành công!');
-        navigate('/dashboard/admin');
-      } else {
+    try {
+      const result = await login({
+        email: values.TenDangNhap,
+        password: values.MatKhau,
+      });
+
+      if (result.success) {
         message.success('Đăng nhập thành công!');
         navigate('/');
+      } else {
+        message.error(result.message || 'Đăng nhập thất bại');
       }
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || error.message || 'Lỗi kết nối';
+      message.error(msg);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
