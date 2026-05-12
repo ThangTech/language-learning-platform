@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getToken } from '../../services/auth';
+import { getToken, getUser, logout } from '../../services/auth';
 
 const NAV_LINKS = [
   { label: 'Từ vựng', href: '/vocabulary' },
@@ -14,6 +14,7 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const isLoggedIn = !!getToken();
+  const user = getUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +22,11 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <nav
@@ -56,6 +62,20 @@ const Header = () => {
             >
               Đăng nhập
             </button>
+          )}
+
+          {isLoggedIn && (
+            <>
+              <span className="hidden md:flex items-center gap-2 font-headline text-sm font-medium text-on-surface-variant">
+                Xin chào, {user?.fullName || user?.email || 'User'}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="hidden md:block font-headline text-sm font-semibold text-primary bg-transparent border-none cursor-pointer px-4 py-2"
+              >
+                Đăng xuất
+              </button>
+            </>
           )}
 
           {isLoggedIn && (
@@ -99,13 +119,30 @@ const Header = () => {
               {link.label}
             </Link>
           ))}
-          <Link
-            to="/login"
-            onClick={() => setMenuOpen(false)}
-            className="font-headline text-base font-medium text-primary no-underline"
-          >
-            Đăng nhập
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <span className="font-headline text-base text-on-surface-variant">
+                Xin chào, {user?.fullName || user?.email || 'User'}
+              </span>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+                className="font-headline text-base font-medium text-primary no-underline text-left"
+              >
+                Đăng xuất
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setMenuOpen(false)}
+              className="font-headline text-base font-medium text-primary no-underline"
+            >
+              Đăng nhập
+            </Link>
+          )}
         </div>
       )}
     </nav>
