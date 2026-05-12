@@ -1,4 +1,4 @@
-import { QuestionType } from '../../services/listening';
+import type { QuestionType } from '../../interfaces/listening';
 
 export interface QuizOption {
   id: string;
