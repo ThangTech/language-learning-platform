@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const CTASection = () => {
   return (
     <section className="px-8 py-24 mb-16">
@@ -13,9 +15,11 @@ const CTASection = () => {
           <p className="font-body text-lg text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed">
             Ngừng học như một khách du lịch. Bắt đầu suy nghĩ như người bản ngữ. Hành trình của bạn hướng tới sự thành thạo ngôn ngữ bắt đầu với một bước quyết định.
           </p>
-          <button className="bg-white text-slate-900 px-10 py-5 rounded-full font-headline font-extrabold text-lg hover:bg-primary-fixed hover:scale-105 transition-all">
-            Đặt chỗ ngay
-          </button>
+          <Link to="/register">
+            <button className="bg-white text-slate-900 px-10 py-5 rounded-full font-headline font-extrabold text-lg hover:bg-primary-fixed hover:scale-105 transition-all">
+              Đặt chỗ ngay
+            </button>
+          </Link>
           <p className="mt-8 text-sm text-slate-400 font-medium">Lớp học mùa Đông sắp khai giảng với số lượng giới hạn.</p>
         </div>
       </div>

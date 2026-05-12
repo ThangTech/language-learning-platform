@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const HeroSection = () => {
   return (
     <section className="relative px-8 py-20 md:py-32 max-w-7xl mx-auto">
@@ -16,13 +18,17 @@ const HeroSection = () => {
             Trải nghiệm chương trình học được thiết kế chu đáo dành cho người học tinh tiến. Vượt xa những điều cơ bản để bước vào thế giới ngoại ngữ chuyên nghiệp.
           </p>
           <div className="flex flex-wrap gap-4">
-            <button className="bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-full font-headline font-bold text-base ambient-shadow hover:scale-105 active:scale-95 transition-all">
-              Bắt đầu hành trình
-            </button>
-            <button className="flex items-center gap-2 text-primary font-headline font-bold px-8 py-4 rounded-full hover:bg-surface-container-low transition-colors">
-              <span className="material-symbols-outlined">play_circle</span>
-              Xem phương pháp
-            </button>
+            <Link to="/dashboard/user">
+              <button className="bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-full font-headline font-bold text-base ambient-shadow hover:scale-105 active:scale-95 transition-all">
+                Bắt đầu hành trình
+              </button>
+            </Link>
+            <Link to="/listening">
+              <button className="flex items-center gap-2 text-primary font-headline font-bold px-8 py-4 rounded-full hover:bg-surface-container-low transition-colors">
+                <span className="material-symbols-outlined">play_circle</span>
+                Xem phương pháp
+              </button>
+            </Link>
           </div>
         </div>
 
