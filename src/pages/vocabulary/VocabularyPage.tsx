@@ -31,10 +31,18 @@ const VocabularyPage = () => {
       const result = await getWords(1, 100);
       if (result.success && result.data) {
         const apiWords = result.data.items as ApiWord[];
-        const favResult = await getFavorites();
         const favIds = new Set<string>();
-        if (favResult.success && favResult.data) {
-          favResult.data.forEach((fw: any) => favIds.add(fw.id));
+
+        const token = localStorage.getItem('token');
+        if (token) {
+          try {
+            const favResult = await getFavorites();
+            if (favResult.success && favResult.data) {
+              favResult.data.forEach((fw: any) => favIds.add(fw.id));
+            }
+          } catch (e) {
+            console.warn('Failed to load favorites', e);
+          }
         }
 
         const mapped = apiWords.map(w => ({

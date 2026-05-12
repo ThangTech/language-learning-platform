@@ -6,8 +6,8 @@ import backgroundImg from '../../assets/background.jpg';
 import { login } from '../../services/auth';
 
 type LoginFormValues = {
-  TenDangNhap: string;
-  MatKhau: string;
+  username: string;
+  password: string;
   remember?: boolean;
 };
 
@@ -19,8 +19,8 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const result = await login({
-        email: values.TenDangNhap,
-        password: values.MatKhau,
+        email: values.username,
+        password: values.password,
       });
 
       if (result.success) {
@@ -55,10 +55,10 @@ const LoginPage = () => {
             className="text-white text-3xl font-semibold leading-snug mb-3"
             style={{ fontFamily: 'var(--font-headline)' }}
           >
-            Nâng cao kỹ năng<br />nghe tiếng Anh
+            Nâng cao kỹ năng nghe tiếng Anh
           </h1>
           <p className="text-sm leading-relaxed text-white/60">
-            Luyện nghe với bài học chất lượng cao,<br />phù hợp mọi trình độ.
+            Luyện nghe với bài học chất lượng cao, phù hợp mọi trình độ.
           </p>
         </div>
       </div>
@@ -82,14 +82,14 @@ const LoginPage = () => {
 
         <Form name="login" initialValues={{ remember: true }} onFinish={onFinish}>
           <Form.Item
-            name="TenDangNhap"
+            name="username"
             rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập' }]}
           >
             <Input prefix={<UserOutlined />} placeholder="Tên đăng nhập" size="middle" />
           </Form.Item>
 
           <Form.Item
-            name="MatKhau"
+            name="password"
             rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
           >
             <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" size="middle" />
