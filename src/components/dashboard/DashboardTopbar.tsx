@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getUser } from '../../services/auth';
 
 const DashboardTopbar = () => {
   const [searchValue, setSearchValue] = useState('');
+  const user = getUser();
+  const isAdmin = user?.role?.toLowerCase() === 'admin';
 
   return (
     <header
@@ -33,40 +36,44 @@ const DashboardTopbar = () => {
 
       {/* Right actions */}
       <div className="flex items-center gap-5 ml-6">
+        {!isAdmin && (
+          <>
+            {/* Streak */}
+            <Link
+              to="/streaks"
+              className="no-underline flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors"
+              aria-label="Chuỗi ngày học"
+            >
+              <span
+                className="material-symbols-outlined text-primary"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                local_fire_department
+              </span>
+              <span className="font-headline font-bold text-sm text-primary">15</span>
+            </Link>
 
-        {/* Streak */}
-        <Link
-          to="/streaks"
-          className="no-underline flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors"
-          aria-label="Chuỗi ngày học"
-        >
-          <span
-            className="material-symbols-outlined text-primary"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            local_fire_department
-          </span>
-          <span className="font-headline font-bold text-sm text-primary">15</span>
-        </Link>
+            {/* Notification */}
+            <Link
+              to="/notifications"
+              className="no-underline relative text-on-surface-variant hover:text-on-surface transition-colors"
+              aria-label="Thông báo"
+            >
+              <span className="material-symbols-outlined">notifications</span>
+              <span className="absolute top-0 right-0 w-2 h-2 bg-error rounded-full" />
+            </Link>
+          </>
+        )}
 
-        {/* Notification */}
-        <Link
-          to="/notifications"
-          className="no-underline relative text-on-surface-variant hover:text-on-surface transition-colors"
-          aria-label="Thông báo"
-        >
-          <span className="material-symbols-outlined">notifications</span>
-          <span className="absolute top-0 right-0 w-2 h-2 bg-error rounded-full" />
-        </Link>
-
-        {/* Avatar */}
-        <Link to="/profile" className="no-underline">
-          <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFLYF2XedKygLG3Dj7zr9jw332SFyGv5S6WG-xnpwnmgOZZmBxh_sOd1Sp5kVcsliepb4h0IHwm4OLxx77W9n-Qforo1l2EAVewNdt7Ne9Gf-r0XULdHUECMIcBZto9y6VHzI5pqaI-3muDltJR39ygDR6nDDNwcvx-krHOfbT36dH6xLi98LPjgdLKfrOTyvXCpADhgXo2IINeNNCd7reXbR8AUckJn_YrLlE1MtAW2ae6x9sSVvKvVN-8dyyHXtLqAueBid39LP7"
-            alt="Avatar"
-            className="w-9 h-9 rounded-full object-cover border-2 border-outline-variant hover:border-primary transition-colors cursor-pointer"
-          />
-        </Link>
+        {!isAdmin && (
+          <Link to="/profile" className="no-underline">
+            <div className="w-9 h-9 rounded-full bg-primary-fixed flex items-center justify-center border-2 border-outline-variant hover:border-primary transition-colors cursor-pointer">
+              <span className="font-headline font-bold text-primary text-sm">
+                {user?.initials || 'U'}
+              </span>
+            </div>
+          </Link>
+        )}
       </div>
     </header>
   );

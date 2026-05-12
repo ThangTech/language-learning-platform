@@ -79,44 +79,48 @@ const DashboardSidebar = () => {
         ))}
       </nav>
 
-      <div className="border-t border-outline-variant/50 my-4" />
+      {!isAdmin && (
+        <>
+          <div className="border-t border-outline-variant/50 my-4" />
 
-      <div className="flex flex-col gap-1 mb-4">
-        {BOTTOM_ITEMS.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={({ isActive }) =>
-              `flex items-center gap-3 py-2.5 px-4 rounded-xl font-headline text-sm font-semibold
-               transition-all duration-200 no-underline relative
-               ${
-                 isActive
-                   ? 'text-primary bg-primary-fixed/40 border-r-4 border-primary'
-                   : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-low'
-               }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <span className="relative">
-                  <span
-                    className="material-symbols-outlined text-[1.25rem]"
-                    style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
-                  >
-                    {item.icon}
-                  </span>
-                  {item.badge && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-error text-on-error rounded-full text-[9px] font-bold flex items-center justify-center">
-                      {item.badge}
+          <div className="flex flex-col gap-1 mb-4">
+            {BOTTOM_ITEMS.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 py-2.5 px-4 rounded-xl font-headline text-sm font-semibold
+                   transition-all duration-200 no-underline relative
+                   ${
+                     isActive
+                       ? 'text-primary bg-primary-fixed/40 border-r-4 border-primary'
+                       : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-low'
+                   }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <span className="relative">
+                      <span
+                        className="material-symbols-outlined text-[1.25rem]"
+                        style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
+                      >
+                        {item.icon}
+                      </span>
+                      {item.badge && (
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-error text-on-error rounded-full text-[9px] font-bold flex items-center justify-center">
+                          {item.badge}
+                        </span>
+                      )}
                     </span>
-                  )}
-                </span>
-                <span>{item.label}</span>
-              </>
-            )}
-          </NavLink>
-        ))}
-      </div>
+                    <span>{item.label}</span>
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </div>
+        </>
+      )}
 
       <div className="pt-4 border-t border-outline-variant">
         {!isAdmin && (
@@ -135,24 +139,26 @@ const DashboardSidebar = () => {
           </NavLink>
         )}
 
-        <NavLink to="/profile" className="no-underline">
-          <div className="mt-5 flex items-center gap-3 p-2 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer">
-            <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
-              <span className="font-headline font-bold text-primary">
-                {user?.initials || 'U'}
-              </span>
+        {!isAdmin && (
+          <NavLink to="/profile" className="no-underline">
+            <div className="mt-5 flex items-center gap-3 p-2 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer">
+              <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+                <span className="font-headline font-bold text-primary">
+                  {user?.initials || 'U'}
+                </span>
+              </div>
+              <div className="overflow-hidden flex-1">
+                <p className="font-headline font-bold text-sm text-on-surface leading-tight truncate">
+                  {user?.fullName || user?.email || 'Người dùng'}
+                </p>
+                <p className="text-xs text-secondary mt-0.5 font-medium">
+                  Học viên
+                </p>
+              </div>
+              <span className="material-symbols-outlined text-outline text-[1rem]">chevron_right</span>
             </div>
-            <div className="overflow-hidden flex-1">
-              <p className="font-headline font-bold text-sm text-on-surface leading-tight truncate">
-                {user?.fullName || user?.email || 'Người dùng'}
-              </p>
-              <p className="text-xs text-secondary mt-0.5 font-medium">
-                {isAdmin ? 'Quản trị viên' : 'Học viên'}
-              </p>
-            </div>
-            <span className="material-symbols-outlined text-outline text-[1rem]">chevron_right</span>
-          </div>
-        </NavLink>
+          </NavLink>
+        )}
       </div>
     </aside>
   );
