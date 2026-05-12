@@ -14,12 +14,39 @@ export const getGrammarTopicById = async (id: string) => {
   return response.data;
 };
 
-export const getUserGrammarProgress = async (userId: string) => {
-  const response = await api.get<ApiResponse<UserGrammarDto[]>>(`/api/grammar/user/${userId}/progress`);
+export const createGrammarTopic = async (data: {
+  title: string;
+  content: string;
+  explanation?: string;
+  examples?: string;
+  level: string;
+}) => {
+  const response = await api.post<ApiResponse<GrammarTopicDto>>("/api/grammar", data);
   return response.data;
 };
 
-export const markTopicCompleted = async (userId: string, topicId: string) => {
-  const response = await api.post<ApiResponse<boolean>>(`/api/grammar/user/${userId}/topics/${topicId}/complete`);
+export const updateGrammarTopic = async (id: string, data: Partial<{
+  title: string;
+  content: string;
+  explanation?: string;
+  examples?: string;
+  level: string;
+}>) => {
+  const response = await api.put<ApiResponse<GrammarTopicDto>>(`/api/grammar/${id}`, data);
+  return response.data;
+};
+
+export const deleteGrammarTopic = async (id: string) => {
+  const response = await api.delete<ApiResponse<boolean>>(`/api/grammar/${id}`);
+  return response.data;
+};
+
+export const getUserGrammarProgress = async () => {
+  const response = await api.get<ApiResponse<UserGrammarDto[]>>("/api/user-grammar");
+  return response.data;
+};
+
+export const markTopicCompleted = async (topicId: string) => {
+  const response = await api.post<ApiResponse<boolean>>(`/api/user-grammar/${topicId}/complete`, {});
   return response.data;
 };

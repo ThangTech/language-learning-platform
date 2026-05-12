@@ -1,19 +1,20 @@
 export interface GrammarTopicDto {
   id: string;
   title: string;
-  description: string;
+  content: string;
+  explanation?: string;
+  examples?: string;
   level: string;
-  topic: string;
-  examples: string[];
   levelLabel: string;
   levelColor: string;
+  createdAt: string;
   isCompleted?: boolean;
-  completedAt?: string;
 }
 
 export interface UserGrammarDto {
+  id: string;
   topicId: string;
-  topicTitle: string;
+  topic: GrammarTopicDto;
   isCompleted: boolean;
   completedAt?: string;
 }
