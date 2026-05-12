@@ -26,6 +26,9 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import NotificationsPage from "./pages/notifications/NotificationsPage";
 import NotFoundPage from "./pages/error/NotFound";
 import ErrorPage from "./pages/error/ErrorPage";
+import SupportPage from "./pages/support/SupportPage";
+import ContactPage from "./pages/contact/ContactPage";
+import FAQPage from "./pages/faq/FAQPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -37,6 +40,18 @@ const router = createBrowserRouter([
         path: "courses",
         element: <CoursesPage />,
       },
+      {
+        path: "support",
+        element: <SupportPage />,
+      },
+      {
+        path: "contact",
+        element: <ContactPage />,
+      },
+      {
+        path: "faq",
+        element: <FAQPage />,
+      },
     ],
   },
   {
@@ -46,8 +61,8 @@ const router = createBrowserRouter([
       { path: "vocabulary", element: <VocabularyPage /> },
       { path: "grammar", element: <GrammarPage /> },
       { path: "listening", element: <ListeningPage /> },
-      { path: "listening/:lessonId", element: <LessonDetailPage /> },
-      { path: "listening/dictation/:lessonId", element: <DictationPage /> },
+      { path: "listening/dictation/:id", element: <DictationPage /> },
+      { path: "listening/:id", element: <LessonDetailPage /> },
       { path: "quiz", element: <QuizPage /> },
       { path: "progress", element: <ProgressPage /> },
       { path: "streaks", element: <StreaksPage /> },
