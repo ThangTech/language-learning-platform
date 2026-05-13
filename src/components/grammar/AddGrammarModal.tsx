@@ -99,13 +99,15 @@ const AddGrammarModal = ({
           <Select options={LEVEL_OPTIONS} />
         </Form.Item>
 
-        <Form.Item className="mb-0 flex gap-3 pt-4">
-          <Button onClick={onClose} className="flex-1">
-            Hủy
-          </Button>
-          <Button type="primary" htmlType="submit" loading={loading} className="flex-1">
-            {editingTopic ? 'Lưu' : 'Thêm'}
-          </Button>
+        <Form.Item className="mb-0 pt-4">
+          <div className="flex items-center justify-end gap-3">
+            <Button onClick={onClose}>
+              Hủy
+            </Button>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              {editingTopic ? 'Lưu' : 'Thêm'}
+            </Button>
+          </div>
         </Form.Item>
       </Form>
     </Modal>

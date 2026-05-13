@@ -61,11 +61,12 @@ const RELATED_QUIZZES: QuizData[] = [
 // ─── Component ────────────────────────────────────────────────────────────────
 const LessonDetailPage = () => {
   const { id } = useParams();
-  const lesson = MOCK_LESSON; // In real app: fetch by id
+  const lesson = MOCK_LESSON;
   void id;
 
   const [showTranscript, setShowTranscript] = useState(false);
   const [activeHighlight, setActiveHighlight] = useState<number | null>(null);
+  const transcriptLines = lesson.transcript;
 
   return (
     <div className="max-w-7xl mx-auto pb-20">
@@ -146,7 +147,7 @@ const LessonDetailPage = () => {
 
             {showTranscript && (
               <div className="px-6 pb-6 flex flex-col gap-3">
-                {lesson.transcript.map((line, i) => (
+                {transcriptLines.map((line, i) => (
                   <div
                     key={i}
                     onMouseEnter={() => setActiveHighlight(i)}

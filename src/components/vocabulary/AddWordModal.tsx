@@ -24,8 +24,6 @@ const LEVEL_OPTIONS: LevelInfo[] = [
   { label: 'A2', bgColor: 'bg-primary-fixed', textColor: 'text-on-primary-fixed' },
   { label: 'B1', bgColor: 'bg-primary-fixed', textColor: 'text-on-primary-fixed' },
   { label: 'B2', bgColor: 'bg-secondary-fixed', textColor: 'text-on-secondary-fixed' },
-  { label: 'C1', bgColor: 'bg-secondary-fixed', textColor: 'text-on-secondary-fixed' },
-  { label: 'C2', bgColor: 'bg-secondary-fixed', textColor: 'text-on-secondary-fixed' },
 ];
 
 const CATEGORIES = ['Văn học', 'Triết học', 'Kinh doanh', 'Công nghệ', 'Học thuật'];
@@ -117,13 +115,15 @@ const AddWordModal = ({
           <Select options={LEVEL_OPTIONS.map(l => ({ value: l.label, label: l.label }))} />
         </Form.Item>
 
-        <Form.Item className="mb-0 flex gap-3 pt-4">
-          <Button onClick={onClose} className="flex-1">
-            Hủy
-          </Button>
-          <Button type="primary" htmlType="submit" loading={loading} className="flex-1">
-            {editingWord ? 'Lưu' : 'Thêm từ'}
-          </Button>
+        <Form.Item className="mb-0 pt-4">
+          <div className="flex items-center justify-end gap-3">
+            <Button onClick={onClose}>
+              Hủy
+            </Button>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              {editingWord ? 'Lưu' : 'Thêm từ'}
+            </Button>
+          </div>
         </Form.Item>
       </Form>
     </Modal>

@@ -52,6 +52,8 @@ const VocabularyFilters = ({
                 {diff}
               </option>
             ))}
+            <option value="C1" hidden />
+            <option value="C2" hidden />
           </select>
           <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[1.2rem]">
             expand_more
