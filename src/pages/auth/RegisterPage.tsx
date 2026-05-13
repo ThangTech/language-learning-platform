@@ -1,15 +1,44 @@
-import { Link } from "react-router-dom";
-import { Button, Form, Input, Select } from "antd";
-import backgroundImg from "../../assets/background.jpg";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button, Form, Input, Select, message } from 'antd';
+import backgroundImg from '../../assets/background.jpg';
+import { register } from '../../services/auth';
 
 const ROLES = [
-  { value: "Beginner", label: "Người mới bắt đầu" },
-  { value: "Intermediate", label: "Trung cấp" },
-  { value: "Advanced", label: "Nâng cao" },
+  { value: 'Beginner', label: 'Người mới bắt đầu' },
+  { value: 'Intermediate', label: 'Trung cấp' },
+  { value: 'Advanced', label: 'Nâng cao' },
 ];
 
-const RegisterPage = () => (
-  <div className="flex w-full min-h-screen">
+const RegisterPage = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const onFinish = async (values: { TenDangNhap: string; Email: string; VaiTro: string; MatKhau: string }) => {
+    setLoading(true);
+    try {
+      const result = await register({
+        fullName: values.TenDangNhap,
+        email: values.Email,
+        password: values.MatKhau,
+      });
+
+      if (result.success) {
+        message.success('Đăng ký thành công');
+        navigate('/login');
+        return;
+      }
+
+      message.error(result.message || 'Đăng ký thất bại');
+    } catch (error: any) {
+      message.error(error?.response?.data?.message || 'Không thể đăng ký');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex w-full min-h-screen">
     <div
       className="hidden md:flex flex-1 flex-col justify-end p-10 relative"
       style={{ backgroundImage: `url(${backgroundImg})`, backgroundSize: "cover", backgroundPosition: "center" }}
@@ -29,7 +58,7 @@ const RegisterPage = () => (
       <h2 className="text-xl font-medium text-on-surface mb-1">Tạo tài khoản</h2>
       <p className="text-sm text-on-surface-variant mb-6">Điền đầy đủ thông tin để đăng ký</p>
 
-      <Form layout="vertical" requiredMark={false}>
+      <Form layout="vertical" requiredMark={false} onFinish={onFinish}>
         <Form.Item name="TenDangNhap" label="Tên đăng nhập" rules={[{ required: true, message: "Vui lòng nhập tên đăng nhập" }]}>
           <Input placeholder="vd: nguyen_van_a" />
         </Form.Item>
@@ -71,7 +100,12 @@ const RegisterPage = () => (
         </Form.Item>
 
         <Form.Item>
-          <Button block htmlType="submit" className="!bg-primary !border-primary !text-white !font-medium">
+          <Button
+            block
+            htmlType="submit"
+            loading={loading}
+            className="!bg-primary !border-primary !text-white !font-medium"
+          >
             Đăng ký
           </Button>
           <div className="text-center mt-3 text-xs text-on-surface-variant">
@@ -82,6 +116,7 @@ const RegisterPage = () => (
       </Form>
     </div>
   </div>
-);
+  );
+};
 
 export default RegisterPage;

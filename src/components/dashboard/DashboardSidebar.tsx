@@ -13,7 +13,7 @@ const USER_NAV_ITEMS = [
 
 const ADMIN_NAV_ITEMS = [
   { label: 'Tổng quan Admin', icon: 'admin_panel_settings', to: '/dashboard/admin' },
-  { label: 'Quản lý người dùng', icon: 'groups', to: '/dashboard/admin' },
+  { label: 'Quản lý người dùng', icon: 'groups', to: '/dashboard/admin/users' },
   { label: 'Quản lý từ vựng', icon: 'menu_book', to: '/vocabulary' },
   { label: 'Quản lý ngữ pháp', icon: 'school', to: '/grammar' },
   { label: 'Quản lý bài nghe', icon: 'headphones', to: '/listening' },

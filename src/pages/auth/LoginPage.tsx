@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Flex, Form, Input, message } from 'antd';
 import { useNavigate, Link } from 'react-router-dom';
+import type { AxiosError } from 'axios';
 import backgroundImg from '../../assets/background.jpg';
 import { login } from '../../services/auth';
 
@@ -26,11 +27,25 @@ const LoginPage = () => {
       if (result.success) {
         message.success('Đăng nhập thành công!');
         navigate('/');
-      } else {
-        message.error(result.message || 'Đăng nhập thất bại');
+        return;
       }
-    } catch (error: any) {
-      const msg = error?.response?.data?.message || error.message || 'Lỗi kết nối';
+
+      message.error(result.message || 'Đăng nhập thất bại');
+    } catch (error) {
+      const err = error as AxiosError<{ message?: string }>;
+      const msg = err.response?.data?.message || 'Lỗi kết nối';
+      const lower = msg.toLowerCase();
+
+      if (lower.includes('not found') || lower.includes('không tồn tại') || lower.includes('tài khoản')) {
+        message.error('Tài khoản chưa tồn tại');
+        return;
+      }
+
+      if (lower.includes('password') || lower.includes('mật khẩu') || lower.includes('invalid credential')) {
+        message.error('Sai mật khẩu');
+        return;
+      }
+
       message.error(msg);
     } finally {
       setLoading(false);
@@ -118,7 +133,7 @@ const LoginPage = () => {
             <div className="text-center mt-3 text-xs text-on-surface-variant">
               hoặc{' '}
               <Link to="/register" className="text-primary hover:underline">
-                Yêu cầu tạo tài khoản
+                Đăng ký
               </Link>
             </div>
           </Form.Item>

@@ -11,6 +11,7 @@ import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import AdminDashboardPage from "./pages/dashboard/AdminDashboardPage";
+import AdminUsersPage from "./pages/dashboard/AdminUsersPage";
 import UserDashboardPage from "./pages/dashboard/UserDashboardPage";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import VocabularyPage from "./pages/vocabulary/VocabularyPage";
@@ -89,10 +90,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <UserDashboardPage /> },
       { path: "user", element: <UserDashboardPage /> },
-      {
-        path: "admin",
-        element: <AdminDashboardPage />,
-      },
+      { path: "admin", element: <AdminDashboardPage /> },
+      { path: "admin/users", element: <AdminUsersPage /> },
     ],
   },
   {

@@ -15,8 +15,6 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const isLoggedIn = !!getToken();
   const user = getUser();
-  const isAdmin = user?.role?.toLowerCase() === 'admin';
-  const dashboardPath = isAdmin ? '/dashboard/admin' : '/dashboard/user';
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -80,14 +78,6 @@ const Header = () => {
             </>
           )}
 
-          {isLoggedIn && (
-            <button
-              onClick={() => navigate(dashboardPath)}
-              className="hidden md:block font-headline text-sm font-semibold text-on-surface-variant bg-surface-container-low border border-outline-variant px-5 py-2.5 rounded-full cursor-pointer hover:bg-surface-container transition-colors"
-            >
-              Dashboard
-            </button>
-          )}
 
           {!isLoggedIn && (
             <button

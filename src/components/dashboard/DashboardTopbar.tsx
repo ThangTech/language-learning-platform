@@ -1,11 +1,20 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getUser } from '../../services/auth';
+import { Link, useNavigate } from 'react-router-dom';
+import { getUser, logout } from '../../services/auth';
+import { Button } from 'antd';
+import { LogoutOutlined } from '@ant-design/icons';
 
 const DashboardTopbar = () => {
   const [searchValue, setSearchValue] = useState('');
+  const navigate = useNavigate();
   const user = getUser();
   const isAdmin = user?.role?.toLowerCase() === 'admin';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
 
   return (
     <header
@@ -74,6 +83,11 @@ const DashboardTopbar = () => {
             </div>
           </Link>
         )}
+
+        <Button icon={<LogoutOutlined />} onClick={handleLogout}>
+          Đăng xuất
+        </Button>
+
       </div>
     </header>
   );
