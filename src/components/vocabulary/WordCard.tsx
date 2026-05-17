@@ -55,7 +55,7 @@ const WordCard = ({
             onClick={() => onToggleFavorite(word.id)}
             className={`transition-colors focus:outline-none
                        ${word.isFavorite ? 'text-error' : 'text-outline hover:text-error'}`}
-            aria-label={word.isFavorite ? "Bỏ yêu thích" : "Yêu thích"}
+            aria-label={word.isFavorite ? 'Bỏ yêu thích' : 'Yêu thích'}
           >
             <span
               className="material-symbols-outlined text-[1.5rem]"
@@ -72,7 +72,7 @@ const WordCard = ({
       </p>
 
       <div className="bg-surface-container-low p-4 rounded-xl mb-6">
-        <p className="text-xs font-bold text-primary mb-1.5 uppercase tracking-wider">Ví dụ</p>
+        <p className="text-xs font-bold text-primary mb-1.5 uppercase tracking-wider">Câu ví dụ</p>
         <p className="text-sm italic text-on-surface-variant leading-relaxed">"{word.example}"</p>
       </div>
 

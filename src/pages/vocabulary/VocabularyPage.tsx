@@ -27,7 +27,7 @@ const VocabularyPage = () => {
 
   const [words, setWords] = useState<WordData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
-  const [selectedDifficulty, setSelectedDifficulty] = useState('All');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('Tất cả');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWord, setEditingWord] = useState<WordData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -167,7 +167,7 @@ const VocabularyPage = () => {
   const filteredWords = words.filter(w => {
     const matchCategory = selectedCategory === 'Tất cả' || w.category === selectedCategory;
     let matchDifficulty = true;
-    if (selectedDifficulty !== 'All') {
+    if (selectedDifficulty !== 'Tất cả') {
       const hasAdvanced = w.levels.some(l => l.label.includes('C'));
       const hasIntermediate = w.levels.some(l => l.label.includes('B'));
       if (selectedDifficulty === 'Nâng cao' && !hasAdvanced) matchDifficulty = false;
@@ -179,7 +179,7 @@ const VocabularyPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <VocabularyHero wordsToday={words.length} dailyGoal={30} level={selectedDifficulty || 'Nâng cao C1'} />
+      <VocabularyHero wordsToday={words.length} dailyGoal={30} level={selectedDifficulty || 'Nâng cao'} />
 
       <VocabularyFilters
         categories={CATEGORIES}
