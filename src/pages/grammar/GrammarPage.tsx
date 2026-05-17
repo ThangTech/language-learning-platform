@@ -14,7 +14,7 @@ const GrammarPage = () => {
   const isAdmin = user?.role?.toLowerCase() === 'admin';
 
   const [topics, setTopics] = useState<GrammarTopicDto[]>([]);
-  const [selectedLevel, setSelectedLevel] = useState('All');
+  const [selectedLevel, setSelectedLevel] = useState('Tất cả');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTopic, setEditingTopic] = useState<GrammarTopicDto | null>(null);
   const [loading, setLoading] = useState(false);
@@ -128,7 +128,7 @@ const GrammarPage = () => {
   };
 
   const filteredTopics = topics.filter(t =>
-    selectedLevel === 'All' || t.level === selectedLevel
+    selectedLevel === 'Tất cả' || t.level === selectedLevel
   );
 
   return (
@@ -137,7 +137,7 @@ const GrammarPage = () => {
 
       <div className="my-6 flex flex-wrap items-center gap-3">
         <span className="font-headline text-sm font-semibold text-on-surface-variant">Lọc theo cấp độ:</span>
-        {['All', ...LEVELS].map(level => (
+        {['Tất cả', ...LEVELS].map(level => (
           <button
             key={level}
             onClick={() => setSelectedLevel(level)}
