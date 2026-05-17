@@ -8,13 +8,13 @@ const ListeningHero = ({ totalLessons }: ListeningHeroProps) => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
           <p className="font-headline text-sm font-bold text-primary uppercase tracking-wider mb-2">
-            Listening
+            VSTEPS Listening
           </p>
           <h1 className="font-headline text-4xl font-bold text-on-surface mb-3">
             Bài học luyện nghe
           </h1>
           <p className="font-body text-on-surface-variant max-w-2xl">
-            Nghe các đoạn hội thoại, tin tức, bài giảng theo cấp độ từ A1 đến B2. Phát triển kỹ năng nghe hiểu.
+            Nghe hội thoại, tin tức và bài giảng theo cấp độ từ A1 đến B2. Luyện nghe hiểu theo lộ trình rõ ràng.
           </p>
         </div>
 
