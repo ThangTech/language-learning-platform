@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getToken, getUser, logout } from '../../services/auth';
 
 const NAV_LINKS = [
+  { label: 'Luyện nghe', href: '/listening' },
   { label: 'Từ vựng', href: '/vocabulary' },
   { label: 'Ngữ pháp', href: '/grammar' },
-  { label: 'Luyện nghe', href: '/listening' },
   { label: 'Luyện tập', href: '/quiz' },
   { label: 'Bảng xếp hạng', href: '/leaderboard' },
 ];
@@ -39,7 +39,7 @@ const Header = () => {
           to="/"
           className="font-headline text-xl font-extrabold tracking-tight text-on-surface no-underline"
         >
-          WinLex
+          VSTEPS
         </Link>
 
         <div className="hidden md:flex gap-8 items-center">
@@ -84,7 +84,7 @@ const Header = () => {
               className="btn-primary px-6 py-2.5 text-sm font-headline font-semibold"
               onClick={() => navigate('/register')}
             >
-              Bắt đầu miễn phí
+              Bắt đầu luyện nghe
             </button>
           )}
 
