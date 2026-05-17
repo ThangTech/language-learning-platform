@@ -7,10 +7,12 @@ const LEVEL_OPTIONS = ['A1', 'A2', 'B1', 'B2'].map(level => ({
   label: level,
 }));
 
-const TOPIC_OPTIONS = ['Travel', 'Shopping', 'Study', 'Education'].map(topic => ({
-  value: topic,
-  label: topic,
-}));
+const TOPIC_OPTIONS = [
+  { value: 'Du lịch', label: 'Du lịch' },
+  { value: 'Mua sắm', label: 'Mua sắm' },
+  { value: 'Học tập', label: 'Học tập' },
+  { value: 'Giáo dục', label: 'Giáo dục' },
+];
 
 interface AddLessonModalProps {
   isOpen: boolean;
@@ -88,8 +90,8 @@ const AddLessonModal = ({
 
         <Form.Item
           name="audioUrl"
-          label="Audio URL"
-          rules={[{ required: true, message: 'Vui lòng nhập audio URL' }]}
+          label="Đường dẫn âm thanh"
+          rules={[{ required: true, message: 'Vui lòng nhập đường dẫn âm thanh' }]}
         >
           <Input placeholder="https://..." />
         </Form.Item>
@@ -106,7 +108,7 @@ const AddLessonModal = ({
           <Form.Item
             name="topic"
             label="Chủ đề"
-            initialValue="Travel"
+            initialValue="Du lịch"
           >
             <Select options={TOPIC_OPTIONS} />
           </Form.Item>
@@ -122,9 +124,9 @@ const AddLessonModal = ({
 
         <Form.Item
           name="transcriptJson"
-          label="Transcript"
+          label="Lời thoại"
         >
-          <Input.TextArea rows={3} placeholder="Nhập transcript hoặc JSON transcript..." />
+          <Input.TextArea rows={3} placeholder="Nhập lời thoại hoặc JSON lời thoại..." />
         </Form.Item>
 
         <Form.Item className="mb-0 pt-4">
