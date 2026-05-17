@@ -9,13 +9,13 @@ const GrammarHero = ({ totalTopics, completedCount }: GrammarHeroProps) => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
           <p className="font-headline text-sm font-bold text-primary uppercase tracking-wider mb-2">
-            Grammar
+            Ngữ pháp
           </p>
           <h1 className="font-headline text-4xl font-bold text-on-surface mb-3">
-            Ngữ pháp tiếng Anh
+            Ngữ pháp cho lộ trình VSTEPS
           </h1>
           <p className="font-body text-on-surface-variant max-w-2xl">
-            Học theo chủ đề, xem ví dụ, hoàn thành từng phần để theo dõi tiến độ.
+            Học theo chủ đề, xem ví dụ và hoàn thành từng phần để theo dõi tiến độ.
           </p>
         </div>
 
