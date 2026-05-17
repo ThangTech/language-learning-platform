@@ -28,10 +28,10 @@ const VocabularyHero = ({
 
         <div className="relative z-10">
           <h2 className="font-headline text-4xl font-extrabold tracking-tight mb-3 max-w-lg leading-tight">
-            Làm chủ kho từ vựng học thuật của bạn.
+            Mở rộng vốn từ cho lộ trình VSTEPS.
           </h2>
           <p className="text-primary-fixed text-base font-body max-w-md mb-8 leading-relaxed">
-            Mở rộng vốn từ bằng phương pháp nhớ chủ động. Theo dõi tiến độ từng ngày.
+            Học từ theo chủ đề, ghi nhớ chủ động và theo dõi tiến độ từng ngày.
           </p>
           <button
             id="btn-practice-flashcards"
