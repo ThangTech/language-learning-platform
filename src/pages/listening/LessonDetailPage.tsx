@@ -15,10 +15,10 @@ const MOCK_LESSON = {
   duration: '3:05',
   totalDuration: 185,
   objectives: [
-    'Hiểu các từ vựng liên quan đến sân bay và du lịch',
+    'Hiểu từ vựng liên quan đến sân bay và du lịch',
     'Nắm bắt thông tin chi tiết trong hội thoại ngắn',
-    'Phân biệt giọng Anh-Mỹ trong tình huống thực tế',
-    'Luyện phản xạ nghe theo tốc độ tự nhiên',
+    'Phân biệt cách nói tự nhiên trong tình huống thực tế',
+    'Luyện phản xạ nghe theo tốc độ vừa phải',
   ],
   transcript: [
     { time: '0:00', speaker: 'Nhân viên', text: "Good morning! Welcome to Terminal 3. May I see your passport and boarding pass, please?" },
@@ -138,7 +138,7 @@ const LessonDetailPage = () => {
             >
               <span className="font-headline font-bold text-lg text-on-surface flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>subtitles</span>
-                Transcript (Bản ghi lời thoại)
+                Lời thoại
               </span>
               <span className={`material-symbols-outlined text-on-surface-variant transition-transform ${showTranscript ? 'rotate-180' : ''}`}>
                 expand_more
