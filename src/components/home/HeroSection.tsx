@@ -6,7 +6,7 @@ const HeroSection = () => {
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-12 lg:col-span-7 flex flex-col justify-center">
           <span className="text-primary font-headline font-bold tracking-widest text-xs uppercase mb-4 block">
-            VSTEPS Listening
+            VSTEPS luyện nghe
           </span>
           <h1 className="font-headline text-5xl md:text-7xl font-extrabold tracking-tight text-on-surface leading-[1.1] mb-8">
             Luyện nghe <br />
@@ -15,7 +15,7 @@ const HeroSection = () => {
             </span>
           </h1>
           <p className="font-body text-lg md:text-xl text-on-surface-variant max-w-xl mb-10 leading-relaxed">
-            Học theo lộ trình VSTEPS, tập trung vào nghe hiểu, transcript, dictation và quiz. Bám sát cấp độ để đi từng bước rõ ràng.
+            Học theo lộ trình VSTEPS, tập trung vào nghe hiểu, bản ghi lời thoại, chép chính tả và bài kiểm tra ngắn. Bám sát cấp độ để đi từng bước rõ ràng.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link to="/listening">
@@ -45,7 +45,7 @@ const HeroSection = () => {
               <div className="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center">
                 <span className="material-symbols-outlined text-on-secondary-container text-sm">headphones</span>
               </div>
-              <span className="font-headline font-bold text-sm">Listening theo cấp độ</span>
+              <span className="font-headline font-bold text-sm">Luyện nghe theo cấp độ</span>
             </div>
             <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
               <div className="h-full bg-gradient-to-r from-secondary to-secondary-fixed-dim w-[85%]" />
