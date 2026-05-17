@@ -18,7 +18,7 @@ interface QuizCardProps {
 }
 
 const QuizCard = ({ quiz }: QuizCardProps) => {
-  const typeColors: Record<string, string> = {
+  const typeColors = {
     'Trắc nghiệm': 'bg-primary/10 text-primary',
     'Điền vào chỗ trống': 'bg-secondary/10 text-secondary',
     'Chép chính tả': 'bg-tertiary/10 text-tertiary',
