@@ -40,9 +40,9 @@ const AdminDashboardPage = () => {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="font-headline text-3xl font-bold text-on-surface mb-2">Tổng quan Admin</h1>
+        <h1 className="font-headline text-3xl font-bold text-on-surface mb-2">Tổng quan quản trị VSTEPS</h1>
         <p className="font-body text-on-surface-variant">
-          Xin chào, {user?.fullName || user?.email || 'quản trị viên'}.
+          Xin chào, {user?.fullName || user?.email || 'quản trị viên'}. Theo dõi người học, bài nghe và nội dung luyện tập ở một nơi.
         </p>
       </div>
 
@@ -72,7 +72,7 @@ const AdminDashboardPage = () => {
             <AdminStatsCard
               title="Nội dung học"
               value="4 module"
-              change="Vocabulary, Grammar, Listening, Quiz"
+              change="Từ vựng, Ngữ pháp, Luyện nghe, Quiz"
               changeType="neutral"
               icon="menu_book"
               color="tertiary"
