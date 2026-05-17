@@ -14,7 +14,7 @@ const ListeningPage = () => {
   const isAdmin = user?.role?.toLowerCase() === 'admin';
 
   const [lessons, setLessons] = useState<ListeningLessonDto[]>([]);
-  const [selectedLevel, setSelectedLevel] = useState<string>('All');
+  const [selectedLevel, setSelectedLevel] = useState<string>('Tất cả');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState<ListeningLessonDto | null>(null);
   const [loading, setLoading] = useState(false);
@@ -102,7 +102,7 @@ const ListeningPage = () => {
   };
 
   const filteredLessons = lessons.filter(l =>
-    selectedLevel === 'All' || l.level === selectedLevel
+    selectedLevel === 'Tất cả' || l.level === selectedLevel
   );
 
   return (
@@ -111,7 +111,7 @@ const ListeningPage = () => {
 
       <div className="my-6 flex flex-wrap items-center gap-3">
         <span className="font-headline text-sm font-semibold text-on-surface-variant">Lọc theo cấp độ:</span>
-        {['All', ...LEVELS].map(level => (
+        {['Tất cả', ...LEVELS].map(level => (
           <button
             key={level}
             onClick={() => setSelectedLevel(level)}
