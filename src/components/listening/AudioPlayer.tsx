@@ -36,12 +36,10 @@ const AudioPlayer = ({
         audioRef.current.play();
       }
     } else {
-      // Demo mode — simulate playback
       setIsPlaying((p) => !p);
     }
   };
 
-  // Simulate playback if no actual src
   useEffect(() => {
     if (!src) {
       if (isPlaying) {
