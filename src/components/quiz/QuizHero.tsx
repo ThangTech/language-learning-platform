@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 interface QuizHeroProps {
   totalQuizzes: number;
 }
@@ -16,6 +18,18 @@ const QuizHero = ({ totalQuizzes }: QuizHeroProps) => {
           <p className="text-secondary-fixed text-base max-w-md mb-8 leading-relaxed">
             Làm quiz để củng cố từ vựng, ngữ pháp và kỹ năng nghe.
           </p>
+          <div className="flex flex-wrap gap-3">
+            <Link to="/listening" className="no-underline">
+              <button className="px-5 py-2.5 rounded-full bg-white text-secondary font-headline font-bold text-sm hover:opacity-90 transition-all">
+                Sang Listening
+              </button>
+            </Link>
+            <Link to="/progress" className="no-underline">
+              <button className="px-5 py-2.5 rounded-full border border-white/20 text-white font-headline font-bold text-sm hover:bg-white/10 transition-all">
+                Xem tiến độ
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
 

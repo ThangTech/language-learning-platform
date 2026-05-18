@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { message } from 'antd';
 import { getUser } from '../../services/auth';
 import { getQuizzes, createQuiz, updateQuiz, deleteQuiz } from '../../services/quiz';
@@ -102,7 +103,7 @@ const QuizPage = () => {
   };
 
   const handleStartQuiz = () => {
-    message.info('Tính năng làm quiz sẽ sớm được phát triển.');
+    message.info('Hãy bắt đầu từ Listening để luyện nghe hiểu trước.');
   };
 
   const handlePreviewQuiz = () => {
@@ -161,6 +162,19 @@ const QuizPage = () => {
           </button>
         </div>
       )}
+
+      <div className="mt-10 flex flex-wrap gap-3">
+        <Link to="/listening" className="no-underline">
+          <button className="px-5 py-3 rounded-full bg-secondary text-on-secondary font-headline font-bold text-sm hover:opacity-90 transition-all">
+            Sang Listening
+          </button>
+        </Link>
+        <Link to="/progress" className="no-underline">
+          <button className="px-5 py-3 rounded-full border border-secondary text-secondary font-headline font-bold text-sm hover:bg-secondary/5 transition-all">
+            Xem tiến độ
+          </button>
+        </Link>
+      </div>
 
       <AddQuizModal
         isOpen={isModalOpen}
