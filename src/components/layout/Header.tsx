@@ -6,8 +6,8 @@ const NAV_LINKS = [
   { label: 'Luyện nghe', href: '/listening' },
   { label: 'Từ vựng', href: '/vocabulary' },
   { label: 'Ngữ pháp', href: '/grammar' },
+  { label: 'Tiến độ', href: '/progress' },
   { label: 'Luyện tập', href: '/quiz' },
-  { label: 'Bảng xếp hạng', href: '/leaderboard' },
 ];
 
 const Header = () => {

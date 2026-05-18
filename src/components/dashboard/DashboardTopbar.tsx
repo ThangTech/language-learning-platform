@@ -41,6 +41,11 @@ const DashboardTopbar = () => {
                        transition-all"
           />
         </div>
+        <div className="hidden xl:flex items-center gap-2 ml-4">
+          <Link to="/listening" className="no-underline text-sm font-headline font-bold text-primary px-3 py-2 rounded-full hover:bg-primary/5 transition-colors">Listening</Link>
+          <Link to="/vocabulary" className="no-underline text-sm font-headline font-bold text-secondary px-3 py-2 rounded-full hover:bg-secondary/5 transition-colors">Từ vựng</Link>
+          <Link to="/progress" className="no-underline text-sm font-headline font-bold text-tertiary px-3 py-2 rounded-full hover:bg-tertiary/5 transition-colors">Tiến độ</Link>
+        </div>
       </div>
 
       {/* Right actions */}

@@ -124,19 +124,32 @@ const DashboardSidebar = () => {
 
       <div className="pt-4 border-t border-outline-variant">
         {!isAdmin && (
-          <NavLink to="/listening" className="no-underline block">
-            <button
-              className="w-full py-3.5 px-4 bg-primary text-on-primary rounded-full
-                         font-headline font-bold text-sm tracking-tight
-                         shadow-lg shadow-primary/25 hover:opacity-90 active:scale-95
-                         transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              <span className="material-symbols-outlined text-[1.1rem]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                headphones
-              </span>
-              Bắt đầu bài hôm nay
-            </button>
-          </NavLink>
+          <div className="flex flex-col gap-3">
+            <NavLink to="/listening" className="no-underline block">
+              <button
+                className="w-full py-3.5 px-4 bg-primary text-on-primary rounded-full
+                           font-headline font-bold text-sm tracking-tight
+                           shadow-lg shadow-primary/25 hover:opacity-90 active:scale-95
+                           transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[1.1rem]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  headphones
+                </span>
+                Bắt đầu bài hôm nay
+              </button>
+            </NavLink>
+            <NavLink to="/progress" className="no-underline block">
+              <button
+                className="w-full py-3 px-4 border border-outline-variant text-on-surface rounded-full
+                           font-headline font-bold text-sm hover:bg-surface-container-low transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[1.1rem]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  insights
+                </span>
+                Xem tiến độ
+              </button>
+            </NavLink>
+          </div>
         )}
 
         {!isAdmin && (

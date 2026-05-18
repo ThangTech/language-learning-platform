@@ -4,7 +4,8 @@ const FOOTER_LINKS = {
   learn: [
     { label: 'Luyện nghe', href: '/listening' },
     { label: 'Từ vựng', href: '/vocabulary' },
-    { label: 'Luyện tập', href: '/quiz' },
+    { label: 'Ngữ pháp', href: '/grammar' },
+    { label: 'Tiến độ', href: '/progress' },
   ],
   progress: [
     { label: 'Tiến độ luyện nghe', href: '/progress' },
