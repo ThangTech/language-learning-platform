@@ -56,9 +56,25 @@ const AddLessonModal = ({
     form.resetFields();
   }, [editingLesson, form, isOpen]);
 
+  const normalizeTranscript = (value?: string) => {
+    if (!value) return undefined;
+
+    const trimmed = value.trim();
+    if (!trimmed) return undefined;
+
+    try {
+      return JSON.stringify(JSON.parse(trimmed), null, 2);
+    } catch {
+      return trimmed;
+    }
+  };
+
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      onSave(values);
+      onSave({
+        ...values,
+        transcriptJson: normalizeTranscript(values.transcriptJson),
+      });
     });
   };
 
@@ -126,8 +142,12 @@ const AddLessonModal = ({
           name="transcriptJson"
           label="Lời thoại"
         >
-          <Input.TextArea rows={3} placeholder="Nhập lời thoại hoặc JSON lời thoại..." />
+          <Input.TextArea rows={4} placeholder='Nhập JSON mảng lời thoại hoặc text thô...'
+          />
         </Form.Item>
+        <p className="-mt-2 text-xs text-on-surface-variant">
+          Nếu nhập JSON, hệ thống sẽ tự định dạng lại trước khi lưu.
+        </p>
 
         <Form.Item className="mb-0 pt-4">
           <div className="flex items-center justify-end gap-3">

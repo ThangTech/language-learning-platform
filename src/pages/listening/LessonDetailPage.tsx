@@ -76,6 +76,9 @@ const LessonDetailPage = () => {
   }, [id]);
 
   const transcriptLines = parseTranscript(lesson?.transcriptJson);
+  const transcriptCount = transcriptLines.length;
+  const hasTranscript = transcriptCount > 0;
+  const transcriptLabel = hasTranscript ? `${transcriptCount} dòng lời thoại` : 'Chưa có lời thoại';
   const levelColor = lesson?.level === 'A1' || lesson?.level === 'A2'
     ? 'bg-primary-fixed text-on-primary-fixed'
     : 'bg-secondary-fixed text-on-secondary-container';
@@ -162,12 +165,15 @@ const LessonDetailPage = () => {
                 <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>subtitles</span>
                 Lời thoại
               </span>
-              <span className={`material-symbols-outlined text-on-surface-variant transition-transform ${showTranscript ? 'rotate-180' : ''}`}>expand_more</span>
+              <span className="flex items-center gap-2 text-sm text-on-surface-variant">
+                <span>{transcriptLabel}</span>
+                <span className={`material-symbols-outlined transition-transform ${showTranscript ? 'rotate-180' : ''}`}>expand_more</span>
+              </span>
             </button>
 
             {showTranscript && (
               <div className="px-6 pb-6 flex flex-col gap-3">
-                {transcriptLines.map((line, i) => (
+                {hasTranscript ? transcriptLines.map((line, i) => (
                   <div
                     key={i}
                     onMouseEnter={() => setActiveHighlight(i)}
@@ -182,7 +188,9 @@ const LessonDetailPage = () => {
                       <p className="text-on-surface text-sm mt-1 leading-relaxed">{line.text}</p>
                     </div>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-sm text-on-surface-variant">Bài này chưa có lời thoại.</p>
+                )}
               </div>
             )}
           </div>

@@ -151,13 +151,22 @@ const ListeningPage = () => {
 
       <p className="text-xs text-on-surface-variant mb-4">Đang hiển thị {totalVisible} bài nghe phù hợp.</p>
 
-      <ListeningGrid
-        lessons={filteredLessons}
-        isAdmin={isAdmin}
-        onEditLesson={handleEditLesson}
-        onDeleteLesson={handleDeleteLesson}
-        onPlayLesson={handlePlayLesson}
-      />
+      {totalVisible > 0 ? (
+        <ListeningGrid
+          lessons={filteredLessons}
+          isAdmin={isAdmin}
+          onEditLesson={handleEditLesson}
+          onDeleteLesson={handleDeleteLesson}
+          onPlayLesson={handlePlayLesson}
+        />
+      ) : (
+        <div className="rounded-[1.5rem] border border-dashed border-outline-variant/20 bg-surface-container-low p-8 text-center">
+          <p className="font-headline font-semibold text-on-surface">Không có bài nghe phù hợp</p>
+          <p className="mt-2 text-sm text-on-surface-variant">
+            Thử đổi từ khóa tìm kiếm hoặc chọn lại cấp độ.
+          </p>
+        </div>
+      )}
 
       {isAdmin && (
         <div className="fixed bottom-10 right-10 z-50">
