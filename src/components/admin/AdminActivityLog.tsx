@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 interface ActivityItem {
   id: string;
   user: string;
@@ -67,7 +69,10 @@ const AdminActivityLog = () => {
     <div className="bg-surface-container-low p-6 rounded-[1.5rem] border border-outline-variant/10">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-headline text-xl font-bold text-on-surface">Hoạt động gần đây</h3>
-        <button className="font-body text-sm text-primary hover:underline">Xem tất cả</button>
+        <div className="flex items-center gap-3 text-sm">
+          <Link to="/dashboard/admin/users" className="text-primary hover:underline">Người dùng</Link>
+          <Link to="/progress" className="text-secondary hover:underline">Tiến độ</Link>
+        </div>
       </div>
       <div className="flex flex-col gap-4">
         {mockActivities.map((activity) => (
