@@ -58,7 +58,7 @@ const LessonDetailPage = () => {
           setQuizzes(quizRes.data.map((quiz) => ({
             id: quiz.id,
             title: quiz.title,
-            description: quiz.description,
+            description: quiz.description ?? '',
             totalQuestions: quiz.questions?.length ?? 0,
             difficulty: quiz.difficulty as QuizData['difficulty'],
             difficultyColor: quiz.difficultyColor,
@@ -220,11 +220,9 @@ const LessonDetailPage = () => {
               )}
               <button
                 onClick={() => {
-                  if (startQuiz?.type === 'Chép chính tả') {
-                    navigate(`/listening/dictation/${dictationSet?.id}`);
-                    return;
-                  }
-                  navigate('/quiz');
+                  navigate(startQuiz?.type === 'Chép chính tả' && dictationSet
+                    ? `/listening/dictation/${dictationSet.id}`
+                    : '/quiz');
                 }}
                 className="w-full border border-primary text-primary py-3 rounded-full font-headline font-bold text-sm hover:bg-primary/5 active:scale-95 transition-all flex items-center justify-center gap-2"
               >
