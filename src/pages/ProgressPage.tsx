@@ -14,7 +14,11 @@ const ProgressPage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const [statsRes, streakRes, listeningRes] = await Promise.all([getStats(), getStreak(), getUserListeningResults()]);
+        const [statsRes, streakRes, listeningRes] = await Promise.all([
+          getStats(),
+          getStreak(),
+          getUserListeningResults(),
+        ]);
         if (statsRes.success && statsRes.data) setStats(statsRes.data);
         if (streakRes.success && streakRes.data) setStreak(streakRes.data);
         if (listeningRes.success && listeningRes.data) setRecentListening(listeningRes.data as ListeningResultDto[]);
@@ -75,7 +79,10 @@ const ProgressPage = () => {
           <h2 className="font-headline text-xl font-bold mb-4">Bài nghe gần đây</h2>
           <div className="flex flex-col gap-3">
             {recentListening.length > 0 ? recentListening.slice(0, 3).map((item) => (
-              <div key={item.id} className="flex items-center justify-between gap-4 rounded-xl bg-surface-container-lowest px-4 py-3">
+              <div
+                key={item.id}
+                className="flex items-center justify-between gap-4 rounded-xl bg-surface-container-lowest px-4 py-3"
+              >
                 <div>
                   <p className="font-headline font-bold text-on-surface">{item.lessonId}</p>
                   <p className="text-xs text-on-surface-variant">Hoàn thành lúc {item.completedAt}</p>
