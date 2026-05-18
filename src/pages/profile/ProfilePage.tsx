@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Button, Form, Input } from 'antd';
 
 const TABS = ['Tổng quan', 'Thống kê', 'Cài đặt'];
 
@@ -17,48 +18,53 @@ const ACTIVITIES = [
   { icon: 'menu_book', color: 'text-primary', bg: 'bg-primary/10', title: 'Học từ vựng: 12 từ mới', time: '2 ngày trước', score: null },
 ];
 
+interface ProfileFormValues {
+  name: string;
+  bio: string;
+}
+
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState('Tổng quan');
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState('Học Viên');
   const [bio, setBio] = useState('Đang học tiếng Anh để chinh phục thế giới 🌍');
+  const [form] = Form.useForm();
+
+  const handleSubmit = (values: ProfileFormValues) => {
+    setName(values.name);
+    setBio(values.bio);
+    setIsEditing(false);
+  };
 
   return (
     <div className="max-w-4xl mx-auto pb-16">
-
-      {/* ── Profile Header ───────────────────────────────────────────────── */}
       <section className="mb-8">
         <div className="bg-gradient-to-br from-primary/10 to-secondary/5 rounded-[2rem] p-8 border border-outline-variant/10">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-            {/* Avatar */}
             <div className="relative shrink-0">
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-on-primary font-headline font-extrabold text-4xl shadow-xl">
                 🎓
               </div>
-              <button className="absolute bottom-0 right-0 w-8 h-8 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all">
-                <span className="material-symbols-outlined text-[1rem]">photo_camera</span>
-              </button>
             </div>
 
-            {/* Info */}
             <div className="flex-1 text-center md:text-left">
               {isEditing ? (
-                <div className="flex flex-col gap-3 max-w-sm">
-                  <input value={name} onChange={(e) => setName(e.target.value)}
-                    className="px-4 py-2 rounded-xl border-2 border-primary bg-surface-container-lowest font-headline font-bold text-xl outline-none" />
-                  <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={2}
-                    className="px-4 py-2 rounded-xl border-2 border-outline bg-surface-container-lowest text-sm outline-none resize-none focus:border-primary transition-colors" />
+                <Form form={form} layout="vertical" requiredMark={false} initialValues={{ name, bio }} onFinish={handleSubmit} className="flex flex-col gap-3 max-w-sm">
+                  <Form.Item name="name" className="mb-0" rules={[{ required: true, message: 'Vui lòng nhập tên' }]}>
+                    <Input className="px-4 py-2 rounded-xl border-2 border-primary bg-surface-container-lowest font-headline font-bold text-xl outline-none" />
+                  </Form.Item>
+                  <Form.Item name="bio" className="mb-0" rules={[{ required: true, message: 'Vui lòng nhập giới thiệu' }]}>
+                    <Input.TextArea rows={2} className="px-4 py-2 rounded-xl border-2 border-outline bg-surface-container-lowest text-sm outline-none resize-none focus:border-primary transition-colors" />
+                  </Form.Item>
                   <div className="flex gap-2">
-                    <button onClick={() => setIsEditing(false)}
-                      className="px-5 py-2 bg-primary text-on-primary rounded-full font-headline font-bold text-sm hover:opacity-90 transition-all">
+                    <Button type="primary" htmlType="submit" className="px-5 py-2 bg-primary text-on-primary rounded-full font-headline font-bold text-sm hover:opacity-90 transition-all">
                       Lưu
-                    </button>
-                    <button onClick={() => setIsEditing(false)}
-                      className="px-5 py-2 border border-outline-variant text-on-surface-variant rounded-full text-sm hover:bg-surface-container transition-all">
+                    </Button>
+                    <Button onClick={() => setIsEditing(false)} className="px-5 py-2 border border-outline-variant text-on-surface-variant rounded-full text-sm hover:bg-surface-container transition-all">
                       Huỷ
-                    </button>
+                    </Button>
                   </div>
-                </div>
+                </Form>
               ) : (
                 <>
                   <h1 className="font-headline text-2xl font-extrabold text-on-surface">{name}</h1>
@@ -78,10 +84,8 @@ const ProfilePage = () => {
               )}
             </div>
 
-            {/* Edit button */}
             {!isEditing && (
-              <button onClick={() => setIsEditing(true)}
-                className="shrink-0 flex items-center gap-2 px-5 py-2.5 border border-outline-variant text-on-surface-variant rounded-full text-sm font-medium hover:bg-surface-container transition-all">
+              <button onClick={() => setIsEditing(true)} className="shrink-0 flex items-center gap-2 px-5 py-2.5 border border-outline-variant text-on-surface-variant rounded-full text-sm font-medium hover:bg-surface-container transition-all">
                 <span className="material-symbols-outlined text-[1rem]">edit</span>
                 Chỉnh sửa
               </button>
@@ -90,7 +94,6 @@ const ProfilePage = () => {
         </div>
       </section>
 
-      {/* ── Quick stats ──────────────────────────────────────────────────── */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {STATS.map((s) => (
           <div key={s.label} className="bg-surface-container-low rounded-2xl p-4 flex flex-col gap-2 border border-outline-variant/10">
@@ -103,22 +106,16 @@ const ProfilePage = () => {
         ))}
       </section>
 
-      {/* ── Tabs ─────────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-2 mb-6 border-b border-outline-variant/30">
         {TABS.map((tab) => (
-          <button key={tab} onClick={() => setActiveTab(tab)}
-            className={`px-5 py-3 font-headline font-bold text-sm border-b-2 -mb-px transition-all ${
-              activeTab === tab ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-on-surface'
-            }`}>
+          <button key={tab} onClick={() => setActiveTab(tab)} className={`px-5 py-3 font-headline font-bold text-sm border-b-2 -mb-px transition-all ${activeTab === tab ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-on-surface'}`}>
             {tab}
           </button>
         ))}
       </div>
 
-      {/* ── Tab Content ──────────────────────────────────────────────────── */}
       {activeTab === 'Tổng quan' && (
         <div className="flex flex-col gap-6">
-          {/* Recent activities */}
           <div className="bg-surface-container-low rounded-[1.5rem] p-6 border border-outline-variant/10">
             <h3 className="font-headline font-bold text-on-surface mb-5 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>history</span>
@@ -142,7 +139,6 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Quick links */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link to="/streaks" className="no-underline">
               <div className="bg-primary/5 border border-primary/15 rounded-2xl p-5 flex items-center gap-4 hover:bg-primary/10 transition-colors cursor-pointer">
@@ -209,7 +205,6 @@ const ProfilePage = () => {
             </div>
           ))}
 
-          {/* Logout */}
           <button className="mt-4 flex items-center gap-3 px-6 py-3 rounded-full border border-error/30 text-error hover:bg-error/5 transition-all font-headline font-bold text-sm">
             <span className="material-symbols-outlined text-[1.1rem]">logout</span>
             Đăng xuất

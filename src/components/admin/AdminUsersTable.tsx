@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Table, Tag, Button, Popconfirm, Select, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { UserDto } from '../../interfaces/common';

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Button, Form, Input } from 'antd';
 
 interface DictationInputProps {
   expectedText?: string;
@@ -12,32 +13,36 @@ interface WordResult {
   correct: boolean;
 }
 
+interface DictationFormValues {
+  answer: string;
+}
+
 const DictationInput = ({
   expectedText = '',
   onSubmit,
   onCheck,
   showResult: externalShowResult,
 }: DictationInputProps) => {
-  const [inputText, setInputText] = useState('');
+  const [form] = Form.useForm<DictationFormValues>();
   const [showResult, setShowResult] = useState(false);
   const [wordResults, setWordResults] = useState<WordResult[]>([]);
 
-  const checkAnswer = () => {
-    const inputWords = inputText.trim().toLowerCase().replace(/[.,!?]/g, '').split(/\s+/);
+  const checkAnswer = (values: DictationFormValues) => {
+    const inputWords = values.answer.trim().toLowerCase().replace(/[.,!?]/g, '').split(/\s+/);
     const expectedWords = expectedText.toLowerCase().replace(/[.,!?]/g, '').split(/\s+/);
 
     const results: WordResult[] = expectedWords.map((word, i) => ({
-      word: word,
+      word,
       correct: inputWords[i] === word,
     }));
 
     setWordResults(results);
     setShowResult(true);
-    onCheck?.(inputText);
+    onCheck?.(values.answer);
   };
 
-  const handleSubmit = () => {
-    onSubmit?.(inputText);
+  const handleSubmit = (values: DictationFormValues) => {
+    onSubmit?.(values.answer);
   };
 
   const correctCount = wordResults.filter((w) => w.correct).length;
@@ -48,32 +53,58 @@ const DictationInput = ({
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Input area */}
       <div className="bg-surface-container-low rounded-[1.5rem] p-6 border border-outline-variant/20">
         <label className="block font-headline font-semibold text-on-surface mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary text-[1.2rem]" style={{ fontVariationSettings: "'FILL' 1" }}>edit_note</span>
           Nhập nội dung bạn nghe được thật chính xác
         </label>
-        <textarea
-          value={inputText}
-          onChange={(e) => { setInputText(e.target.value); setShowResult(false); }}
-          placeholder="Gõ lại nội dung bạn nghe được..."
-          disabled={isResultShown}
-          className={`w-full h-32 p-4 rounded-xl border-2 outline-none resize-none font-body text-base transition-all
-            ${isResultShown
-              ? 'bg-surface-container border-outline-variant/30 text-on-surface-variant cursor-not-allowed'
-              : 'bg-surface-container-lowest border-outline focus:border-primary'
-            }`}
-        />
-        <p className="text-xs text-on-surface-variant mt-2 text-right">
-          {inputText.trim().split(/\s+/).filter(Boolean).length} từ
-        </p>
+
+        <Form form={form} layout="vertical" requiredMark={false} onFinish={checkAnswer}>
+          <Form.Item name="answer" className="mb-0">
+            <Input.TextArea
+              placeholder="Gõ lại nội dung bạn nghe được..."
+              disabled={isResultShown}
+              rows={5}
+              className={`w-full h-32 p-4 rounded-xl border-2 outline-none resize-none font-body text-base transition-all
+                ${isResultShown
+                  ? 'bg-surface-container border-outline-variant/30 text-on-surface-variant cursor-not-allowed'
+                  : 'bg-surface-container-lowest border-outline focus:border-primary'
+                }`}
+            />
+          </Form.Item>
+
+          <p className="text-xs text-on-surface-variant mt-2 text-right">
+            {(form.getFieldValue('answer') || '').trim().split(/\s+/).filter(Boolean).length} từ
+          </p>
+
+          {!isResultShown && (
+            <div className="flex gap-3 mt-4">
+              <Button
+                htmlType="submit"
+                disabled={!form.getFieldValue('answer')?.trim()}
+                className="flex-1 bg-primary text-on-primary px-6 py-3 rounded-full font-headline font-bold text-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[1.1rem]">spellcheck</span>
+                Kiểm tra
+              </Button>
+              <Button
+                onClick={() => {
+                  const value = form.getFieldValue('answer') || '';
+                  onSubmit?.(value);
+                }}
+                disabled={!form.getFieldValue('answer')?.trim()}
+                className="px-6 py-3 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[1.1rem]">send</span>
+                Nộp bài
+              </Button>
+            </div>
+          )}
+        </Form>
       </div>
 
-      {/* Result display */}
       {isResultShown && wordResults.length > 0 && (
         <div className="bg-surface-container-low rounded-[1.5rem] p-6 border border-outline-variant/20">
-          {/* Score banner */}
           <div className={`flex items-center justify-between p-4 rounded-xl mb-4 ${
             score >= 80 ? 'bg-secondary/10 border border-secondary/20' :
             score >= 50 ? 'bg-tertiary/10 border border-tertiary/20' :
@@ -90,15 +121,18 @@ const DictationInput = ({
                 <p className="text-on-surface-variant text-sm">{correctCount}/{totalCount} từ đúng</p>
               </div>
             </div>
-            <button
-              onClick={() => { setInputText(''); setShowResult(false); setWordResults([]); }}
+            <Button
+              onClick={() => {
+                form.resetFields();
+                setShowResult(false);
+                setWordResults([]);
+              }}
               className="px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant text-sm hover:bg-surface-container transition-colors"
             >
               Thử lại
-            </button>
+            </Button>
           </div>
 
-          {/* Word-by-word breakdown */}
           <div>
             <p className="font-headline font-semibold text-sm text-on-surface-variant mb-3 uppercase tracking-wide">Đáp án đúng:</p>
             <div className="flex flex-wrap gap-2">
@@ -119,28 +153,6 @@ const DictationInput = ({
               ))}
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Buttons */}
-      {!isResultShown && (
-        <div className="flex gap-3">
-          <button
-            onClick={checkAnswer}
-            disabled={!inputText.trim()}
-            className="flex-1 bg-primary text-on-primary px-6 py-3 rounded-full font-headline font-bold text-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            <span className="material-symbols-outlined text-[1.1rem]">spellcheck</span>
-            Kiểm tra
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={!inputText.trim()}
-            className="px-6 py-3 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            <span className="material-symbols-outlined text-[1.1rem]">send</span>
-            Nộp bài
-          </button>
         </div>
       )}
     </div>

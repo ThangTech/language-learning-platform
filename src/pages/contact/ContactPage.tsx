@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Button, Form, Input, Select, message } from 'antd';
 import ContactHero from '../../components/contact/ContactHero';
-import { message } from 'antd';
 
 interface ContactFormData {
   name: string;
@@ -40,24 +40,14 @@ const SUBJECTS = [
 ];
 
 const ContactPage = () => {
-  const [formData, setFormData] = useState<ContactFormData>({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
+  const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (values: ContactFormData) => {
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    message.success('Gửi tin nhắn thành công! Chúng tôi sẽ phản hồi trong 24 giờ.');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    message.success(`Gửi tin nhắn thành công! Chúng tôi sẽ phản hồi trong 24 giờ.`);
+    form.resetFields();
     setIsSubmitting(false);
   };
 
@@ -66,76 +56,55 @@ const ContactPage = () => {
       <ContactHero responseTime="< 24 giờ" supportHours="8:00 - 22:00" channels={3} />
 
       <div className="grid grid-cols-12 gap-8">
-        {/* Contact Form */}
         <div className="col-span-12 lg:col-span-8">
           <div className="bg-surface-container-low p-8 rounded-[2rem] border border-outline-variant/10">
             <h3 className="font-headline text-2xl font-bold text-on-surface mb-6">Gửi tin nhắn</h3>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <Form form={form} layout="vertical" requiredMark={false} onFinish={handleSubmit} className="flex flex-col gap-5">
               <div className="grid grid-cols-12 gap-5">
-                <div className="col-span-12 md:col-span-6">
-                  <label className="font-headline text-sm font-semibold text-on-surface block mb-2">Họ và tên</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    placeholder="Nguyễn Văn A"
-                    className="w-full px-4 py-3.5 bg-surface-container-highest rounded-xl border border-outline-variant/30 font-body text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary transition-colors"
-                  />
-                </div>
-                <div className="col-span-12 md:col-span-6">
-                  <label className="font-headline text-sm font-semibold text-on-surface block mb-2">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    placeholder="email@example.com"
-                    className="w-full px-4 py-3.5 bg-surface-container-highest rounded-xl border border-outline-variant/30 font-body text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary transition-colors"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="font-headline text-sm font-semibold text-on-surface block mb-2">Chủ đề</label>
-                <select
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3.5 bg-surface-container-highest rounded-xl border border-outline-variant/30 font-body text-sm text-on-surface focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
+                <Form.Item
+                  className="col-span-12 md:col-span-6 mb-0"
+                  name="name"
+                  label="Họ và tên"
+                  rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}
                 >
-                  <option value="">Chọn chủ đề</option>
-                  {SUBJECTS.map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
+                  <Input placeholder="Nguyễn Văn A" />
+                </Form.Item>
+                <Form.Item
+                  className="col-span-12 md:col-span-6 mb-0"
+                  name="email"
+                  label="Email"
+                  rules={[
+                    { required: true, message: 'Vui lòng nhập email' },
+                    { type: 'email', message: 'Email không hợp lệ' },
+                  ]}
+                >
+                  <Input placeholder="email@example.com" />
+                </Form.Item>
               </div>
-              <div>
-                <label className="font-headline text-sm font-semibold text-on-surface block mb-2">Tin nhắn</label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={5}
-                  placeholder="Mô tả chi tiết câu hỏi hoặc vấn đề của bạn..."
-                  className="w-full px-4 py-3.5 bg-surface-container-highest rounded-xl border border-outline-variant/30 font-body text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary transition-colors resize-none"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-primary text-on-primary px-8 py-4 rounded-full font-headline font-bold text-base hover:opacity-90 transition-all disabled:opacity-50 self-start"
+
+              <Form.Item
+                name="subject"
+                label="Chủ đề"
+                rules={[{ required: true, message: 'Vui lòng chọn chủ đề' }]}
               >
+                <Select placeholder="Chọn chủ đề" options={SUBJECTS.map((s) => ({ value: s, label: s }))} />
+              </Form.Item>
+
+              <Form.Item
+                name="message"
+                label="Tin nhắn"
+                rules={[{ required: true, message: 'Vui lòng nhập nội dung tin nhắn' }]}
+              >
+                <Input.TextArea rows={5} placeholder="Mô tả chi tiết câu hỏi hoặc vấn đề của bạn..." />
+              </Form.Item>
+
+              <Button type="primary" htmlType="submit" loading={isSubmitting} className="self-start">
                 {isSubmitting ? 'Đang gửi...' : 'Gửi tin nhắn'}
-              </button>
-            </form>
+              </Button>
+            </Form>
           </div>
         </div>
 
-        {/* Contact Methods */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-5">
           <h3 className="font-headline text-xl font-bold text-on-surface">Liên hệ trực tiếp</h3>
           {CONTACT_METHODS.map((method) => (
