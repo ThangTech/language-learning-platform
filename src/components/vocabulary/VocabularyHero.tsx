@@ -1,4 +1,4 @@
-// import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface VocabularyHeroProps {
   wordsToday?: number;
@@ -33,20 +33,30 @@ const VocabularyHero = ({
           <p className="text-primary-fixed text-base font-body max-w-md mb-8 leading-relaxed">
             Học từ theo chủ đề, ghi nhớ chủ động và theo dõi tiến độ từng ngày.
           </p>
-          <button
-            id="btn-practice-flashcards"
-            className="bg-white text-primary px-7 py-3.5 rounded-full font-headline font-bold
-                       flex items-center gap-2 hover:opacity-90 active:scale-95
-                       transition-all w-fit shadow-lg"
-          >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              style
-            </span>
-            Luyện Flashcard
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <Link to="/listening" className="no-underline">
+              <button
+                id="btn-practice-flashcards"
+                className="bg-white text-primary px-7 py-3.5 rounded-full font-headline font-bold
+                           flex items-center gap-2 hover:opacity-90 active:scale-95
+                           transition-all w-fit shadow-lg"
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  headphones
+                </span>
+                Luyện nghe cùng từ vựng
+              </button>
+            </Link>
+            <Link to="/progress" className="no-underline">
+              <button className="bg-white/15 text-white px-7 py-3.5 rounded-full font-headline font-bold flex items-center gap-2 hover:bg-white/25 transition-all w-fit border border-white/15">
+                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>insights</span>
+                Xem tiến độ
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
 

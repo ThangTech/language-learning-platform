@@ -1,4 +1,5 @@
 import { Button, Popconfirm, Tag } from 'antd';
+import { Link } from 'react-router-dom';
 import type { GrammarTopicDto } from '../../interfaces/grammar';
 
 interface GrammarCardProps {
@@ -77,33 +78,41 @@ const GrammarCard = ({
         </div>
       )}
 
-      <div className="flex items-center justify-end gap-2 pt-2">
-        {isAdmin ? (
-          <>
-            <Button size="small" onClick={() => onEdit?.(topic)}>
-              Sửa
-            </Button>
-            <Popconfirm
-              title="Xóa chủ đề ngữ pháp?"
-              description="Hành động này không thể hoàn tác."
-              onConfirm={() => onDelete?.(topic.id)}
-              okText="Xóa"
-              cancelText="Hủy"
-            >
-              <Button size="small" danger>
-                Xóa
+      <div className="flex items-center justify-between gap-3 pt-2">
+        <Link to="/listening" className="text-primary font-headline text-sm font-bold no-underline">
+          Học qua Listening
+        </Link>
+        <Link to="/progress" className="text-secondary font-headline text-sm font-bold no-underline">
+          Xem tiến độ
+        </Link>
+        <div className="flex items-center gap-2">
+          {isAdmin ? (
+            <>
+              <Button size="small" onClick={() => onEdit?.(topic)}>
+                Sửa
               </Button>
-            </Popconfirm>
-          </>
-        ) : (
-          <Button
-            type={isCompleted ? 'default' : 'primary'}
-            disabled={isCompleted}
-            onClick={() => onComplete?.(topic.id)}
-          >
-            {isCompleted ? 'Đã hoàn thành' : 'Đánh dấu hoàn thành'}
-          </Button>
-        )}
+              <Popconfirm
+                title="Xóa chủ đề ngữ pháp?"
+                description="Hành động này không thể hoàn tác."
+                onConfirm={() => onDelete?.(topic.id)}
+                okText="Xóa"
+                cancelText="Hủy"
+              >
+                <Button size="small" danger>
+                  Xóa
+                </Button>
+              </Popconfirm>
+            </>
+          ) : (
+            <Button
+              type={isCompleted ? 'default' : 'primary'}
+              disabled={isCompleted}
+              onClick={() => onComplete?.(topic.id)}
+            >
+              {isCompleted ? 'Đã hoàn thành' : 'Đánh dấu hoàn thành'}
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

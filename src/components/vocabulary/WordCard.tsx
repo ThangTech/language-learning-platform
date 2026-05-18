@@ -1,4 +1,5 @@
 import { Button, Popconfirm } from 'antd';
+import { Link } from 'react-router-dom';
 
 export interface LevelInfo {
   label: string;
@@ -76,13 +77,13 @@ const WordCard = ({
         <p className="text-sm italic text-on-surface-variant leading-relaxed">"{word.example}"</p>
       </div>
 
-      <div className="mt-auto flex items-center justify-between pt-2">
-        <button
-          onClick={() => onPlayAudio(word.id)}
-          className="text-primary font-headline text-sm font-bold flex items-center gap-1.5 group-hover:gap-2.5 transition-all focus:outline-none"
-        >
-          Nghe phát âm <span className="material-symbols-outlined text-lg">volume_up</span>
-        </button>
+      <div className="mt-auto flex items-center justify-between gap-3 pt-2">
+        <Link to="/listening" className="text-primary font-headline text-sm font-bold flex items-center gap-1.5 no-underline group-hover:gap-2.5 transition-all focus:outline-none">
+          Nghe bài liên quan <span className="material-symbols-outlined text-lg">headphones</span>
+        </Link>
+        <Link to="/progress" className="text-secondary font-headline text-sm font-bold flex items-center gap-1.5 no-underline transition-all focus:outline-none">
+          Xem tiến độ <span className="material-symbols-outlined text-lg">insights</span>
+        </Link>
 
         <div className="flex items-center gap-2">
           {isAdmin && (

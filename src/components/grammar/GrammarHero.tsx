@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 interface GrammarHeroProps {
   totalTopics: number;
   completedCount: number;
@@ -17,6 +19,18 @@ const GrammarHero = ({ totalTopics, completedCount }: GrammarHeroProps) => {
           <p className="font-body text-on-surface-variant max-w-2xl">
             Học theo chủ đề, xem ví dụ và hoàn thành từng phần để theo dõi tiến độ.
           </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link to="/listening" className="no-underline">
+              <button className="px-5 py-2.5 rounded-full bg-primary text-on-primary font-headline font-bold text-sm hover:opacity-90 transition-all">
+                Sang Listening
+              </button>
+            </Link>
+            <Link to="/progress" className="no-underline">
+              <button className="px-5 py-2.5 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 transition-all">
+                Xem tiến độ
+              </button>
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 min-w-[220px]">
