@@ -43,10 +43,10 @@ const ContactPage = () => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (values: ContactFormData) => {
+  const handleSubmit = async (_values: ContactFormData) => {
     setIsSubmitting(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    message.success(`Gửi tin nhắn thành công! Chúng tôi sẽ phản hồi trong 24 giờ.`);
+    message.success('Gửi tin nhắn thành công! Chúng tôi sẽ phản hồi trong 24 giờ.');
     form.resetFields();
     setIsSubmitting(false);
   };
