@@ -77,7 +77,7 @@ const QuizCard = ({ quiz }: QuizCardProps) => {
       {/* Actions */}
       <div className="flex gap-3 mt-auto pt-2">
         <Link
-          to={quiz.type === 'Chép chính tả' ? `/listening/dictation/${quiz.id}` : `/listening/quiz/${quiz.id}`}
+          to={quiz.type === 'Chép chính tả' ? `/listening/dictation/${quiz.id}` : '/quiz'}
           className="no-underline flex-1"
         >
           <button className="w-full bg-primary text-on-primary py-2.5 rounded-full font-headline font-bold text-sm hover:opacity-90 active:scale-95 transition-all">
