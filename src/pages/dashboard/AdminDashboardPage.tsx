@@ -105,11 +105,14 @@ const AdminDashboardPage = () => {
               <button onClick={() => navigate('/vocabulary')} className="w-full rounded-xl border border-outline-variant px-4 py-3 text-left hover:bg-surface-container transition-colors">
                 Quản lý từ vựng
               </button>
+              <button onClick={() => navigate('/grammar')} className="w-full rounded-xl border border-outline-variant px-4 py-3 text-left hover:bg-surface-container transition-colors">
+                Quản lý ngữ pháp
+              </button>
               <button onClick={() => navigate('/listening')} className="w-full rounded-xl border border-outline-variant px-4 py-3 text-left hover:bg-surface-container transition-colors">
                 Quản lý bài nghe
               </button>
-              <button onClick={() => navigate('/quiz')} className="w-full rounded-xl border border-outline-variant px-4 py-3 text-left hover:bg-surface-container transition-colors">
-                Quản lý quiz
+              <button onClick={() => navigate('/progress')} className="w-full rounded-xl border border-outline-variant px-4 py-3 text-left hover:bg-surface-container transition-colors">
+                Xem tiến độ
               </button>
             </div>
           </div>

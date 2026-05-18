@@ -138,6 +138,11 @@ const LoginPage = () => {
             </div>
           </Form.Item>
         </Form>
+
+        <div className="mt-4 flex items-center justify-between text-xs text-on-surface-variant">
+          <Link to="/" className="hover:text-primary hover:underline">Về trang chủ</Link>
+          <Link to="/listening" className="hover:text-primary hover:underline">Vào Listening</Link>
+        </div>
       </div>
     </div>
   );

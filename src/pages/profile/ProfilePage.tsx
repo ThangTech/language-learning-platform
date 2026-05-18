@@ -162,6 +162,15 @@ const ProfilePage = () => {
                 </div>
               </div>
             </Link>
+            <Link to="/listening" className="no-underline">
+              <div className="bg-primary/5 border border-primary/15 rounded-2xl p-5 flex items-center gap-4 hover:bg-primary/10 transition-colors cursor-pointer">
+                <span className="material-symbols-outlined text-primary text-[2rem]" style={{ fontVariationSettings: "'FILL' 1" }}>headphones</span>
+                <div>
+                  <p className="font-headline font-bold text-on-surface">Quay lại Listening</p>
+                  <p className="text-xs text-on-surface-variant">Tiếp tục bài đang học</p>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       )}

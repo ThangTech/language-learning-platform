@@ -113,6 +113,10 @@ const RegisterPage = () => {
             <Link to="/login" className="text-primary hover:underline">Đăng nhập</Link>
           </div>
         </Form.Item>
+        <div className="mt-4 flex items-center justify-between text-xs text-on-surface-variant">
+          <Link to="/" className="hover:text-primary hover:underline">Về trang chủ</Link>
+          <Link to="/listening" className="hover:text-primary hover:underline">Xem Listening</Link>
+        </div>
       </Form>
     </div>
   </div>

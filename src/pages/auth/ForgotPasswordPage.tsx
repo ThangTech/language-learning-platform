@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const ForgotPasswordPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface">
@@ -7,6 +9,10 @@ const ForgotPasswordPage = () => {
           <input type="email" placeholder="Nhập email của bạn" className="p-3 border rounded-lg" />
           <button className="btn-primary py-3">Gửi link đặt lại mật khẩu</button>
         </form>
+        <div className="mt-4 flex items-center justify-between text-sm">
+          <Link to="/login" className="text-primary hover:underline">Về đăng nhập</Link>
+          <Link to="/register" className="text-primary hover:underline">Tạo tài khoản</Link>
+        </div>
       </div>
     </div>
   );
