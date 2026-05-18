@@ -1,22 +1,13 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { message } from 'antd';
+import { getStreak } from '../../services/progress';
+import type { StreakDto } from '../../interfaces/progress';
 
-// ─── Mock calendar data (30 ngày gần nhất) ────────────────────────────────────
-const generateCalendar = () => {
-  const days = [];
-  for (let i = 29; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const status = i === 0 ? 'today'
-      : i <= 7 && Math.random() > 0.1 ? 'done'
-      : i <= 15 && Math.random() > 0.4 ? 'done'
-      : Math.random() > 0.7 ? 'done'
-      : 'missed';
-    days.push({ date: date.getDate(), month: date.getMonth(), status });
-  }
-  return days;
-};
-
-const CALENDAR = generateCalendar();
+interface CalendarDay {
+  date: number;
+  status: 'today' | 'done' | 'missed';
+}
 
 const ACHIEVEMENTS = [
   { icon: 'local_fire_department', label: '7 Ngày liên tiếp', desc: 'Học 7 ngày không nghỉ', unlocked: true, color: 'text-primary' },
@@ -28,7 +19,42 @@ const ACHIEVEMENTS = [
 ];
 
 const StreaksPage = () => {
-  const doneCount = CALENDAR.filter((d) => d.status === 'done' || d.status === 'today').length;
+  const [streak, setStreak] = useState<StreakDto | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const result = await getStreak();
+        if (result.success && result.data) {
+          setStreak(result.data);
+        }
+      } catch (error: any) {
+        message.error(error?.response?.data?.message || 'Không thể tải chuỗi học');
+      }
+    };
+
+    load();
+  }, []);
+
+  const currentStreak = streak?.currentStreak ?? 0;
+  const longestStreak = streak?.longestStreak ?? 0;
+  const doneCount = Math.min(currentStreak, 30);
+  const generateCalendar = (): CalendarDay[] => {
+    const days: CalendarDay[] = [];
+    for (let i = 29; i >= 0; i--) {
+      const status: CalendarDay['status'] = i === 0
+        ? 'today'
+        : i < currentStreak
+          ? 'done'
+          : 'missed';
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      days.push({ date: date.getDate(), status });
+    }
+    return days;
+  };
+
+  const calendar = generateCalendar();
 
   return (
     <div className="max-w-4xl mx-auto pb-16">
@@ -44,7 +70,7 @@ const StreaksPage = () => {
           {/* Streak counter */}
           <div className="relative z-10 flex flex-col items-center text-center shrink-0">
             <div className="w-28 h-28 rounded-full bg-white/20 border-4 border-white/40 flex items-center justify-center mb-2">
-              <span className="font-headline text-5xl font-extrabold">7</span>
+              <span className="font-headline text-5xl font-extrabold">{currentStreak}</span>
             </div>
             <p className="font-headline font-bold text-lg">ngày liên tiếp 🔥</p>
           </div>
@@ -53,7 +79,7 @@ const StreaksPage = () => {
           <div className="relative z-10 flex-1 text-center md:text-left">
             <h1 className="font-headline text-3xl font-extrabold mb-3">Giữ ngọn lửa học tập!</h1>
             <p className="text-primary-fixed leading-relaxed max-w-md mb-6">
-              Bạn đang có chuỗi <strong>7 ngày</strong> học liên tiếp. Kỷ lục cao nhất của bạn là <strong>15 ngày</strong>. Hôm nay đừng để tắt lửa nhé!
+              Bạn đang có chuỗi <strong>{currentStreak} ngày</strong> học liên tiếp. Kỷ lục cao nhất của bạn là <strong>{longestStreak} ngày</strong>. Hôm nay đừng để tắt lửa nhé!
             </p>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
               <div className="flex flex-wrap gap-3 justify-center md:justify-start">
@@ -72,7 +98,7 @@ const StreaksPage = () => {
               </div>
               <div className="bg-white/20 px-6 py-3 rounded-full flex items-center gap-2">
                 <span className="material-symbols-outlined text-[1.1rem]" style={{ fontVariationSettings: "'FILL' 1" }}>emoji_events</span>
-                <span className="font-headline font-bold text-sm">Kỷ lục: 15 ngày</span>
+                <span className="font-headline font-bold text-sm">Kỷ lục: {longestStreak} ngày</span>
               </div>
             </div>
           </div>
@@ -82,8 +108,8 @@ const StreaksPage = () => {
       {/* ── Quick Stats ──────────────────────────────────────────────────── */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         {[
-          { label: 'Chuỗi hiện tại', value: '7 ngày', icon: 'local_fire_department', color: 'text-primary' },
-          { label: 'Kỷ lục cá nhân', value: '15 ngày', icon: 'emoji_events', color: 'text-tertiary' },
+          { label: 'Chuỗi hiện tại', value: `${currentStreak} ngày`, icon: 'local_fire_department', color: 'text-primary' },
+          { label: 'Kỷ lục cá nhân', value: `${longestStreak} ngày`, icon: 'emoji_events', color: 'text-tertiary' },
           { label: 'Ngày học tháng này', value: `${doneCount} ngày`, icon: 'calendar_month', color: 'text-secondary' },
           { label: 'Tỷ lệ chuyên cần', value: `${Math.round((doneCount / 30) * 100)}%`, icon: 'insights', color: 'text-primary' },
         ].map((s) => (
@@ -106,7 +132,7 @@ const StreaksPage = () => {
           30 ngày gần nhất
         </h2>
         <div className="grid grid-cols-10 gap-2">
-          {CALENDAR.map((day, i) => (
+          {calendar.map((day, i) => (
             <div key={i} title={`Ngày ${day.date}`}
               className={`aspect-square rounded-lg flex items-center justify-center text-xs font-headline font-bold transition-all ${
                 day.status === 'today'
