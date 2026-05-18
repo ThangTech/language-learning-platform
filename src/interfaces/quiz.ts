@@ -11,6 +11,7 @@ export interface QuizQuestionDto {
 export interface QuizDto {
   id: string;
   title: string;
+  description?: string;
   lessonId?: string;
   difficulty: string;
   difficultyColor: string;
