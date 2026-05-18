@@ -41,9 +41,6 @@ const DictationInput = ({
     onCheck?.(values.answer);
   };
 
-  const handleSubmit = (values: DictationFormValues) => {
-    onSubmit?.(values.answer);
-  };
 
   const correctCount = wordResults.filter((w) => w.correct).length;
   const totalCount = wordResults.length;
@@ -134,7 +131,9 @@ const DictationInput = ({
           </div>
 
           <div>
-            <p className="font-headline font-semibold text-sm text-on-surface-variant mb-3 uppercase tracking-wide">Đáp án đúng:</p>
+            <p className="font-headline font-semibold text-sm text-on-surface-variant mb-3 uppercase tracking-wide">
+              Đáp án đúng:
+            </p>
             <div className="flex flex-wrap gap-2">
               {wordResults.map((result, i) => (
                 <span
