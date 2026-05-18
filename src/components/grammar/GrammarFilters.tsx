@@ -17,7 +17,7 @@ const GrammarFilters = ({ levels, selectedLevel, onSelectLevel }: GrammarFilters
               : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
           }`}
         >
-          {level === 'Beginner' ? 'Cơ bản' : level === 'Intermediate' ? 'Trung cấp' : 'Nâng cao'}
+          {level === 'Beginner' ? 'Cơ bản' : level === 'Intermediate' ? 'Trung cấp' : level === 'Advanced' ? 'Nâng cao' : level}
         </button>
       ))}
     </div>
