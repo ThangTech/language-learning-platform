@@ -27,6 +27,18 @@ const QuizQuestion = ({
   onAnswer,
   showResult,
 }: QuizQuestionProps) => {
+  let typeLabel = 'Suy luận';
+
+  if (type === 'MULTIPLE_CHOICE') {
+    typeLabel = 'Trắc nghiệm';
+  } else if (type === 'FILL_IN_BLANK') {
+    typeLabel = 'Điền chỗ trống';
+  } else if (type === 'DICTATION') {
+    typeLabel = 'Chép chính tả';
+  } else if (type === 'MAIN_IDEA') {
+    typeLabel = 'Ý chính';
+  }
+
   const renderMultipleChoice = () => (
     <div className="space-y-3">
       {options?.map((opt) => {
@@ -102,10 +114,10 @@ const QuizQuestion = ({
           type === 'FILL_IN_BLANK' ? 'bg-secondary/10 text-secondary' :
           'bg-tertiary/10 text-tertiary'
         }`}>
-          {type.replace('_', ' ')}
+          {typeLabel}
         </span>
       </div>
-      <h3 className="text-xl font-medium">{question}</h3>
+      <h3 className="text-xl font-medium text-on-surface">{question}</h3>
       {type === 'MULTIPLE_CHOICE' && renderMultipleChoice()}
       {type === 'FILL_IN_BLANK' && renderFillInBlank()}
       {type === 'DICTATION' && renderDictation()}

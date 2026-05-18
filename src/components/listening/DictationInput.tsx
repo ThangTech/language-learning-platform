@@ -13,7 +13,7 @@ interface WordResult {
 }
 
 const DictationInput = ({
-  expectedText = 'The flight to New York departs at eight thirty from gate fourteen.',
+  expectedText = '',
   onSubmit,
   onCheck,
   showResult: externalShowResult,
@@ -51,15 +51,13 @@ const DictationInput = ({
       {/* Input area */}
       <div className="bg-surface-container-low rounded-[1.5rem] p-6 border border-outline-variant/20">
         <label className="block font-headline font-semibold text-on-surface mb-3 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-[1.2rem]" style={{ fontVariationSettings: "'FILL' 1" }}>
-            edit_note
-          </span>
-          Nhập nội dung bạn nghe được
+          <span className="material-symbols-outlined text-primary text-[1.2rem]" style={{ fontVariationSettings: "'FILL' 1" }}>edit_note</span>
+          Nhập nội dung bạn nghe được thật chính xác
         </label>
         <textarea
           value={inputText}
           onChange={(e) => { setInputText(e.target.value); setShowResult(false); }}
-          placeholder="Nhập nội dung bạn nghe được..."
+          placeholder="Gõ lại nội dung bạn nghe được..."
           disabled={isResultShown}
           className={`w-full h-32 p-4 rounded-xl border-2 outline-none resize-none font-body text-base transition-all
             ${isResultShown
