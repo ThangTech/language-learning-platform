@@ -39,7 +39,7 @@ const QuizQuestion = ({
     if (selectedAnswer !== undefined) {
       form.setFieldsValue({ answer: selectedAnswer });
     }
-  }, [selectedAnswer, form, type]);
+  }, [selectedAnswer, form]);
 
   let typeLabel = 'Suy luận';
   if (type === 'MULTIPLE_CHOICE') typeLabel = 'Trắc nghiệm';
@@ -84,8 +84,16 @@ const QuizQuestion = ({
   );
 
   const renderTextAnswer = (placeholder: string) => (
-    <Form form={form} layout="vertical" requiredMark={false} onFinish={handleFinish}>
-      <Form.Item name="answer" className="mb-0">
+    <Form
+      form={form}
+      layout="vertical"
+      requiredMark={false}
+      onFinish={handleFinish}
+    >
+      <Form.Item
+        name="answer"
+        className="mb-0"
+      >
         <Input.TextArea
           placeholder={placeholder}
           rows={4}
@@ -97,7 +105,9 @@ const QuizQuestion = ({
         <Button type="primary" htmlType="submit">
           Kiểm tra
         </Button>
-        <Button onClick={() => onAnswer(form.getFieldValue('answer') || '')}>
+        <Button
+          onClick={() => onAnswer(form.getFieldValue('answer') || '')}
+        >
           Nộp bài
         </Button>
       </div>
