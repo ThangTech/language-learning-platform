@@ -46,5 +46,6 @@ export interface DictationSetDto {
   description: string;
   level: string;
   topic: string;
+  totalExercises: number;
   sentences: DictationSentenceDto[];
 }
