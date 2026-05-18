@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { message } from 'antd';
 import VocabularyHero from '../../components/vocabulary/VocabularyHero';
 import VocabularyFilters from '../../components/vocabulary/VocabularyFilters';
@@ -200,20 +201,17 @@ const VocabularyPage = () => {
         onDeleteWord={handleDeleteWord}
       />
 
-      <div className="fixed bottom-10 right-10 z-50">
-        <div className="bg-surface/60 backdrop-blur-md p-2 rounded-full shadow-2xl border border-outline-variant/20 flex items-center gap-4 pr-6">
-          <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-tertiary to-tertiary-fixed flex items-center justify-center text-white shadow-lg">
-            <span className="material-symbols-outlined text-[1.5rem]" style={{ fontVariationSettings: "'FILL' 1" }}>
-              workspace_premium
-            </span>
-          </div>
-          <div>
-            <p className="font-headline text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">
-              Chuỗi học tập
-            </p>
-            <p className="font-headline text-sm font-bold text-on-surface">Đạt mức thông thái</p>
-          </div>
-        </div>
+      <div className="mt-10 flex flex-wrap gap-3">
+        <Link to="/listening" className="no-underline">
+          <button className="px-5 py-3 rounded-full bg-primary text-on-primary font-headline font-bold text-sm hover:opacity-90 transition-all">
+            Sang Listening
+          </button>
+        </Link>
+        <Link to="/progress" className="no-underline">
+          <button className="px-5 py-3 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 transition-all">
+            Xem tiến độ
+          </button>
+        </Link>
       </div>
 
       <AddWordModal

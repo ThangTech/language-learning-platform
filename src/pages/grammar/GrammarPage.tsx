@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { message } from 'antd';
 import { getUser } from '../../services/auth';
 import { getGrammarTopics, getUserGrammarProgress, createGrammarTopic, updateGrammarTopic, deleteGrammarTopic, markTopicCompleted } from '../../services/grammar';
@@ -159,6 +160,19 @@ const GrammarPage = () => {
         onDeleteTopic={handleDeleteTopic}
         onCompleteTopic={handleToggleComplete}
       />
+
+      <div className="mt-10 flex flex-wrap gap-3">
+        <Link to="/listening" className="no-underline">
+          <button className="px-5 py-3 rounded-full bg-primary text-on-primary font-headline font-bold text-sm hover:opacity-90 transition-all">
+            Sang Listening
+          </button>
+        </Link>
+        <Link to="/progress" className="no-underline">
+          <button className="px-5 py-3 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 transition-all">
+            Xem tiến độ
+          </button>
+        </Link>
+      </div>
 
       {isAdmin && (
         <div className="fixed bottom-10 right-10 z-50">
