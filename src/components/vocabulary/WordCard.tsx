@@ -32,7 +32,7 @@ const WordCard = ({
   word,
   isAdmin = false,
   onToggleFavorite,
-  onPlayAudio,
+  onPlayAudio: _onPlayAudio,
   onEdit,
   onDelete,
 }: WordCardProps) => {
@@ -78,9 +78,12 @@ const WordCard = ({
       </div>
 
       <div className="mt-auto flex items-center justify-between gap-3 pt-2">
-        <Link to="/listening" className="text-primary font-headline text-sm font-bold flex items-center gap-1.5 no-underline group-hover:gap-2.5 transition-all focus:outline-none">
+        <button
+          onClick={() => _onPlayAudio(word.id)}
+          className="text-primary font-headline text-sm font-bold flex items-center gap-1.5 no-underline group-hover:gap-2.5 transition-all focus:outline-none"
+        >
           Nghe bài liên quan <span className="material-symbols-outlined text-lg">headphones</span>
-        </Link>
+        </button>
         <Link to="/progress" className="text-secondary font-headline text-sm font-bold flex items-center gap-1.5 no-underline transition-all focus:outline-none">
           Xem tiến độ <span className="material-symbols-outlined text-lg">insights</span>
         </Link>
