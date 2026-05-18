@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { message } from 'antd';
 import AudioPlayer from '../../components/listening/AudioPlayer';
 import QuizCard, { type QuizData } from '../../components/listening/QuizCard';
@@ -24,6 +24,7 @@ const parseTranscript = (value?: string) => {
 };
 
 const LessonDetailPage = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [lesson, setLesson] = useState<ListeningLessonDto | null>(null);
   const [dictationSet, setDictationSet] = useState<DictationSetDto | null>(null);
@@ -93,6 +94,7 @@ const LessonDetailPage = () => {
         duration: `${dictationSet.totalExercises} câu`,
       } satisfies QuizData]
     : [];
+  const startQuiz = quizzes[0] ?? dictationQuiz[0] ?? null;
 
   if (!lesson) {
     return (
@@ -216,7 +218,16 @@ const LessonDetailPage = () => {
                   Chép chính tả
                 </button>
               )}
-              <button className="w-full border border-primary text-primary py-3 rounded-full font-headline font-bold text-sm hover:bg-primary/5 active:scale-95 transition-all flex items-center justify-center gap-2">
+              <button
+                onClick={() => {
+                  if (startQuiz?.type === 'Chép chính tả') {
+                    navigate(`/listening/dictation/${dictationSet?.id}`);
+                    return;
+                  }
+                  navigate('/quiz');
+                }}
+                className="w-full border border-primary text-primary py-3 rounded-full font-headline font-bold text-sm hover:bg-primary/5 active:scale-95 transition-all flex items-center justify-center gap-2"
+              >
                 <span className="material-symbols-outlined text-[1.1rem]" style={{ fontVariationSettings: "'FILL' 1" }}>fact_check</span>
                 Làm bài trắc nghiệm
               </button>
