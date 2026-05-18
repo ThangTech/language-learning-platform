@@ -60,7 +60,7 @@ const AddQuizModal = ({
       open={isOpen}
       onCancel={onClose}
       footer={null}
-      title={editingQuiz ? 'Sửa quiz' : 'Thêm quiz mới'}
+      title={editingQuiz ? 'Sửa quiz' : 'Thêm quiz'}
       centered
       destroyOnClose
     >

@@ -64,7 +64,7 @@ const AddWordModal = ({
       open={isOpen}
       onCancel={onClose}
       footer={null}
-      title={editingWord ? 'Sửa từ vựng' : 'Thêm từ mới'}
+      title={editingWord ? 'Sửa từ vựng' : 'Thêm từ vựng'}
       centered
       destroyOnClose
     >
@@ -74,7 +74,7 @@ const AddWordModal = ({
           label="Từ vựng"
           rules={[{ required: true, message: 'Vui lòng nhập từ vựng' }]}
         >
-          <Input placeholder="Nhập từ mới..." />
+          <Input placeholder="Nhập từ vựng..." />
         </Form.Item>
 
         <Form.Item

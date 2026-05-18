@@ -67,7 +67,7 @@ const AddLessonModal = ({
       open={isOpen}
       onCancel={onClose}
       footer={null}
-      title={editingLesson ? 'Sửa bài nghe' : 'Thêm bài nghe'}
+      title={editingLesson ? 'Sửa bài nghe' : 'Thêm bài học nghe'}
       centered
       destroyOnClose
     >

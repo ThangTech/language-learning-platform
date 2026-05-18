@@ -56,7 +56,7 @@ const AddGrammarModal = ({
       open={isOpen}
       onCancel={onClose}
       footer={null}
-      title={editingTopic ? 'Sửa chủ đề ngữ pháp' : 'Thêm chủ đề ngữ pháp'}
+      title={editingTopic ? 'Sửa chủ đề ngữ pháp' : 'Thêm chủ đề mới'}
       centered
       destroyOnClose
     >
