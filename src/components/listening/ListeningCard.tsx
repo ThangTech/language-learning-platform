@@ -10,7 +10,7 @@ interface ListeningCardProps {
   onPlay?: (id: string) => void;
 }
 
-const ListeningCard = ({ lesson, isAdmin, onEdit, onDelete, onPlay }: ListeningCardProps) => {
+const ListeningCard = ({ lesson, isAdmin, onEdit, onDelete, onPlay: _onPlay }: ListeningCardProps) => {
   const getLevelColor = (level: string) => {
     if (['A1', 'A2'].includes(level)) return 'green';
     if (['B1', 'B2'].includes(level)) return 'blue';
@@ -50,8 +50,14 @@ const ListeningCard = ({ lesson, isAdmin, onEdit, onDelete, onPlay }: ListeningC
       )}
 
       <div className="mt-auto flex items-center justify-between gap-2 pt-2">
-        <Link to={`/listening/${lesson.id}`} className="no-underline text-primary text-sm font-headline font-bold">
+        <button
+          onClick={() => _onPlay?.(lesson.id)}
+          className="no-underline text-primary text-sm font-headline font-bold"
+        >
           Mở bài nghe
+        </button>
+        <Link to={`/listening/${lesson.id}`} className="no-underline text-primary text-sm font-headline font-bold">
+          Chi tiết
         </Link>
         {!isAdmin ? (
           <Link to={`/listening/dictation/${lesson.id}`} className="no-underline text-secondary text-sm font-headline font-bold">
