@@ -41,6 +41,7 @@ export interface DictationSentenceDto {
 
 export interface DictationSetDto {
   id: string;
+  lessonId?: string | null;
   title: string;
   description: string;
   level: string;

@@ -72,7 +72,7 @@ const Footer = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-8 py-5 border-t border-outline/30 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="font-body text-xs text-outline">© 2024 VSTEPS. Luyện nghe mỗi ngày.</p>
+        <p className="font-body text-xs text-outline">© 2026 VSTEPS. Luyện nghe mỗi ngày.</p>
         <div className="flex gap-4">
           <Link to="/privacy" className="font-body text-xs text-outline hover:text-primary">Chính sách bảo mật</Link>
           <Link to="/terms" className="font-body text-xs text-outline hover:text-primary">Điều khoản dịch vụ</Link>
