@@ -49,18 +49,40 @@ const ProfilePage = () => {
 
             <div className="flex-1 text-center md:text-left">
               {isEditing ? (
-                <Form form={form} layout="vertical" requiredMark={false} initialValues={{ name, bio }} onFinish={handleSubmit} className="flex flex-col gap-3 max-w-sm">
-                  <Form.Item name="name" className="mb-0" rules={[{ required: true, message: 'Vui lòng nhập tên' }]}>
+                <Form
+                  form={form}
+                  layout="vertical"
+                  requiredMark={false}
+                  initialValues={{ name, bio }}
+                  onFinish={handleSubmit}
+                  className="flex flex-col gap-3 max-w-sm"
+                >
+                  <Form.Item
+                    name="name"
+                    className="mb-0"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên' }]}
+                  >
                     <Input className="px-4 py-2 rounded-xl border-2 border-primary bg-surface-container-lowest font-headline font-bold text-xl outline-none" />
                   </Form.Item>
-                  <Form.Item name="bio" className="mb-0" rules={[{ required: true, message: 'Vui lòng nhập giới thiệu' }]}>
+                  <Form.Item
+                    name="bio"
+                    className="mb-0"
+                    rules={[{ required: true, message: 'Vui lòng nhập giới thiệu' }]}
+                  >
                     <Input.TextArea rows={2} className="px-4 py-2 rounded-xl border-2 border-outline bg-surface-container-lowest text-sm outline-none resize-none focus:border-primary transition-colors" />
                   </Form.Item>
                   <div className="flex gap-2">
-                    <Button type="primary" htmlType="submit" className="px-5 py-2 bg-primary text-on-primary rounded-full font-headline font-bold text-sm hover:opacity-90 transition-all">
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      className="px-5 py-2 bg-primary text-on-primary rounded-full font-headline font-bold text-sm hover:opacity-90 transition-all"
+                    >
                       Lưu
                     </Button>
-                    <Button onClick={() => setIsEditing(false)} className="px-5 py-2 border border-outline-variant text-on-surface-variant rounded-full text-sm hover:bg-surface-container transition-all">
+                    <Button
+                      onClick={() => setIsEditing(false)}
+                      className="px-5 py-2 border border-outline-variant text-on-surface-variant rounded-full text-sm hover:bg-surface-container transition-all"
+                    >
                       Huỷ
                     </Button>
                   </div>
