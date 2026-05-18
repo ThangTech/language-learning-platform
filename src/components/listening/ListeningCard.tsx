@@ -1,4 +1,5 @@
 import { Button, Popconfirm, Tag } from 'antd';
+import { Link } from 'react-router-dom';
 import type { ListeningLessonDto } from '../../interfaces/listening';
 
 interface ListeningCardProps {
@@ -48,9 +49,16 @@ const ListeningCard = ({ lesson, isAdmin, onEdit, onDelete, onPlay }: ListeningC
         </div>
       )}
 
-      <div className="mt-auto flex items-center justify-end gap-2 pt-2">
-        {isAdmin ? (
-          <>
+      <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+        <Link to={`/listening/${lesson.id}`} className="no-underline text-primary text-sm font-headline font-bold">
+          Mở bài nghe
+        </Link>
+        {!isAdmin ? (
+          <Link to={`/listening/dictation/${lesson.id}`} className="no-underline text-secondary text-sm font-headline font-bold">
+            Chép chính tả
+          </Link>
+        ) : (
+          <div className="flex items-center gap-2">
             <Button size="small" onClick={() => onEdit?.(lesson)}>
               Sửa
             </Button>
@@ -65,11 +73,7 @@ const ListeningCard = ({ lesson, isAdmin, onEdit, onDelete, onPlay }: ListeningC
                 Xóa
               </Button>
             </Popconfirm>
-          </>
-        ) : (
-          <Button type="primary" size="small" onClick={() => onPlay?.(lesson.id)}>
-            Nghe bài
-          </Button>
+          </div>
         )}
       </div>
     </div>

@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 interface ListeningHeroProps {
   totalLessons: number;
 }
@@ -16,6 +18,18 @@ const ListeningHero = ({ totalLessons }: ListeningHeroProps) => {
           <p className="font-body text-on-surface-variant max-w-2xl">
             Nghe hội thoại, tin tức và bài giảng theo cấp độ từ A1 đến B2. Luyện nghe hiểu theo lộ trình rõ ràng.
           </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link to="/progress" className="no-underline">
+              <button className="px-5 py-2.5 rounded-full bg-primary text-on-primary font-headline font-bold text-sm hover:opacity-90 transition-all">
+                Xem tiến độ
+              </button>
+            </Link>
+            <Link to="/vocabulary" className="no-underline">
+              <button className="px-5 py-2.5 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 transition-all">
+                Ôn từ vựng
+              </button>
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 min-w-[220px]">

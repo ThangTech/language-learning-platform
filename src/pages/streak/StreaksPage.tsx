@@ -56,12 +56,20 @@ const StreaksPage = () => {
               Bạn đang có chuỗi <strong>7 ngày</strong> học liên tiếp. Kỷ lục cao nhất của bạn là <strong>15 ngày</strong>. Hôm nay đừng để tắt lửa nhé!
             </p>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-              <Link to="/listening">
-                <button className="bg-white text-primary px-6 py-3 rounded-full font-headline font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg">
-                  <span className="material-symbols-outlined text-[1.1rem]" style={{ fontVariationSettings: "'FILL' 1" }}>headphones</span>
-                  Học ngay hôm nay
-                </button>
-              </Link>
+              <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                <Link to="/listening">
+                  <button className="bg-white text-primary px-6 py-3 rounded-full font-headline font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg">
+                    <span className="material-symbols-outlined text-[1.1rem]" style={{ fontVariationSettings: "'FILL' 1" }}>headphones</span>
+                    Học ngay hôm nay
+                  </button>
+                </Link>
+                <Link to="/progress">
+                  <button className="bg-white/20 text-white px-6 py-3 rounded-full font-headline font-bold text-sm hover:bg-white/30 transition-all flex items-center gap-2 border border-white/20">
+                    <span className="material-symbols-outlined text-[1.1rem]" style={{ fontVariationSettings: "'FILL' 1" }}>insights</span>
+                    Xem tiến độ
+                  </button>
+                </Link>
+              </div>
               <div className="bg-white/20 px-6 py-3 rounded-full flex items-center gap-2">
                 <span className="material-symbols-outlined text-[1.1rem]" style={{ fontVariationSettings: "'FILL' 1" }}>emoji_events</span>
                 <span className="font-headline font-bold text-sm">Kỷ lục: 15 ngày</span>
