@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { message } from 'antd';
 import AudioPlayer from '../../components/listening/AudioPlayer';
 import DictationInput from '../../components/listening/DictationInput';
-import { getDictationSetById } from '../../services/listening';
+import { getDictationSetById, submitListeningResult } from '../../services/listening';
 import type { DictationSetDto, DictationSentenceDto } from '../../interfaces/listening';
 
 const DictationPage = () => {
@@ -35,7 +35,7 @@ const DictationPage = () => {
   }, [id]);
 
   const items = dictationSet?.sentences ?? [];
-  const current = items[currentIndex];
+  const current: DictationSentenceDto | undefined = items[currentIndex];
   const completedCount = scores.filter((s) => s !== null).length;
   const avgScore = scores.filter((s) => s !== null).length > 0
     ? Math.round(scores.filter((s): s is number => s !== null).reduce((a, b) => a + b, 0) / scores.filter((s) => s !== null).length)
@@ -57,13 +57,16 @@ const DictationPage = () => {
     setScores(nextScores);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentIndex < items.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setShowHint(false);
       return;
     }
 
+    if (id) {
+      await submitListeningResult(id, avgScore);
+    }
     setIsFinished(true);
   };
 
@@ -248,7 +251,7 @@ const DictationPage = () => {
             Câu trước
           </button>
           <button
-            onClick={handleNext}
+            onClick={() => { void handleNext(); }}
             className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-on-primary text-sm font-headline font-bold hover:opacity-90 active:scale-95 transition-all"
           >
             {currentIndex < items.length - 1 ? (
