@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { message } from 'antd';
 import VocabularyHero from '../../components/vocabulary/VocabularyHero';
 import VocabularyFilters from '../../components/vocabulary/VocabularyFilters';
 import VocabularyGrid from '../../components/vocabulary/VocabularyGrid';
+import VocabularyEmptyState from '../../components/vocabulary/VocabularyEmptyState';
+import VocabularyJourneyCta from '../../components/vocabulary/VocabularyJourneyCta';
 import AddWordModal from '../../components/vocabulary/AddWordModal';
 import type { WordData } from '../../components/vocabulary/WordCard';
 import { getWords, getFavorites, addFavorite, removeFavorite, createWord, updateWord, deleteWord } from '../../services/vocabulary';
@@ -20,7 +21,7 @@ interface ApiWord {
 }
 
 const CATEGORIES = ['Tất cả', 'Văn học', 'Triết học', 'Kinh doanh', 'Công nghệ', 'Học thuật'];
-const DIFFICULTIES = ['Sơ cấp', 'Trung cấp', 'Nâng cao'];
+const DIFFICULTIES = ['Tất cả', 'Sơ cấp', 'Trung cấp', 'Nâng cao'];
 
 const VocabularyPage = () => {
   const user = getUser();
@@ -52,15 +53,15 @@ const VocabularyPage = () => {
           }
         }
 
-        const mapped = apiWords.map(w => ({
-          id: w.id,
-          category: w.topic,
-          word: w.term,
-          pronunciation: w.pronunciation,
-          definition: w.definition,
-          example: w.exampleSentence || '',
-          levels: w.levels,
-          isFavorite: favIds.has(w.id),
+        const mapped = apiWords.map((item) => ({
+          id: item.id,
+          category: item.topic,
+          word: item.term,
+          pronunciation: item.pronunciation,
+          definition: item.definition,
+          example: item.exampleSentence || '',
+          levels: item.levels,
+          isFavorite: favIds.has(item.id),
         }));
 
         setWords(mapped);
@@ -77,15 +78,16 @@ const VocabularyPage = () => {
   }, []);
 
   const handleToggleFavorite = async (id: string) => {
-    const current = words.find(w => w.id === id);
+    const current = words.find((word) => word.id === id);
     if (!current) return;
+
     try {
       if (current.isFavorite) {
         await removeFavorite(id);
       } else {
         await addFavorite(id);
       }
-      setWords(words.map(w => w.id === id ? { ...w, isFavorite: !w.isFavorite } : w));
+      setWords(words.map((word) => (word.id === id ? { ...word, isFavorite: !word.isFavorite } : word)));
     } catch (error: any) {
       message.error(error?.response?.data?.message || 'Không thể cập nhật yêu thích');
     }
@@ -156,7 +158,7 @@ const VocabularyPage = () => {
       const result = await deleteWord(id);
       if (result.success) {
         message.success('Đã xóa từ vựng');
-        setWords(words.filter(w => w.id !== id));
+        setWords(words.filter((word) => word.id !== id));
       } else {
         message.error(result.message || 'Không thể xóa từ vựng');
       }
@@ -165,18 +167,34 @@ const VocabularyPage = () => {
     }
   };
 
-  const filteredWords = words.filter(w => {
-    const matchCategory = selectedCategory === 'Tất cả' || w.category === selectedCategory;
+  const filteredWords = words.filter((word) => {
+    const matchCategory = selectedCategory === 'Tất cả' || word.category === selectedCategory;
     let matchDifficulty = true;
+
     if (selectedDifficulty !== 'Tất cả') {
-      const hasAdvanced = w.levels.some(l => l.label.includes('C'));
-      const hasIntermediate = w.levels.some(l => l.label.includes('B'));
+      const hasAdvanced = word.levels.some((level) => level.label.includes('C'));
+      const hasIntermediate = word.levels.some((level) => level.label.includes('B'));
+
       if (selectedDifficulty === 'Nâng cao' && !hasAdvanced) matchDifficulty = false;
       if (selectedDifficulty === 'Trung cấp' && !hasIntermediate) matchDifficulty = false;
       if (selectedDifficulty === 'Sơ cấp' && (hasAdvanced || hasIntermediate)) matchDifficulty = false;
     }
+
     return matchCategory && matchDifficulty;
   });
+
+  const totalVisible = filteredWords.length;
+  const isFiltered = selectedCategory !== 'Tất cả' || selectedDifficulty !== 'Tất cả';
+  let emptyTitle = 'Chưa có từ phù hợp';
+  let emptyHint = 'Thử đổi danh mục hoặc độ khó để xem từ khác.';
+
+  if (isFiltered) {
+    emptyTitle = 'Không có từ vựng phù hợp';
+    emptyHint = 'Thử bỏ bớt bộ lọc để xem thêm từ vựng.';
+  }
+
+  const clearCategory = () => setSelectedCategory('Tất cả');
+  const clearDifficulty = () => setSelectedDifficulty('Tất cả');
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -191,28 +209,26 @@ const VocabularyPage = () => {
         onSelectDifficulty={setSelectedDifficulty}
       />
 
-      <VocabularyGrid
-        words={filteredWords}
-        isAdmin={isAdmin}
-        onToggleFavorite={handleToggleFavorite}
-        onPlayAudio={handlePlayAudio}
-        onAddNewWord={handleAddNewWord}
-        onEditWord={handleEditWord}
-        onDeleteWord={handleDeleteWord}
-      />
+      {totalVisible > 0 ? (
+        <VocabularyGrid
+          words={filteredWords}
+          isAdmin={isAdmin}
+          onToggleFavorite={handleToggleFavorite}
+          onPlayAudio={handlePlayAudio}
+          onAddNewWord={handleAddNewWord}
+          onEditWord={handleEditWord}
+          onDeleteWord={handleDeleteWord}
+        />
+      ) : (
+        <VocabularyEmptyState
+          title={emptyTitle}
+          hint={emptyHint}
+          onResetCategory={clearCategory}
+          onResetDifficulty={clearDifficulty}
+        />
+      )}
 
-      <div className="mt-10 flex flex-wrap gap-3">
-        <Link to="/listening" className="no-underline">
-          <button className="px-5 py-3 rounded-full bg-primary text-on-primary font-headline font-bold text-sm hover:opacity-90 transition-all">
-            Sang Listening
-          </button>
-        </Link>
-        <Link to="/progress" className="no-underline">
-          <button className="px-5 py-3 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 transition-all">
-            Xem tiến độ
-          </button>
-        </Link>
-      </div>
+      <VocabularyJourneyCta />
 
       <AddWordModal
         isOpen={isModalOpen}
