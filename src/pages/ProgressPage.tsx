@@ -2,26 +2,29 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { message } from 'antd';
 import { getStats, getStreak } from '../services/progress';
-import { getUserListeningResults } from '../services/listening';
-import type { ListeningResultDto } from '../interfaces/listening';
+import { getLessons, getUserListeningResults } from '../services/listening';
+import type { ListeningLessonDto, ListeningResultDto } from '../interfaces/listening';
 import type { UserProgressDto, StreakDto } from '../interfaces/progress';
 
 const ProgressPage = () => {
   const [stats, setStats] = useState<UserProgressDto | null>(null);
   const [streak, setStreak] = useState<StreakDto | null>(null);
   const [recentListening, setRecentListening] = useState<ListeningResultDto[]>([]);
+  const [lessons, setLessons] = useState<ListeningLessonDto[]>([]);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [statsRes, streakRes, listeningRes] = await Promise.all([
+        const [statsRes, streakRes, listeningRes, lessonRes] = await Promise.all([
           getStats(),
           getStreak(),
           getUserListeningResults(),
+          getLessons(1, 100),
         ]);
         if (statsRes.success && statsRes.data) setStats(statsRes.data);
         if (streakRes.success && streakRes.data) setStreak(streakRes.data);
         if (listeningRes.success && listeningRes.data) setRecentListening(listeningRes.data as ListeningResultDto[]);
+        if (lessonRes.success && lessonRes.data) setLessons(lessonRes.data.items);
       } catch (error: any) {
         message.error(error?.response?.data?.message || 'Không thể tải tiến độ');
       }
@@ -29,6 +32,23 @@ const ProgressPage = () => {
 
     load();
   }, []);
+
+  const getLessonTitle = (lessonId: string) => lessons.find((lesson) => lesson.id === lessonId)?.title || 'Bài nghe';
+
+  const recentResults = [...recentListening].sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
+  const topResults = recentResults.slice(0, 3);
+
+  const formatDateTime = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
 
   return (
     <div className="min-h-screen pt-20">
@@ -78,14 +98,14 @@ const ProgressPage = () => {
         <div className="bg-surface-container-low rounded-[1.5rem] p-6 border border-outline-variant/10 mb-8">
           <h2 className="font-headline text-xl font-bold mb-4">Bài nghe gần đây</h2>
           <div className="flex flex-col gap-3">
-            {recentListening.length > 0 ? recentListening.slice(0, 3).map((item) => (
+            {topResults.length > 0 ? topResults.map((item) => (
               <div
                 key={item.id}
                 className="flex items-center justify-between gap-4 rounded-xl bg-surface-container-lowest px-4 py-3"
               >
                 <div>
-                  <p className="font-headline font-bold text-on-surface">{item.lessonId}</p>
-                  <p className="text-xs text-on-surface-variant">Hoàn thành lúc {item.completedAt}</p>
+                  <p className="font-headline font-bold text-on-surface">{getLessonTitle(item.lessonId)}</p>
+                  <p className="text-xs text-on-surface-variant">Hoàn thành lúc {formatDateTime(item.completedAt)}</p>
                 </div>
                 <span className="font-headline font-bold text-secondary">{item.score}%</span>
               </div>

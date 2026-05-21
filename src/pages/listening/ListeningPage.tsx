@@ -48,6 +48,11 @@ const ListeningPage = () => {
     return () => window.clearTimeout(timer);
   }, [searchText]);
 
+  const handleAddLesson = () => {
+    setEditingLesson(null);
+    setIsModalOpen(true);
+  };
+
   const handleEditLesson = (lesson: ListeningLessonDto) => {
     setEditingLesson(lesson);
     setIsModalOpen(true);
@@ -95,7 +100,7 @@ const ListeningPage = () => {
       const result = await deleteLesson(id);
       if (result.success) {
         message.success('Đã xóa bài nghe');
-        setLessons(lessons.filter(l => l.id !== id));
+        setLessons(lessons.filter((lesson) => lesson.id !== id));
       } else {
         message.error(result.message || 'Không thể xóa');
       }
@@ -113,22 +118,24 @@ const ListeningPage = () => {
   const isSearchActive = normalizedSearch.length > 0;
 
   const clearSearch = () => setSearchText('');
+  const clearLevel = () => setSelectedLevel('Tất cả');
   const clearFilters = () => {
     setSearchText('');
     setSelectedLevel('Tất cả');
     void loadLessons();
   };
+
   const totalVisible = filteredLessons.length;
-  const emptyMessage = isSearchActive
-    ? 'Không có bài nghe khớp từ khóa này.'
-    : selectedLevel === 'Tất cả'
-      ? 'Chưa có bài nghe phù hợp.'
-      : `Chưa có bài nghe cấp độ ${selectedLevel}.`;
-  const emptyHint = isSearchActive
-    ? 'Thử đổi từ khóa tìm kiếm hoặc bỏ lọc cấp độ.'
-    : selectedLevel === 'Tất cả'
-      ? 'Thử chọn cấp độ khác hoặc thêm bài nghe mới nếu bạn là admin.'
-      : 'Thử chọn cấp độ khác hoặc quay lại toàn bộ danh sách.';
+  let emptyMessage = 'Chưa có bài nghe phù hợp.';
+  let emptyHint = 'Thử chọn cấp độ khác hoặc thêm bài nghe mới nếu bạn là admin.';
+
+  if (isSearchActive) {
+    emptyMessage = 'Không có bài nghe khớp từ khóa này.';
+    emptyHint = 'Thử đổi từ khóa tìm kiếm hoặc bỏ lọc cấp độ.';
+  } else if (selectedLevel !== 'Tất cả') {
+    emptyMessage = `Chưa có bài nghe cấp độ ${selectedLevel}.`;
+    emptyHint = 'Thử chọn cấp độ khác hoặc quay lại toàn bộ danh sách.';
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -147,10 +154,6 @@ const ListeningPage = () => {
         {isSearchActive ? `Đang tìm: ${normalizedSearch}` : 'Tìm kiếm theo tiêu đề hoặc chủ đề để chọn bài nghe nhanh hơn.'}
       </div>
 
-      <div className="text-xs text-on-surface-variant mb-4">
-        Đang hiển thị {totalVisible} bài nghe phù hợp.
-      </div>
-
       {totalVisible > 0 ? (
         <ListeningGrid
           lessons={filteredLessons}
@@ -166,55 +169,25 @@ const ListeningPage = () => {
           searchActive={isSearchActive}
           selectedLevel={selectedLevel}
           onClearSearch={clearSearch}
-          onClearLevel={() => setSelectedLevel('Tất cả')}
+          onClearLevel={clearLevel}
           onResetAll={clearFilters}
         />
       )}
 
+      <div className="text-xs text-on-surface-variant mt-4">
+        Đang hiển thị {totalVisible} bài nghe phù hợp.
+      </div>
+
       <ListeningJourneyCta />
 
-      <p className="text-xs text-on-surface-variant mb-4">Đang hiển thị {totalVisible} bài nghe phù hợp.</p>
-
-      {totalVisible > 0 ? (
-        <ListeningGrid
-          lessons={filteredLessons}
-          isAdmin={isAdmin}
-          onEditLesson={handleEditLesson}
-          onDeleteLesson={handleDeleteLesson}
-          onPlayLesson={handlePlayLesson}
-        />
-      ) : (
-        <div className="rounded-[1.5rem] border border-dashed border-outline-variant/20 bg-surface-container-low p-8 text-center">
-          <p className="font-headline font-semibold text-on-surface">{emptyMessage}</p>
-          <p className="mt-2 text-sm text-on-surface-variant">
-            {emptyHint}
-          </p>
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-            {isSearchActive && (
-              <button
-                onClick={clearSearch}
-                className="px-4 py-2 rounded-full bg-secondary text-on-secondary font-headline font-bold text-sm hover:opacity-90 transition-all"
-              >
-                Xóa tìm kiếm
-              </button>
-            )}
-            {selectedLevel !== 'Tất cả' && (
-              <button
-                onClick={() => setSelectedLevel('Tất cả')}
-                className="px-4 py-2 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 transition-all"
-              >
-                Bỏ lọc cấp độ
-              </button>
-            )}
-            {!isSearchActive && selectedLevel === 'Tất cả' && (
-              <button
-                onClick={clearFilters}
-                className="px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant font-headline font-bold text-sm hover:bg-surface-container transition-all"
-              >
-                Làm mới danh sách
-              </button>
-            )}
-          </div>
+      {isAdmin && (
+        <div className="fixed bottom-10 right-10 z-50">
+          <button
+            onClick={handleAddLesson}
+            className="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
+          >
+            <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>add</span>
+          </button>
         </div>
       )}
 

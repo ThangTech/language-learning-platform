@@ -54,7 +54,7 @@ const ListeningCard = ({ lesson, isAdmin, onEdit, onDelete, onPlay: _onPlay }: L
           onClick={() => _onPlay?.(lesson.id)}
           className="no-underline text-primary text-sm font-headline font-bold"
         >
-          Mở bài nghe
+          Bắt đầu học
         </button>
         <Link to={`/listening/${lesson.id}`} className="no-underline text-primary text-sm font-headline font-bold">
           Chi tiết
