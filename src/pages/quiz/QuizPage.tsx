@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { message } from 'antd';
+import { Input, message } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import { getUser } from '../../services/auth';
-import { getQuizzes, createQuiz, updateQuiz, deleteQuiz } from '../../services/quiz';
+import { createQuiz, deleteQuiz, getQuizzes, updateQuiz } from '../../services/quiz';
 import QuizHero from '../../components/quiz/QuizHero';
 import QuizGrid from '../../components/quiz/QuizGrid';
 import QuizFilters from '../../components/quiz/QuizFilters';
@@ -21,6 +22,7 @@ const QuizPage = () => {
 
   const [quizzes, setQuizzes] = useState<QuizDto[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
+  const [searchText, setSearchText] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingQuiz, setEditingQuiz] = useState<QuizDto | null>(null);
   const [loading, setLoading] = useState(false);
@@ -52,6 +54,19 @@ const QuizPage = () => {
     setIsModalOpen(true);
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingQuiz(null);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchText(value);
+  };
+
+  const handleClearSearch = () => {
+    setSearchText('');
+  };
+
   const handleSaveQuiz = async (values: {
     title: string;
     difficulty: string;
@@ -71,7 +86,7 @@ const QuizPage = () => {
       } else {
         const result = await createQuiz({
           title: values.title,
-          lessonId: undefined,
+          lessonId: lessonId || undefined,
           difficulty: values.difficulty,
           type: values.type,
           durationMinutes: values.durationMinutes,
@@ -118,8 +133,13 @@ const QuizPage = () => {
   const lessonQuizzes = lessonId ? quizzes.filter((quiz) => quiz.lessonId === lessonId) : quizzes;
 
   const filteredQuizzes = lessonQuizzes.filter((quiz) => {
-    if (selectedDifficulty === 'All') return true;
-    return quiz.difficulty === selectedDifficulty;
+    const matchDifficulty = selectedDifficulty === 'All' || quiz.difficulty === selectedDifficulty;
+    const matchSearch =
+      searchText.trim().length === 0 ||
+      quiz.title.toLowerCase().includes(searchText.trim().toLowerCase()) ||
+      quiz.type.toLowerCase().includes(searchText.trim().toLowerCase());
+
+    return matchDifficulty && matchSearch;
   });
 
   const isFilteredByLesson = Boolean(lessonId);
@@ -127,6 +147,18 @@ const QuizPage = () => {
   return (
     <div className="max-w-6xl mx-auto pb-16">
       <QuizHero totalQuizzes={quizzes.length} />
+
+      <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <Input
+          value={searchText}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          allowClear
+          onClear={handleClearSearch}
+          placeholder="Tìm quiz theo tiêu đề hoặc loại"
+          prefix={<SearchOutlined />}
+          className="max-w-xl"
+        />
+      </div>
 
       <QuizFilters
         difficultyOptions={DIFFICULTY_OPTIONS}
@@ -167,10 +199,7 @@ const QuizPage = () => {
         isOpen={isModalOpen}
         editingQuiz={editingQuiz}
         loading={loading}
-        onClose={() => {
-          setIsModalOpen(false);
-          setEditingQuiz(null);
-        }}
+        onClose={handleCloseModal}
         onSave={handleSaveQuiz}
       />
     </div>
