@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { message } from 'antd';
 import { getUser } from '../../services/auth';
 import { getGrammarTopics, getUserGrammarProgress, createGrammarTopic, updateGrammarTopic, deleteGrammarTopic, markTopicCompleted } from '../../services/grammar';
 import GrammarHero from '../../components/grammar/GrammarHero';
 import GrammarGrid from '../../components/grammar/GrammarGrid';
+import GrammarFilters from '../../components/grammar/GrammarFilters';
+import GrammarEmptyState from '../../components/grammar/GrammarEmptyState';
+import GrammarJourneyCta from '../../components/grammar/GrammarJourneyCta';
 import AddGrammarModal from '../../components/grammar/AddGrammarModal';
 import type { GrammarTopicDto } from '../../interfaces/grammar';
 
@@ -31,14 +33,14 @@ const GrammarPage = () => {
           try {
             const progressResult = await getUserGrammarProgress();
             if (progressResult.success && progressResult.data) {
-              const completedIds = new Set(progressResult.data.map(p => p.topicId));
-              items = items.map(t => ({
-                ...t,
-                isCompleted: completedIds.has(t.id),
+              const completedIds = new Set(progressResult.data.map((progress) => progress.topicId));
+              items = items.map((topic) => ({
+                ...topic,
+                isCompleted: completedIds.has(topic.id),
               }));
             }
           } catch {
-            items = items.map(t => ({ ...t, isCompleted: false }));
+            items = items.map((topic) => ({ ...topic, isCompleted: false }));
           }
         }
 
@@ -60,7 +62,7 @@ const GrammarPage = () => {
       const result = await markTopicCompleted(id);
       if (result.success) {
         message.success('Đã đánh dấu hoàn thành');
-        setTopics(topics.map(t => t.id === id ? { ...t, isCompleted: true } : t));
+        setTopics(topics.map((topic) => (topic.id === id ? { ...topic, isCompleted: true } : topic)));
       } else {
         message.error(result.message || 'Không thể cập nhật trạng thái');
       }
@@ -119,7 +121,7 @@ const GrammarPage = () => {
       const result = await deleteGrammarTopic(id);
       if (result.success) {
         message.success('Đã xóa chủ đề');
-        setTopics(topics.filter(t => t.id !== id));
+        setTopics(topics.filter((topic) => topic.id !== id));
       } else {
         message.error(result.message || 'Không thể xóa');
       }
@@ -128,51 +130,41 @@ const GrammarPage = () => {
     }
   };
 
-  const filteredTopics = topics.filter(t =>
-    selectedLevel === 'Tất cả' || t.level === selectedLevel
-  );
+  const filteredTopics = topics.filter((topic) => selectedLevel === 'Tất cả' || topic.level === selectedLevel);
+  const totalVisible = filteredTopics.length;
+  const isFiltered = selectedLevel !== 'Tất cả';
+  const emptyTitle = isFiltered ? 'Không có chủ đề phù hợp' : 'Chưa có chủ đề phù hợp';
+  const emptyHint = isFiltered
+    ? 'Thử bỏ lọc cấp độ để xem thêm chủ đề.'
+    : 'Thử chọn cấp độ khác hoặc thêm chủ đề mới nếu bạn là admin.';
 
   return (
     <div className="max-w-6xl mx-auto">
-      <GrammarHero totalTopics={topics.length} completedCount={topics.filter(t => t.isCompleted).length} />
+      <GrammarHero totalTopics={topics.length} completedCount={topics.filter((topic) => topic.isCompleted).length} />
 
-      <div className="my-6 flex flex-wrap items-center gap-3">
-        <span className="font-headline text-sm font-semibold text-on-surface-variant">Lọc theo cấp độ:</span>
-        {['Tất cả', ...LEVELS].map(level => (
-          <button
-            key={level}
-            onClick={() => setSelectedLevel(level)}
-            className={`px-4 py-1.5 rounded-full text-sm font-headline font-semibold transition-all
-              ${selectedLevel === level
-                ? 'bg-primary text-on-primary'
-                : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
-              }`}
-          >
-            {level === 'All' ? 'Tất cả' : level === 'Beginner' ? 'Cơ bản' : level === 'Intermediate' ? 'Trung cấp' : 'Nâng cao'}
-          </button>
-        ))}
-      </div>
-
-      <GrammarGrid
-        topics={filteredTopics}
-        isAdmin={isAdmin}
-        onEditTopic={handleEditTopic}
-        onDeleteTopic={handleDeleteTopic}
-        onCompleteTopic={handleToggleComplete}
+      <GrammarFilters
+        levels={['Tất cả', ...LEVELS]}
+        selectedLevel={selectedLevel}
+        onSelectLevel={setSelectedLevel}
       />
 
-      <div className="mt-10 flex flex-wrap gap-3">
-        <Link to="/listening" className="no-underline">
-          <button className="px-5 py-3 rounded-full bg-primary text-on-primary font-headline font-bold text-sm hover:opacity-90 transition-all">
-            Sang Listening
-          </button>
-        </Link>
-        <Link to="/progress" className="no-underline">
-          <button className="px-5 py-3 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 transition-all">
-            Xem tiến độ
-          </button>
-        </Link>
-      </div>
+      {totalVisible > 0 ? (
+        <GrammarGrid
+          topics={filteredTopics}
+          isAdmin={isAdmin}
+          onEditTopic={handleEditTopic}
+          onDeleteTopic={handleDeleteTopic}
+          onCompleteTopic={handleToggleComplete}
+        />
+      ) : (
+        <GrammarEmptyState
+          title={emptyTitle}
+          hint={emptyHint}
+          onResetLevel={() => setSelectedLevel('Tất cả')}
+        />
+      )}
+
+      <GrammarJourneyCta />
 
       {isAdmin && (
         <div className="fixed bottom-10 right-10 z-50">
