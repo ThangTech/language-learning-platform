@@ -3,6 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import { message } from 'antd';
 import AudioPlayer from '../../components/listening/AudioPlayer';
 import DictationInput from '../../components/listening/DictationInput';
+import DictationResultSummary from '../../components/listening/DictationResultSummary';
+import DictationAnswerReview from '../../components/listening/DictationAnswerReview';
+import DictationFooter from '../../components/listening/DictationFooter';
 import { getDictationSetById, submitListeningResult } from '../../services/listening';
 import type { DictationSetDto, DictationSentenceDto } from '../../interfaces/listening';
 
@@ -13,6 +16,12 @@ const DictationPage = () => {
   const [scores, setScores] = useState<(number | null)[]>([]);
   const [showHint, setShowHint] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [savingResult, setSavingResult] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [lastScore, setLastScore] = useState<number | null>(null);
+  const [lastSentence, setLastSentence] = useState('');
+  const [lastAnswer, setLastAnswer] = useState('');
 
   useEffect(() => {
     const load = async () => {
@@ -36,9 +45,9 @@ const DictationPage = () => {
 
   const items = dictationSet?.sentences ?? [];
   const current: DictationSentenceDto | undefined = items[currentIndex];
-  const completedCount = scores.filter((s) => s !== null).length;
-  const avgScore = scores.filter((s) => s !== null).length > 0
-    ? Math.round(scores.filter((s): s is number => s !== null).reduce((a, b) => a + b, 0) / scores.filter((s) => s !== null).length)
+  const completedCount = scores.filter((score) => score !== null).length;
+  const avgScore = scores.filter((score) => score !== null).length > 0
+    ? Math.round(scores.filter((score): score is number => score !== null).reduce((a, b) => a + b, 0) / scores.filter((score) => score !== null).length)
     : 0;
 
   const levelColor = dictationSet?.level === 'A1' || dictationSet?.level === 'A2'
@@ -50,24 +59,47 @@ const DictationPage = () => {
 
     const inputWords = text.trim().toLowerCase().replace(/[.,!?]/g, '').split(/\s+/);
     const expectedWords = current.sentence.toLowerCase().replace(/[.,!?]/g, '').split(/\s+/);
-    const correct = expectedWords.filter((w, i) => inputWords[i] === w).length;
+    const correct = expectedWords.filter((word, index) => inputWords[index] === word).length;
     const score = Math.round((correct / expectedWords.length) * 100);
     const nextScores = [...scores];
     nextScores[currentIndex] = score;
     setScores(nextScores);
+    setLastScore(score);
+    setLastSentence(current.sentence);
+    setLastAnswer(text);
+    setSubmitted(true);
+    setSubmitError('');
   };
 
   const handleNext = async () => {
     if (currentIndex < items.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setShowHint(false);
+      setSubmitted(false);
+      setLastScore(null);
+      setLastSentence('');
+      setLastAnswer('');
       return;
     }
 
-    if (id) {
-      await submitListeningResult(id, avgScore);
+    setSavingResult(true);
+    setSubmitError('');
+
+    try {
+      if (id) {
+        const result = await submitListeningResult(id, avgScore);
+        if (!result.success) {
+          setSubmitError(result.message || 'Không thể lưu kết quả');
+          return;
+        }
+      }
+
+      setIsFinished(true);
+    } catch (error: any) {
+      setSubmitError(error?.response?.data?.message || 'Không thể lưu kết quả');
+    } finally {
+      setSavingResult(false);
     }
-    setIsFinished(true);
   };
 
   const handleRestart = () => {
@@ -75,6 +107,12 @@ const DictationPage = () => {
     setScores(Array(items.length).fill(null));
     setShowHint(false);
     setIsFinished(false);
+    setSubmitted(false);
+    setSavingResult(false);
+    setSubmitError('');
+    setLastScore(null);
+    setLastSentence('');
+    setLastAnswer('');
   };
 
   if (!dictationSet) {
@@ -83,84 +121,20 @@ const DictationPage = () => {
 
   if (isFinished) {
     return (
-      <div className="max-w-3xl mx-auto px-6 md:px-8 pt-28 pb-20 flex flex-col items-center text-center gap-8">
-        <div className={`w-24 h-24 rounded-full flex items-center justify-center shadow-xl ${
-          avgScore >= 80 ? 'bg-gradient-to-br from-secondary to-secondary-container' :
-          avgScore >= 50 ? 'bg-gradient-to-br from-tertiary to-tertiary-container' :
-          'bg-gradient-to-br from-error to-error-container'
-        }`}>
-          <span className="material-symbols-outlined text-white text-[3rem]" style={{ fontVariationSettings: "'FILL' 1" }}>
-            {avgScore >= 80 ? 'emoji_events' : avgScore >= 50 ? 'sentiment_satisfied' : 'refresh'}
-          </span>
-        </div>
-
-        <div>
-          <h1 className="font-headline text-3xl md:text-4xl font-extrabold text-on-surface mb-3">
-            {avgScore >= 80 ? '🎉 Xuất sắc!' : avgScore >= 50 ? '👍 Khá tốt!' : 'Cố gắng hơn nhé!'}
-          </h1>
-          <p className="text-on-surface-variant text-base max-w-md leading-relaxed">
-            Bạn đã hoàn thành {items.length} câu chép chính tả. Đây là kết quả của bạn.
-          </p>
-        </div>
-
-        <div className="w-full grid grid-cols-3 gap-4">
-          {[
-            { label: 'Điểm trung bình', value: `${avgScore}%`, icon: 'grade', color: avgScore >= 80 ? 'text-secondary' : avgScore >= 50 ? 'text-tertiary' : 'text-error' },
-            { label: 'Câu hoàn thành', value: `${completedCount}/${items.length}`, icon: 'check_circle', color: 'text-primary' },
-            { label: 'Câu xuất sắc', value: `${scores.filter((s) => (s ?? 0) >= 90).length}`, icon: 'star', color: 'text-tertiary' },
-          ].map((stat) => (
-            <div key={stat.label} className="bg-surface-container-low rounded-2xl p-5 flex flex-col items-center gap-2">
-              <span className={`material-symbols-outlined text-[2rem] ${stat.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>{stat.icon}</span>
-              <p className={`font-headline text-2xl font-extrabold ${stat.color}`}>{stat.value}</p>
-              <p className="text-on-surface-variant text-xs text-center">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="w-full bg-surface-container-low rounded-[1.5rem] p-6 text-left">
-          <h3 className="font-headline font-bold text-on-surface mb-4">Chi tiết từng câu</h3>
-          <div className="flex flex-col gap-3">
-            {items.map((ex, i) => (
-              <div key={ex.id} className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                    (scores[i] ?? 0) >= 80 ? 'bg-secondary/15 text-secondary' :
-                    (scores[i] ?? 0) >= 50 ? 'bg-tertiary/15 text-tertiary' :
-                    'bg-error/15 text-error'
-                  }`}>
-                    {i + 1}
-                  </div>
-                  <p className="text-sm text-on-surface line-clamp-1">{ex.sentence}</p>
-                </div>
-                <span className={`font-headline font-bold text-sm shrink-0 ${
-                  (scores[i] ?? 0) >= 80 ? 'text-secondary' :
-                  (scores[i] ?? 0) >= 50 ? 'text-tertiary' :
-                  'text-error'
-                }`}>{scores[i] !== null ? `${scores[i]}%` : '—'}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex gap-4 w-full">
-          <button onClick={handleRestart} className="flex-1 bg-primary text-on-primary py-3.5 rounded-full font-headline font-bold text-sm hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2">
-            <span className="material-symbols-outlined text-[1.1rem]">refresh</span>
-            Làm lại
-          </button>
-          <Link to="/listening" className="no-underline flex-1">
-            <button className="w-full border border-outline-variant text-on-surface-variant py-3.5 rounded-full font-headline font-bold text-sm hover:bg-surface-container transition-all flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined text-[1.1rem]">arrow_back</span>
-              Về trang nghe
-            </button>
-          </Link>
-        </div>
-      </div>
+      <DictationResultSummary
+        avgScore={avgScore}
+        completedCount={completedCount}
+        totalCount={items.length}
+        scores={scores}
+      />
     );
   }
 
   if (!current) {
     return <div className="max-w-3xl mx-auto py-20 text-center text-on-surface-variant">Không có câu chép chính tả nào.</div>;
   }
+
+  const totalQuestions = items.length;
 
   return (
     <div className="max-w-4xl mx-auto pb-20">
@@ -185,28 +159,28 @@ const DictationPage = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            {items.map((_, i) => (
+            {items.map((_, index) => (
               <button
-                key={i}
-                onClick={() => setCurrentIndex(i)}
+                key={index}
+                onClick={() => setCurrentIndex(index)}
                 className={`w-8 h-8 rounded-full text-xs font-headline font-bold transition-all flex items-center justify-center ${
-                  i === currentIndex
+                  index === currentIndex
                     ? 'bg-primary text-on-primary shadow-md scale-110'
-                    : scores[i] !== null
-                    ? scores[i]! >= 80
-                      ? 'bg-secondary/20 text-secondary border border-secondary/30'
-                      : 'bg-tertiary/20 text-tertiary border border-tertiary/30'
-                    : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
+                    : scores[index] !== null
+                      ? scores[index]! >= 80
+                        ? 'bg-secondary/20 text-secondary border border-secondary/30'
+                        : 'bg-tertiary/20 text-tertiary border border-tertiary/30'
+                      : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
                 }`}
               >
-                {scores[i] !== null ? <span className="material-symbols-outlined text-[0.9rem]" style={{ fontVariationSettings: "'FILL' 1" }}>{scores[i]! >= 80 ? 'check' : 'close'}</span> : i + 1}
+                {scores[index] !== null ? <span className="material-symbols-outlined text-[0.9rem]" style={{ fontVariationSettings: "'FILL' 1" }}>{scores[index]! >= 80 ? 'check' : 'close'}</span> : index + 1}
               </button>
             ))}
           </div>
-          <p className="text-sm text-on-surface-variant font-medium">{currentIndex + 1} / {items.length}</p>
+          <p className="text-sm text-on-surface-variant font-medium">{currentIndex + 1} / {totalQuestions}</p>
         </div>
         <div className="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-primary to-primary-container rounded-full transition-all duration-500" style={{ width: `${(currentIndex / items.length) * 100}%` }} />
+          <div className="h-full bg-gradient-to-r from-primary to-primary-container rounded-full transition-all duration-500" style={{ width: `${(currentIndex / totalQuestions) * 100}%` }} />
         </div>
       </div>
 
@@ -224,6 +198,25 @@ const DictationPage = () => {
             Gợi ý
           </button>
         </div>
+
+        {submitted && lastScore !== null && (
+          <div className={`rounded-xl p-4 border ${lastScore >= 80 ? 'bg-secondary/10 border-secondary/20' : lastScore >= 50 ? 'bg-tertiary/10 border-tertiary/20' : 'bg-error/10 border-error/20'}`}>
+            <p className="font-headline font-bold text-on-surface">{lastScore}% chính xác</p>
+            <p className="text-sm text-on-surface-variant mt-1">Bạn vừa nộp câu này. Có thể bấm Câu tiếp theo để chuyển sang câu kế tiếp.</p>
+          </div>
+        )}
+
+        {submitError && (
+          <div className="rounded-xl p-4 border bg-error/10 border-error/20 text-sm text-error">
+            {submitError}
+          </div>
+        )}
+
+        {savingResult && (
+          <div className="rounded-xl p-4 border bg-surface-container text-sm text-on-surface-variant">
+            Đang lưu kết quả...
+          </div>
+        )}
 
         {showHint && (
           <div className="bg-tertiary/5 border border-tertiary/15 rounded-xl p-4 flex items-start gap-3">
@@ -243,7 +236,7 @@ const DictationPage = () => {
 
         <div className="flex items-center justify-between pt-2 border-t border-outline-variant/20">
           <button
-            onClick={() => { if (currentIndex > 0) { setCurrentIndex(currentIndex - 1); setShowHint(false); } }}
+            onClick={() => { if (currentIndex > 0) { setCurrentIndex(currentIndex - 1); setShowHint(false); setSubmitted(false); setLastScore(null); setLastSentence(''); setLastAnswer(''); } }}
             disabled={currentIndex === 0}
             className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-outline-variant text-on-surface-variant text-sm font-medium hover:bg-surface-container transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
@@ -263,17 +256,29 @@ const DictationPage = () => {
         </div>
       </div>
 
-      <div className="mt-8 bg-primary/5 border border-primary/10 rounded-[1.5rem] p-6 flex gap-4">
-        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-primary text-[1.4rem]" style={{ fontVariationSettings: "'FILL' 1" }}>tips_and_updates</span>
+      <DictationFooter onRestart={handleRestart} />
+
+      {lastSentence && lastAnswer && submitted && (
+        <div className="mt-6 bg-surface-container-low rounded-[1.5rem] p-6 border border-outline-variant/10">
+          <h3 className="font-headline font-bold text-on-surface mb-4">Kết quả câu vừa nộp</h3>
+          <div className="grid gap-3 text-sm">
+            <div>
+              <p className="text-xs text-on-surface-variant mb-1">Bạn nhập</p>
+              <p className="text-on-surface">{lastAnswer}</p>
+            </div>
+            <div>
+              <p className="text-xs text-on-surface-variant mb-1">Đáp án đúng</p>
+              <p className="text-on-surface">{lastSentence}</p>
+            </div>
+            <div>
+              <p className="text-xs text-on-surface-variant mb-1">Điểm câu này</p>
+              <p className="font-headline font-bold text-secondary">{lastScore ?? 0}%</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <h3 className="font-headline font-bold text-on-surface mb-1">Mẹo luyện tập hiệu quả</h3>
-          <p className="text-on-surface-variant text-sm leading-relaxed">
-            Nghe ít nhất <strong className="text-primary">2-3 lần</strong> trước khi bắt đầu gõ. Lần đầu để hiểu tổng thể, lần sau chú ý từng từ.
-          </p>
-        </div>
-      </div>
+      )}
+
+      <DictationAnswerReview currentIndex={currentIndex} scores={scores} items={items} />
     </div>
   );
 };
