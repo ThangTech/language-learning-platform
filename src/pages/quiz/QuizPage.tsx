@@ -10,7 +10,8 @@ import QuizFilters from '../../components/quiz/QuizFilters';
 import QuizEmptyState from '../../components/quiz/QuizEmptyState';
 import QuizJourneyCta from '../../components/quiz/QuizJourneyCta';
 import AddQuizModal from '../../components/quiz/AddQuizModal';
-import type { QuizDto } from '../../interfaces/quiz';
+import QuizQuestionsModal from '../../components/quiz/QuizQuestionsModal';
+import type { CreateQuizQuestionRequest, QuizDto } from '../../interfaces/quiz';
 
 const DIFFICULTY_OPTIONS = ['All', 'Easy', 'Medium', 'Hard'];
 
@@ -24,8 +25,16 @@ const QuizPage = () => {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
   const [searchText, setSearchText] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isQuestionsModalOpen, setIsQuestionsModalOpen] = useState(false);
   const [editingQuiz, setEditingQuiz] = useState<QuizDto | null>(null);
+  const [pendingQuizValues, setPendingQuizValues] = useState<{
+    title: string;
+    difficulty: string;
+    type: string;
+    durationMinutes: number;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [questionsLoading, setQuestionsLoading] = useState(false);
 
   const loadQuizzes = async () => {
     try {
@@ -46,17 +55,20 @@ const QuizPage = () => {
 
   const handleAddQuiz = () => {
     setEditingQuiz(null);
+    setPendingQuizValues(null);
     setIsModalOpen(true);
   };
 
   const handleEditQuiz = (quiz: QuizDto) => {
     setEditingQuiz(quiz);
+    setPendingQuizValues(null);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingQuiz(null);
+    setPendingQuizValues(null);
   };
 
   const handleSearchChange = (value: string) => {
@@ -73,38 +85,62 @@ const QuizPage = () => {
     type: string;
     durationMinutes: number;
   }) => {
-    setLoading(true);
-    try {
-      if (editingQuiz) {
+    if (editingQuiz) {
+      setLoading(true);
+      try {
         const result = await updateQuiz(editingQuiz.id, values);
         if (result.success) {
           message.success('Đã cập nhật quiz');
-          loadQuizzes();
+          await loadQuizzes();
+          handleCloseModal();
         } else {
           message.error(result.message || 'Không thể cập nhật');
         }
-      } else {
-        const result = await createQuiz({
-          title: values.title,
-          lessonId: lessonId || undefined,
-          difficulty: values.difficulty,
-          type: values.type,
-          durationMinutes: values.durationMinutes,
-          questions: [],
-        });
-        if (result.success) {
-          message.success('Đã thêm quiz');
-          loadQuizzes();
-        } else {
-          message.error(result.message || 'Không thể thêm quiz');
-        }
+      } catch (error: any) {
+        message.error(error?.response?.data?.message || 'Không thể lưu quiz');
+      } finally {
+        setLoading(false);
       }
-      setIsModalOpen(false);
-      setEditingQuiz(null);
+      return;
+    }
+
+    setPendingQuizValues(values);
+    setIsModalOpen(false);
+    setIsQuestionsModalOpen(true);
+  };
+
+  const handleCloseQuestionsModal = () => {
+    setIsQuestionsModalOpen(false);
+    setPendingQuizValues(null);
+  };
+
+  const handleSaveQuestions = async (questions: CreateQuizQuestionRequest[]) => {
+    if (!pendingQuizValues) {
+      return;
+    }
+
+    setQuestionsLoading(true);
+    try {
+      const result = await createQuiz({
+        title: pendingQuizValues.title,
+        lessonId: lessonId || undefined,
+        difficulty: pendingQuizValues.difficulty,
+        type: pendingQuizValues.type,
+        durationMinutes: pendingQuizValues.durationMinutes,
+        questions,
+      });
+
+      if (result.success) {
+        message.success('Đã thêm quiz');
+        await loadQuizzes();
+        handleCloseQuestionsModal();
+      } else {
+        message.error(result.message || 'Không thể thêm quiz');
+      }
     } catch (error: any) {
       message.error(error?.response?.data?.message || 'Không thể lưu quiz');
     } finally {
-      setLoading(false);
+      setQuestionsLoading(false);
     }
   };
 
@@ -134,10 +170,11 @@ const QuizPage = () => {
 
   const filteredQuizzes = lessonQuizzes.filter((quiz) => {
     const matchDifficulty = selectedDifficulty === 'All' || quiz.difficulty === selectedDifficulty;
+    const search = searchText.trim().toLowerCase();
     const matchSearch =
-      searchText.trim().length === 0 ||
-      quiz.title.toLowerCase().includes(searchText.trim().toLowerCase()) ||
-      quiz.type.toLowerCase().includes(searchText.trim().toLowerCase());
+      search.length === 0 ||
+      quiz.title.toLowerCase().includes(search) ||
+      quiz.type.toLowerCase().includes(search);
 
     return matchDifficulty && matchSearch;
   });
@@ -186,9 +223,11 @@ const QuizPage = () => {
         <div className="fixed bottom-10 right-10 z-50">
           <button
             onClick={handleAddQuiz}
-            className="w-16 h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
+            className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary text-on-secondary shadow-lg transition-transform hover:scale-105"
           >
-            <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>add</span>
+            <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+              add
+            </span>
           </button>
         </div>
       )}
@@ -201,6 +240,13 @@ const QuizPage = () => {
         loading={loading}
         onClose={handleCloseModal}
         onSave={handleSaveQuiz}
+      />
+
+      <QuizQuestionsModal
+        isOpen={isQuestionsModalOpen}
+        loading={questionsLoading}
+        onClose={handleCloseQuestionsModal}
+        onSave={handleSaveQuestions}
       />
     </div>
   );

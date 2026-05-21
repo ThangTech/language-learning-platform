@@ -70,13 +70,8 @@ const FeaturesSection = () => {
                 <span className="text-[10px] font-headline font-bold text-primary">5 câu</span>
               </div>
               <div className="flex items-center justify-between py-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-primary-fixed flex items-center justify-center">
-                    <span className="text-[10px] font-bold text-primary">ME</span>
-                  </div>
-                  <span className="text-[10px] font-bold">Bạn</span>
-                </div>
-                <span className="text-[10px] font-headline font-bold text-secondary">Làm ngay</span>
+                <span className="text-[10px] font-bold text-on-surface-variant">Luyện nghe theo bài</span>
+                <span className="text-[10px] font-headline font-bold text-secondary">Bắt đầu ngay</span>
               </div>
             </div>
           </div>
