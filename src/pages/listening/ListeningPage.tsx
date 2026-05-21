@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Input, message } from 'antd';
+import { message } from 'antd';
 import ListeningHero from '../../components/listening/ListeningHero';
 import ListeningGrid from '../../components/listening/ListeningGrid';
+import ListeningToolbar from '../../components/listening/ListeningToolbar';
+import ListeningEmptyState from '../../components/listening/ListeningEmptyState';
+import ListeningJourneyCta from '../../components/listening/ListeningJourneyCta';
 import AddLessonModal from '../../components/listening/AddLessonModal';
 import { getLessons, createLesson, updateLesson, deleteLesson } from '../../services/listening';
 import { getUser } from '../../services/auth';
@@ -21,9 +23,9 @@ const ListeningPage = () => {
   const [editingLesson, setEditingLesson] = useState<ListeningLessonDto | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const loadLessons = async () => {
+  const loadLessons = async (search?: string) => {
     try {
-      const result = await getLessons(1, 100);
+      const result = await getLessons(1, 100, undefined, search);
       if (result.success && result.data) {
         setLessons(result.data.items);
       } else {
@@ -38,10 +40,13 @@ const ListeningPage = () => {
     loadLessons();
   }, []);
 
-  const handleAddLesson = () => {
-    setEditingLesson(null);
-    setIsModalOpen(true);
-  };
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void loadLessons(searchText.trim() || undefined);
+    }, 400);
+
+    return () => window.clearTimeout(timer);
+  }, [searchText]);
 
   const handleEditLesson = (lesson: ListeningLessonDto) => {
     setEditingLesson(lesson);
@@ -103,51 +108,70 @@ const ListeningPage = () => {
     window.location.href = `/listening/${id}`;
   };
 
-  const filteredLessons = lessons.filter((lesson) => {
-    const matchLevel = selectedLevel === 'Tất cả' || lesson.level === selectedLevel;
-    const query = searchText.trim().toLowerCase();
-    const matchSearch = !query
-      || lesson.title.toLowerCase().includes(query)
-      || lesson.topic.toLowerCase().includes(query)
-      || lesson.description.toLowerCase().includes(query);
-
-    return matchLevel && matchSearch;
-  });
+  const filteredLessons = lessons.filter((lesson) => selectedLevel === 'Tất cả' || lesson.level === selectedLevel);
+  const normalizedSearch = searchText.trim();
+  const isSearchActive = normalizedSearch.length > 0;
 
   const clearSearch = () => setSearchText('');
+  const clearFilters = () => {
+    setSearchText('');
+    setSelectedLevel('Tất cả');
+    void loadLessons();
+  };
   const totalVisible = filteredLessons.length;
+  const emptyMessage = isSearchActive
+    ? 'Không có bài nghe khớp từ khóa này.'
+    : selectedLevel === 'Tất cả'
+      ? 'Chưa có bài nghe phù hợp.'
+      : `Chưa có bài nghe cấp độ ${selectedLevel}.`;
+  const emptyHint = isSearchActive
+    ? 'Thử đổi từ khóa tìm kiếm hoặc bỏ lọc cấp độ.'
+    : selectedLevel === 'Tất cả'
+      ? 'Thử chọn cấp độ khác hoặc thêm bài nghe mới nếu bạn là admin.'
+      : 'Thử chọn cấp độ khác hoặc quay lại toàn bộ danh sách.';
 
   return (
     <div className="max-w-6xl mx-auto">
       <ListeningHero totalLessons={lessons.length} />
 
-      <div className="my-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <Input
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          allowClear
-          onClear={clearSearch}
-          placeholder="Tìm bài nghe theo tiêu đề hoặc chủ đề"
-          className="max-w-xl"
-        />
+      <ListeningToolbar
+        searchText={searchText}
+        onSearchTextChange={setSearchText}
+        onClearSearch={clearSearch}
+        levels={['Tất cả', ...LEVELS]}
+        selectedLevel={selectedLevel}
+        onSelectLevel={setSelectedLevel}
+      />
 
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="font-headline text-sm font-semibold text-on-surface-variant">Lọc theo cấp độ:</span>
-          {['Tất cả', ...LEVELS].map(level => (
-            <button
-              key={level}
-              onClick={() => setSelectedLevel(level)}
-              className={`px-4 py-1.5 rounded-full text-sm font-headline font-semibold transition-colors
-                ${selectedLevel === level
-                  ? 'bg-primary text-on-primary'
-                  : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
-                }`}
-            >
-              {level}
-            </button>
-          ))}
-        </div>
+      <div className="text-xs text-on-surface-variant mb-4">
+        {isSearchActive ? `Đang tìm: ${normalizedSearch}` : 'Tìm kiếm theo tiêu đề hoặc chủ đề để chọn bài nghe nhanh hơn.'}
       </div>
+
+      <div className="text-xs text-on-surface-variant mb-4">
+        Đang hiển thị {totalVisible} bài nghe phù hợp.
+      </div>
+
+      {totalVisible > 0 ? (
+        <ListeningGrid
+          lessons={filteredLessons}
+          isAdmin={isAdmin}
+          onEditLesson={handleEditLesson}
+          onDeleteLesson={handleDeleteLesson}
+          onPlayLesson={handlePlayLesson}
+        />
+      ) : (
+        <ListeningEmptyState
+          title={emptyMessage}
+          hint={emptyHint}
+          searchActive={isSearchActive}
+          selectedLevel={selectedLevel}
+          onClearSearch={clearSearch}
+          onClearLevel={() => setSelectedLevel('Tất cả')}
+          onResetAll={clearFilters}
+        />
+      )}
+
+      <ListeningJourneyCta />
 
       <p className="text-xs text-on-surface-variant mb-4">Đang hiển thị {totalVisible} bài nghe phù hợp.</p>
 
@@ -161,46 +185,38 @@ const ListeningPage = () => {
         />
       ) : (
         <div className="rounded-[1.5rem] border border-dashed border-outline-variant/20 bg-surface-container-low p-8 text-center">
-          <p className="font-headline font-semibold text-on-surface">Không có bài nghe phù hợp</p>
+          <p className="font-headline font-semibold text-on-surface">{emptyMessage}</p>
           <p className="mt-2 text-sm text-on-surface-variant">
-            Thử đổi từ khóa tìm kiếm hoặc chọn lại cấp độ.
+            {emptyHint}
           </p>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+            {isSearchActive && (
+              <button
+                onClick={clearSearch}
+                className="px-4 py-2 rounded-full bg-secondary text-on-secondary font-headline font-bold text-sm hover:opacity-90 transition-all"
+              >
+                Xóa tìm kiếm
+              </button>
+            )}
+            {selectedLevel !== 'Tất cả' && (
+              <button
+                onClick={() => setSelectedLevel('Tất cả')}
+                className="px-4 py-2 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 transition-all"
+              >
+                Bỏ lọc cấp độ
+              </button>
+            )}
+            {!isSearchActive && selectedLevel === 'Tất cả' && (
+              <button
+                onClick={clearFilters}
+                className="px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant font-headline font-bold text-sm hover:bg-surface-container transition-all"
+              >
+                Làm mới danh sách
+              </button>
+            )}
+          </div>
         </div>
       )}
-
-      {isAdmin && (
-        <div className="fixed bottom-10 right-10 z-50">
-          <button
-            onClick={handleAddLesson}
-            className="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
-          >
-            <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>add</span>
-          </button>
-        </div>
-      )}
-
-      <div className="mt-10 bg-surface-container-low rounded-[1.5rem] p-6 border border-outline-variant/10 flex flex-wrap gap-3 items-center justify-between">
-        <div>
-          <h3 className="font-headline text-lg font-bold text-on-surface">
-            Tiếp tục lộ trình VSTEPS
-          </h3>
-          <p className="text-sm text-on-surface-variant">
-            Sau khi nghe xong, sang tiến độ hoặc làm quiz để củng cố ngay.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <Link to="/progress" className="no-underline">
-            <button className="px-5 py-3 rounded-full bg-primary text-on-primary font-headline font-bold text-sm hover:opacity-90 transition-all">
-              Xem tiến độ
-            </button>
-          </Link>
-          <Link to="/quiz" className="no-underline">
-            <button className="px-5 py-3 rounded-full border border-primary text-primary font-headline font-bold text-sm hover:bg-primary/5 transition-all">
-              Làm quiz
-            </button>
-          </Link>
-        </div>
-      </div>
 
       <AddLessonModal
         isOpen={isModalOpen}
