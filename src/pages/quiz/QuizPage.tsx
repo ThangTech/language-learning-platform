@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { message } from 'antd';
 import { getUser } from '../../services/auth';
 import { getQuizzes, createQuiz, updateQuiz, deleteQuiz } from '../../services/quiz';
 import QuizHero from '../../components/quiz/QuizHero';
 import QuizGrid from '../../components/quiz/QuizGrid';
+import QuizFilters from '../../components/quiz/QuizFilters';
+import QuizEmptyState from '../../components/quiz/QuizEmptyState';
+import QuizJourneyCta from '../../components/quiz/QuizJourneyCta';
 import AddQuizModal from '../../components/quiz/AddQuizModal';
 import type { QuizDto } from '../../interfaces/quiz';
 
-const DIFFICULTY_OPTIONS = ['Easy', 'Medium', 'Hard'];
+const DIFFICULTY_OPTIONS = ['All', 'Easy', 'Medium', 'Hard'];
 
 const QuizPage = () => {
+  const [searchParams] = useSearchParams();
   const user = getUser();
   const isAdmin = user?.role?.toLowerCase() === 'admin';
+  const lessonId = searchParams.get('lessonId');
 
   const [quizzes, setQuizzes] = useState<QuizDto[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
@@ -93,7 +98,7 @@ const QuizPage = () => {
       const result = await deleteQuiz(id);
       if (result.success) {
         message.success('Đã xóa quiz');
-        setQuizzes(quizzes.filter(q => q.id !== id));
+        setQuizzes(quizzes.filter((quiz) => quiz.id !== id));
       } else {
         message.error(result.message || 'Không thể xóa');
       }
@@ -110,38 +115,24 @@ const QuizPage = () => {
     message.info('Tính năng xem trước quiz sẽ sớm được phát triển.');
   };
 
-  const getDifficultyText = (difficulty: string) => {
-    if (difficulty === 'Easy') return 'Dễ';
-    if (difficulty === 'Medium') return 'Trung bình';
-    if (difficulty === 'Hard') return 'Khó';
-    return difficulty;
-  };
+  const lessonQuizzes = lessonId ? quizzes.filter((quiz) => quiz.lessonId === lessonId) : quizzes;
 
-  const filteredQuizzes = quizzes.filter(q => {
+  const filteredQuizzes = lessonQuizzes.filter((quiz) => {
     if (selectedDifficulty === 'All') return true;
-    return q.difficulty === selectedDifficulty;
+    return quiz.difficulty === selectedDifficulty;
   });
+
+  const isFilteredByLesson = Boolean(lessonId);
 
   return (
     <div className="max-w-6xl mx-auto pb-16">
       <QuizHero totalQuizzes={quizzes.length} />
 
-      <div className="mb-8 flex flex-wrap items-center gap-3">
-        <span className="font-headline text-sm font-semibold text-on-surface-variant">Lọc theo độ khó:</span>
-        {['All', ...DIFFICULTY_OPTIONS].map(level => (
-          <button
-            key={level}
-            onClick={() => setSelectedDifficulty(level)}
-            className={`px-4 py-2 rounded-full text-sm font-headline font-semibold transition-colors
-              ${selectedDifficulty === level
-                ? 'bg-secondary text-on-secondary'
-                : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
-              }`}
-          >
-            {level === 'All' ? 'Tất cả' : getDifficultyText(level)}
-          </button>
-        ))}
-      </div>
+      <QuizFilters
+        difficultyOptions={DIFFICULTY_OPTIONS}
+        selectedDifficulty={selectedDifficulty}
+        onSelectDifficulty={setSelectedDifficulty}
+      />
 
       {filteredQuizzes.length > 0 ? (
         <QuizGrid
@@ -153,25 +144,10 @@ const QuizPage = () => {
           onPreviewQuiz={handlePreviewQuiz}
         />
       ) : (
-        <div className="rounded-[1.5rem] border border-dashed border-outline-variant/20 bg-surface-container-low p-8 text-center">
-          <p className="font-headline font-semibold text-on-surface">Không có quiz phù hợp</p>
-          <p className="mt-2 text-sm text-on-surface-variant">
-            Thử đổi bộ lọc độ khó hoặc quay lại Listening để chọn bài khác.
-          </p>
-          <div className="mt-5 flex items-center justify-center gap-3 flex-wrap">
-            <Link to="/listening" className="no-underline">
-              <button className="px-4 py-2 rounded-full bg-secondary text-on-secondary font-headline font-bold text-sm hover:opacity-90 transition-all">
-                Về Listening
-              </button>
-            </Link>
-            <button
-              onClick={() => setSelectedDifficulty('All')}
-              className="px-4 py-2 rounded-full border border-secondary text-secondary font-headline font-bold text-sm hover:bg-secondary/5 transition-all"
-            >
-              Xóa bộ lọc
-            </button>
-          </div>
-        </div>
+        <QuizEmptyState
+          lessonId={isFilteredByLesson ? lessonId : null}
+          onResetDifficulty={() => setSelectedDifficulty('All')}
+        />
       )}
 
       {isAdmin && (
@@ -185,18 +161,7 @@ const QuizPage = () => {
         </div>
       )}
 
-      <div className="mt-10 flex flex-wrap gap-3">
-        <Link to="/listening" className="no-underline">
-          <button className="px-5 py-3 rounded-full bg-secondary text-on-secondary font-headline font-bold text-sm hover:opacity-90 transition-all">
-            Sang Listening
-          </button>
-        </Link>
-        <Link to="/progress" className="no-underline">
-          <button className="px-5 py-3 rounded-full border border-secondary text-secondary font-headline font-bold text-sm hover:bg-secondary/5 transition-all">
-            Xem tiến độ
-          </button>
-        </Link>
-      </div>
+      <QuizJourneyCta />
 
       <AddQuizModal
         isOpen={isModalOpen}
