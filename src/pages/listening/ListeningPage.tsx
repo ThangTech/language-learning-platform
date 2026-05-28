@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import ListeningHero from '../../components/listening/ListeningHero';
 import ListeningGrid from '../../components/listening/ListeningGrid';
@@ -15,6 +16,7 @@ const LEVELS = ['A1', 'A2', 'B1', 'B2'];
 const ListeningPage = () => {
   const user = getUser();
   const isAdmin = user?.role?.toLowerCase() === 'admin';
+  const navigate = useNavigate();
 
   const [lessons, setLessons] = useState<ListeningLessonDto[]>([]);
   const [selectedLevel, setSelectedLevel] = useState<string>('Tất cả');
@@ -23,9 +25,10 @@ const ListeningPage = () => {
   const [editingLesson, setEditingLesson] = useState<ListeningLessonDto | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const loadLessons = async (search?: string) => {
+  const loadLessons = async (search?: string, level?: string) => {
     try {
-      const result = await getLessons(1, 100, undefined, search);
+      const apiLevel = level === 'Tất cả' ? undefined : level;
+      const result = await getLessons(1, 100, apiLevel, search);
       if (result.success && result.data) {
         setLessons(result.data.items);
       } else {
@@ -37,16 +40,12 @@ const ListeningPage = () => {
   };
 
   useEffect(() => {
-    loadLessons();
-  }, []);
-
-  useEffect(() => {
     const timer = window.setTimeout(() => {
-      void loadLessons(searchText.trim() || undefined);
+      void loadLessons(searchText.trim() || undefined, selectedLevel);
     }, 400);
 
     return () => window.clearTimeout(timer);
-  }, [searchText]);
+  }, [searchText, selectedLevel]);
 
   const handleAddLesson = () => {
     setEditingLesson(null);
@@ -110,7 +109,7 @@ const ListeningPage = () => {
   };
 
   const handlePlayLesson = (id: string) => {
-    window.location.href = `/listening/${id}`;
+    navigate(`/listening/${id}`);
   };
 
   const filteredLessons = lessons.filter((lesson) => selectedLevel === 'Tất cả' || lesson.level === selectedLevel);
@@ -122,7 +121,7 @@ const ListeningPage = () => {
   const clearFilters = () => {
     setSearchText('');
     setSelectedLevel('Tất cả');
-    void loadLessons();
+    void loadLessons(undefined, 'Tất cả');
   };
 
   const totalVisible = filteredLessons.length;
