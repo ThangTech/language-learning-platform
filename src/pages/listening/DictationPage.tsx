@@ -89,8 +89,8 @@ const DictationPage = () => {
     setSubmitError('');
 
     try {
-      if (id) {
-        const result = await submitListeningResult(id, avgScore);
+      if (dictationSet?.lessonId) {
+        const result = await submitListeningResult(dictationSet.lessonId, avgScore);
         if (!result.success) {
           setSubmitError(result.message || 'Không thể lưu kết quả');
           return;
