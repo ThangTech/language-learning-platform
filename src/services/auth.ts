@@ -29,7 +29,7 @@ export const login = async (request: { email: string; password: string }) => {
 };
 
 export const register = async (request: { email: string; password: string; fullName: string }) => {
-  const response = await api.post<ApiResponse<string>>("/api/auth/register", request);
+  const response = await api.post<ApiResponse<AuthResponse>>("/api/auth/register", request);
   return response.data;
 };
 
@@ -57,7 +57,24 @@ export const logout = () => {
 };
 
 export const getToken = () => {
-  return localStorage.getItem("token");
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const parts = token.split('.');
+    if (parts.length >= 2) {
+      const payload = JSON.parse(atob(parts[1]));
+      if (payload.exp && payload.exp < Date.now() / 1000) {
+        localStorage.removeItem("token");
+        localStorage.removeItem(USER_STORAGE_KEY);
+        return null;
+      }
+    }
+  } catch {
+    return null;
+  }
+
+  return token;
 };
 
 export const getUser = (): UserDto | null => {
