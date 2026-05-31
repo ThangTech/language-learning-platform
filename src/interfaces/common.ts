@@ -17,6 +17,7 @@ export interface UserDto {
   email: string;
   fullName: string;
   avatarUrl?: string;
+  level?: string;
   role: string;
   status: string;
   displayName: string;
