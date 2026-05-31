@@ -17,6 +17,7 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import VocabularyPage from './pages/vocabulary/VocabularyPage';
 import FlashcardsPage from './pages/vocabulary/FlashcardsPage';
 import GrammarPage from './pages/grammar/GrammarPage';
+import GrammarDetailPage from './pages/grammar/GrammarDetailPage';
 import ListeningPage from './pages/listening/ListeningPage';
 import LessonDetailPage from './pages/listening/LessonDetailPage';
 import DictationPage from './pages/listening/DictationPage';
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
           { path: 'vocabulary', element: <VocabularyPage /> },
           { path: 'flashcards', element: <FlashcardsPage /> },
           { path: 'grammar', element: <GrammarPage /> },
+          { path: 'grammar/:id', element: <GrammarDetailPage /> },
           { path: 'listening', element: <ListeningPage /> },
           { path: 'listening/dictation/:id', element: <DictationPage /> },
           { path: 'listening/:id', element: <LessonDetailPage /> },
