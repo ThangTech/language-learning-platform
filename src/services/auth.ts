@@ -38,7 +38,7 @@ export const getProfile = async () => {
   return response.data;
 };
 
-export const updateProfile = async (request: { fullName: string; avatarUrl?: string; level?: string }) => {
+export const updateProfile = async (request: { fullName: string; avatarUrl?: string; level?: string; bio?: string }) => {
   const response = await api.put<ApiResponse<UserDto>>("/api/auth/profile", request);
   if (response.data.success && response.data.data) {
     localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(response.data.data));
