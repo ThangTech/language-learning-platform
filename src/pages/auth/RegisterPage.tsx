@@ -21,6 +21,7 @@ const RegisterPage = () => {
         fullName: values.TenDangNhap,
         email: values.Email,
         password: values.MatKhau,
+        level: values.VaiTro,
       });
 
       if (result.success) {
