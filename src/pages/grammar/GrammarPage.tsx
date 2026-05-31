@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Input, message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { getUser } from '../../services/auth';
-import { createGrammarTopic, deleteGrammarTopic, getGrammarTopics, getUserGrammarProgress, markTopicCompleted, updateGrammarTopic } from '../../services/grammar';
+import { createGrammarTopic, deleteGrammarTopic, getGrammarTopics, getUserGrammarProgress, updateGrammarTopic } from '../../services/grammar';
 import GrammarHero from '../../components/grammar/GrammarHero';
 import GrammarGrid from '../../components/grammar/GrammarGrid';
 import GrammarFilters from '../../components/grammar/GrammarFilters';
@@ -91,19 +91,7 @@ const GrammarPage = () => {
     setEditingTopic(null);
   };
 
-  const handleToggleComplete = async (id: string) => {
-    try {
-      const result = await markTopicCompleted(id);
-      if (result.success) {
-        message.success('Đã đánh dấu hoàn thành');
-        setTopics((prev) => prev.map((topic) => (topic.id === id ? { ...topic, isCompleted: true } : topic)));
-      } else {
-        message.error(result.message || 'Không thể cập nhật trạng thái');
-      }
-    } catch (error: any) {
-      message.error(error?.response?.data?.message || 'Lỗi kết nối');
-    }
-  };
+
 
   const handleSaveTopic = async (values: {
     title: string;
@@ -167,7 +155,7 @@ const GrammarPage = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <GrammarHero totalTopics={topics.length} completedCount={topics.filter((topic) => topic.isCompleted).length} />
 
       <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -194,7 +182,6 @@ const GrammarPage = () => {
           isAdmin={isAdmin}
           onEditTopic={handleEditTopic}
           onDeleteTopic={handleDeleteTopic}
-          onCompleteTopic={handleToggleComplete}
         />
       ) : (
         <GrammarEmptyState

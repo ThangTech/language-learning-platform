@@ -4,11 +4,15 @@ import { getUser, logout } from '../../services/auth';
 import { getStreak } from '../../services/progress';
 import { getLessons } from '../../services/listening';
 import { getWords } from '../../services/vocabulary';
+import { getGrammarTopics } from '../../services/grammar';
+import { getQuizzes } from '../../services/quiz';
 import { getNotifications } from '../../services/notification';
 import { Button } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import type { ListeningLessonDto } from '../../interfaces/listening';
 import type { WordDto } from '../../interfaces/vocabulary';
+import type { GrammarTopicDto } from '../../interfaces/grammar';
+import type { QuizDto } from '../../interfaces/quiz';
 import type { UserDto } from '../../interfaces/common';
 
 interface SearchResult {
@@ -73,25 +77,29 @@ const DashboardTopbar = () => {
 
     const timer = setTimeout(async () => {
       try {
-        const [lessonRes, wordRes] = await Promise.all([
+        const [lessonRes, wordRes, grammarRes, quizRes] = await Promise.all([
           getLessons(1, 4, undefined, q),
           getWords(1, 4, undefined, q),
+          getGrammarTopics(1, 4, undefined, q),
+          getQuizzes(),
         ]);
 
         const results: SearchResult[] = [];
 
+        // 1. Listening Lessons
         if (lessonRes.success && lessonRes.data?.items) {
           lessonRes.data.items.forEach((l: ListeningLessonDto) => {
             results.push({
               id: `lesson-${l.id}`,
               label: l.title,
-              sub: `Bài nghe · ${l.level} · ${l.durationText}`,
+              sub: `Bài nghe · Cấp độ ${l.level} · ${l.durationText}`,
               icon: 'headphones',
               route: `/listening/${l.id}`,
             });
           });
         }
 
+        // 2. Vocabulary Words
         if (wordRes.success && wordRes.data?.items) {
           wordRes.data.items.forEach((w: WordDto) => {
             results.push({
@@ -100,6 +108,48 @@ const DashboardTopbar = () => {
               sub: `Từ vựng · ${w.definition}`,
               icon: 'style',
               route: `/vocabulary?q=${encodeURIComponent(w.term)}`,
+            });
+          });
+        }
+
+        // 3. Grammar Topics
+        if (grammarRes.success && grammarRes.data?.items) {
+          grammarRes.data.items.forEach((g: GrammarTopicDto) => {
+            results.push({
+              id: `grammar-${g.id}`,
+              label: g.title,
+              sub: `Ngữ pháp · ${g.level === 'Beginner' ? 'Cơ bản' : g.level === 'Intermediate' ? 'Trung cấp' : 'Nâng cao'}`,
+              icon: 'menu_book',
+              route: `/grammar/${g.id}`,
+            });
+          });
+        }
+
+        // 4. Quizzes (filtered client-side)
+        if (quizRes.success && quizRes.data) {
+          const matchedQuizzes = quizRes.data.filter((qz: QuizDto) =>
+            qz.title.toLowerCase().includes(q.toLowerCase())
+          ).slice(0, 4);
+
+          matchedQuizzes.forEach((qz: QuizDto) => {
+            // Determine best route: if associated with lesson, route to lesson detail. If grammar, route to grammar detail.
+            let route = '/quiz';
+            let subText = `Bài kiểm tra · Cấp độ ${qz.difficulty}`;
+            if (qz.lessonId) {
+              route = `/listening/${qz.lessonId}`;
+              subText = `Bài kiểm tra (Bài nghe) · Cấp độ ${qz.difficulty}`;
+            } else if (qz.id) {
+              // We could also check if it has a grammar topic or look it up. Let's make it route elegantly.
+              // If it's a grammar quiz, we'll route to grammar or keep at `/quiz` with filter.
+              route = `/quiz?q=${encodeURIComponent(qz.title)}`;
+            }
+
+            results.push({
+              id: `quiz-${qz.id}`,
+              label: qz.title,
+              sub: subText,
+              icon: 'quiz',
+              route: route,
             });
           });
         }
@@ -162,7 +212,7 @@ const DashboardTopbar = () => {
             onKeyDown={handleSearchKeyDown}
             onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
             onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-            placeholder="Tìm bài nghe, từ vựng..."
+            placeholder="Tìm kiếm bài nghe, từ vựng, ngữ pháp, bài kiểm tra..."
             className="w-full pl-10 pr-4 py-2 rounded-full text-sm
                        bg-surface-container-low border border-outline-variant/50
                        text-on-surface placeholder:text-outline

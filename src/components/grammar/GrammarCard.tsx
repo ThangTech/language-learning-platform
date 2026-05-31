@@ -8,7 +8,6 @@ interface GrammarCardProps {
   isCompleted?: boolean;
   onEdit?: (topic: GrammarTopicDto) => void;
   onDelete?: (id: string) => void;
-  onComplete?: (id: string) => void;
 }
 
 const getLevelColor = (level: string) => {
@@ -31,7 +30,6 @@ const GrammarCard = ({
   isCompleted = false,
   onEdit,
   onDelete,
-  onComplete,
 }: GrammarCardProps) => {
   return (
     <div className="bg-surface-container-lowest rounded-[1.5rem] p-6 border border-outline-variant/10 shadow-sm hover:shadow-lg transition-all">
@@ -88,7 +86,7 @@ const GrammarCard = ({
           Tiến độ
         </Link>
         <div className="flex items-center gap-2">
-          {isAdmin ? (
+          {isAdmin && (
             <>
               <Button size="small" onClick={() => onEdit?.(topic)}>
                 Sửa
@@ -105,14 +103,6 @@ const GrammarCard = ({
                 </Button>
               </Popconfirm>
             </>
-          ) : (
-            <Button
-              type={isCompleted ? 'default' : 'primary'}
-              disabled={isCompleted}
-              onClick={() => onComplete?.(topic.id)}
-            >
-              {isCompleted ? 'Đã hoàn thành' : 'Đánh dấu hoàn thành'}
-            </Button>
           )}
         </div>
       </div>
