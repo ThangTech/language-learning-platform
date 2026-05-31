@@ -2,9 +2,15 @@ interface StatCardProps {
   icon: string;
   iconBgClass: string;
   iconColorClass: string;
-  value: string;
+  value: string | number;
   label: string;
   badge?: React.ReactNode;
+}
+
+interface StatsCardsProps {
+  wordsLearned: number;
+  quizzesCompleted: number;
+  listeningCompleted: number;
 }
 
 const StatCard = ({ icon, iconBgClass, iconColorClass, value, label, badge }: StatCardProps) => (
@@ -25,7 +31,7 @@ const StatCard = ({ icon, iconBgClass, iconColorClass, value, label, badge }: St
   </div>
 );
 
-const StatsCards = () => {
+const StatsCards = ({ wordsLearned, quizzesCompleted, listeningCompleted }: StatsCardsProps) => {
   return (
     <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6">
       {/* Vocabulary Terms */}
@@ -33,10 +39,12 @@ const StatsCards = () => {
         icon="translate"
         iconBgClass="bg-secondary/10"
         iconColorClass="text-secondary"
-        value="1.284"
+        value={wordsLearned.toLocaleString('vi-VN')}
         label="Từ vựng đã học"
         badge={
-          <span className="font-headline font-bold text-sm text-secondary">+24 hôm nay</span>
+          wordsLearned === 0
+            ? <span className="font-headline font-bold text-sm text-outline">Chưa có</span>
+            : <span className="font-headline font-bold text-sm text-secondary">Đang tiến bộ 🚀</span>
         }
       />
 
@@ -45,7 +53,7 @@ const StatsCards = () => {
         icon="fact_check"
         iconBgClass="bg-tertiary/10"
         iconColorClass="text-tertiary"
-        value="156"
+        value={quizzesCompleted}
         label="Bài kiểm tra đã hoàn thành"
         badge={
           <div className="flex -space-x-2">
@@ -54,29 +62,25 @@ const StatsCards = () => {
                          bg-primary-fixed flex items-center justify-center
                          font-headline text-[10px] font-bold text-on-primary-fixed"
             >
-              A+
-            </div>
-            <div
-              className="w-8 h-8 rounded-full border-2 border-surface-container-lowest
-                         bg-secondary-container flex items-center justify-center
-                         font-headline text-[10px] font-bold text-on-secondary-container"
-            >
-              B
+              {quizzesCompleted > 0 ? '✓' : '–'}
             </div>
           </div>
         }
       />
 
-      {/* Focused Learning */}
+      {/* Listening Done */}
       <StatCard
-        icon="schedule"
+        icon="headphones"
         iconBgClass="bg-primary/10"
         iconColorClass="text-primary"
-        value="42,5h"
-        label="Thời gian học tập"
+        value={listeningCompleted}
+        label="Bài nghe đã hoàn thành"
         badge={
           <div className="w-24 h-2 bg-surface-container-highest rounded-full overflow-hidden">
-            <div className="bg-primary h-full w-3/4 rounded-full" />
+            <div
+              className="bg-primary h-full rounded-full transition-all duration-500"
+              style={{ width: `${Math.min(100, listeningCompleted * 10)}%` }}
+            />
           </div>
         }
       />
