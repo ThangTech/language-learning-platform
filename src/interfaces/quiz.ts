@@ -47,3 +47,18 @@ export interface UpdateQuizRequest {
   type: string;
   durationMinutes: number;
 }
+
+export interface QuizAnswerResultDto {
+  questionId: string;
+  isCorrect: boolean;
+  correctAnswer: string;
+  explanation?: string;
+}
+
+export interface QuizResultDto {
+  quizId: string;
+  totalQuestions: number;
+  correctAnswers: number;
+  score: number;
+  answers: QuizAnswerResultDto[];
+}
