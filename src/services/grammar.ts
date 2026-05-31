@@ -20,6 +20,7 @@ export const createGrammarTopic = async (data: {
   explanation?: string;
   examples?: string;
   level: string;
+  youTubeUrl?: string;
 }) => {
   const response = await api.post<ApiResponse<GrammarTopicDto>>("/api/grammar", data);
   return response.data;
@@ -31,6 +32,7 @@ export const updateGrammarTopic = async (id: string, data: Partial<{
   explanation?: string;
   examples?: string;
   level: string;
+  youTubeUrl?: string;
 }>) => {
   const response = await api.put<ApiResponse<GrammarTopicDto>>(`/api/grammar/${id}`, data);
   return response.data;
