@@ -1,70 +1,118 @@
-/** Dữ liệu bar theo tuần — xen kẽ Độ chính xác (primary) và Ghi nhớ (secondary). */
-const BARS = [
-  { type: 'accuracy', heightPercent: 40 },
-  { type: 'retention', heightPercent: 60 },
-  { type: 'accuracy', heightPercent: 55 },
-  { type: 'retention', heightPercent: 85 },
-  { type: 'accuracy', heightPercent: 70 },
-  { type: 'retention', heightPercent: 92 },
-  { type: 'accuracy', heightPercent: 80 },
-  { type: 'retention', heightPercent: 75 },
-  { type: 'accuracy', heightPercent: 95 },
-  { type: 'retention', heightPercent: 88 },
-] as const;
+import { Column } from '@ant-design/charts';
+import type { UserProgressDto } from '../../interfaces/progress';
 
-const DAY_LABELS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+interface FluencyChartProps {
+  progress: UserProgressDto | null;
+}
 
-const FluencyChart = () => {
+/**
+ * FluencyChart — Dùng Ant Design Charts (Column chart) để hiển thị tiến trình tuần hiện tại.
+ * Dữ liệu là số bài đã hoàn thành (listening + quizzes) tính trên tổng.
+ */
+const FluencyChart = ({ progress }: FluencyChartProps) => {
+  // Tạo dữ liệu bar chart từ progress thực tế
+  const chartData = [
+    {
+      category: 'Từ vựng',
+      value: progress?.wordsLearned ?? 0,
+      type: 'Số từ đã học',
+    },
+    {
+      category: 'Nghe',
+      value: progress?.listeningCompleted ?? 0,
+      type: 'Bài nghe',
+    },
+    {
+      category: 'Quiz',
+      value: progress?.quizzesCompleted ?? 0,
+      type: 'Bài quiz',
+    },
+    {
+      category: 'Ngữ pháp',
+      value: progress?.grammarCompleted ?? 0,
+      type: 'Chủ điểm ngữ pháp',
+    },
+  ];
+
+  const config = {
+    data: chartData,
+    xField: 'category',
+    yField: 'value',
+    colorField: 'category',
+    color: ['#6750a4', '#625b71', '#7d5260', '#4a6741'],
+    label: {
+      position: 'top' as const,
+      style: { fill: '#49454f', fontSize: 12, fontWeight: 600 },
+      formatter: (datum: { value: number }) => `${datum.value}`,
+    },
+    xAxis: {
+      label: {
+        style: { fill: '#49454f', fontSize: 13, fontWeight: 600 },
+      },
+    },
+    yAxis: {
+      label: {
+        formatter: (v: string) => `${v}`,
+        style: { fill: '#49454f', fontSize: 12 },
+      },
+      grid: { line: { style: { stroke: '#e7e0ec', lineWidth: 1 } } },
+    },
+    columnStyle: {
+      radius: [8, 8, 0, 0],
+    },
+    tooltip: {
+      formatter: (datum: { category: string; value: number }) => ({
+        name: datum.category,
+        value: datum.value,
+      }),
+    },
+    animation: {
+      appear: {
+        animation: 'scale-in-y',
+        duration: 600,
+      },
+    },
+  };
+
+  const isEmpty =
+    (progress?.wordsLearned ?? 0) === 0 &&
+    (progress?.listeningCompleted ?? 0) === 0 &&
+    (progress?.quizzesCompleted ?? 0) === 0 &&
+    (progress?.grammarCompleted ?? 0) === 0;
+
   return (
     <div className="col-span-12 bg-surface-container-low rounded-[2rem] p-10">
       {/* Chart header */}
-      <div className="flex items-center justify-between mb-10">
-        <h3 className="font-headline font-bold text-2xl tracking-tight text-on-surface">
-          Tiến trình học tập
-        </h3>
-
-        {/* Legend */}
-        <div className="flex gap-5">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-primary" />
-            <span className="font-headline text-sm font-medium text-on-surface-variant">
-              Độ chính xác
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-secondary" />
-            <span className="font-headline text-sm font-medium text-on-surface-variant">
-              Ghi nhớ
-            </span>
-          </div>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h3 className="font-headline font-bold text-2xl tracking-tight text-on-surface">
+            Thống kê tiến trình học tập
+          </h3>
+          <p className="text-sm text-on-surface-variant mt-1">
+            {isEmpty
+              ? 'Hãy bắt đầu học để xem thống kê của bạn!'
+              : `Tổng điểm: ${progress?.totalScore ?? 0} điểm`}
+          </p>
         </div>
+        {!isEmpty && (
+          <div className="px-4 py-2 bg-primary/10 rounded-full">
+            <span className="text-primary font-headline font-bold text-sm">
+              {progress?.scoreText ?? ''}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Bars */}
-      <div className="h-48 flex items-end gap-3">
-        {BARS.map((bar, i) => (
-          <div
-            key={i}
-            style={{ height: `${bar.heightPercent}%` }}
-            className={`flex-1 rounded-t-2xl transition-colors duration-200 cursor-pointer
-              ${
-                bar.type === 'accuracy'
-                  ? 'bg-primary/20 hover:bg-primary/50'
-                  : 'bg-secondary/20 hover:bg-secondary/50'
-              }`}
-            title={`${bar.type === 'accuracy' ? 'Độ chính xác' : 'Ghi nhớ'}: ${bar.heightPercent}%`}
-          />
-        ))}
-      </div>
-
-      {/* Day labels */}
-      <div className="flex justify-between mt-4 px-1">
-        {DAY_LABELS.map((day) => (
-          <span key={day} className="font-headline text-xs font-bold text-outline tracking-widest">
-            {day}
-          </span>
-        ))}
-      </div>
+      {isEmpty ? (
+        <div className="h-48 flex flex-col items-center justify-center gap-3">
+          <span className="material-symbols-outlined text-5xl text-outline">bar_chart</span>
+          <p className="text-on-surface-variant text-sm font-medium">
+            Chưa có dữ liệu. Hãy hoàn thành bài học đầu tiên!
+          </p>
+        </div>
+      ) : (
+        <Column {...config} height={220} />
+      )}
     </div>
   );
 };
