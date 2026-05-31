@@ -95,10 +95,15 @@ const router = createBrowserRouter([
         ],
       },
       {
-        element: <RoleRoute roles={['Admin']} />,
+        element: <DashboardLayout />,
         children: [
-          { path: 'dashboard/admin', element: <AdminDashboardPage /> },
-          { path: 'dashboard/admin/users', element: <AdminUsersPage /> },
+          {
+            element: <RoleRoute roles={['Admin']} />,
+            children: [
+              { path: 'dashboard/admin', element: <AdminDashboardPage /> },
+              { path: 'dashboard/admin/users', element: <AdminUsersPage /> },
+            ],
+          },
         ],
       },
     ],

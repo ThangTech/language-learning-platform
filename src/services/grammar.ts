@@ -26,14 +26,14 @@ export const createGrammarTopic = async (data: {
   return response.data;
 };
 
-export const updateGrammarTopic = async (id: string, data: Partial<{
-  title: string;
-  content: string;
+export const updateGrammarTopic = async (id: string, data: {
+  title?: string;
+  content?: string;
   explanation?: string;
   examples?: string;
-  level: string;
+  level?: string;
   youTubeUrl?: string;
-}>) => {
+}) => {
   const response = await api.put<ApiResponse<GrammarTopicDto>>(`/api/grammar/${id}`, data);
   return response.data;
 };

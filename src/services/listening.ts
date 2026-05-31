@@ -27,15 +27,15 @@ export const createLesson = async (data: {
   return response.data;
 };
 
-export const updateLesson = async (id: string, data: Partial<{
-  title: string;
-  description: string;
-  audioUrl: string;
-  level: string;
-  topic: string;
-  duration: number;
+export const updateLesson = async (id: string, data: {
+  title?: string;
+  description?: string;
+  audioUrl?: string;
+  level?: string;
+  topic?: string;
+  duration?: number;
   transcriptJson?: string;
-}>) => {
+}) => {
   const response = await api.put<ApiResponse<ListeningLessonDto>>(`/api/listening/${id}`, data);
   return response.data;
 };

@@ -43,7 +43,7 @@ const FluencyChart = ({ progress }: FluencyChartProps) => {
     label: {
       position: 'top' as const,
       style: { fill: '#49454f', fontSize: 12, fontWeight: 600 },
-      formatter: (datum: { value: number }) => `${datum.value}`,
+      formatter: (text: string) => text,
     },
     xAxis: {
       label: {

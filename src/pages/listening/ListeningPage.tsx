@@ -1,17 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
-import ListeningHero from '../../components/listening/ListeningHero';
-import ListeningGrid from '../../components/listening/ListeningGrid';
-import ListeningToolbar from '../../components/listening/ListeningToolbar';
-import ListeningEmptyState from '../../components/listening/ListeningEmptyState';
-import ListeningJourneyCta from '../../components/listening/ListeningJourneyCta';
+import {
+  CustomerServiceOutlined,
+  TeamOutlined,
+  FileTextOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import AddLessonModal from '../../components/listening/AddLessonModal';
 import { getLessons, createLesson, updateLesson, deleteLesson } from '../../services/listening';
 import { getUser } from '../../services/auth';
 import type { ListeningLessonDto } from '../../interfaces/listening';
 
-const LEVELS = ['A1', 'A2', 'B1', 'B2'];
+const PART_ICONS = [
+  <CustomerServiceOutlined key="p1" className="text-4xl text-primary" />,
+  <TeamOutlined key="p2" className="text-4xl text-primary" />,
+  <FileTextOutlined key="p3" className="text-4xl text-primary" />,
+];
+
+const LEVEL_COLORS: Record<string, string> = {
+  B1: 'bg-primary-fixed text-on-primary-fixed',
+  B2: 'bg-secondary-fixed text-on-secondary-container',
+};
 
 const ListeningPage = () => {
   const user = getUser();
@@ -19,20 +30,15 @@ const ListeningPage = () => {
   const navigate = useNavigate();
 
   const [lessons, setLessons] = useState<ListeningLessonDto[]>([]);
-  const [selectedLevel, setSelectedLevel] = useState<string>('Tất cả');
-  const [searchText, setSearchText] = useState('');
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState<ListeningLessonDto | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  const loadLessons = async (search?: string, level?: string) => {
+  const loadLessons = async () => {
     try {
-      const apiLevel = level === 'Tất cả' ? undefined : level;
-      const result = await getLessons(1, 100, apiLevel, search);
+      const result = await getLessons(1, 50);
       if (result.success && result.data) {
         setLessons(result.data.items);
-      } else {
-        message.error(result.message || 'Không thể tải bài nghe');
       }
     } catch (error: any) {
       message.error(error?.response?.data?.message || 'Lỗi kết nối');
@@ -40,12 +46,19 @@ const ListeningPage = () => {
   };
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      void loadLessons(searchText.trim() || undefined, selectedLevel);
-    }, 400);
+    void loadLessons();
+  }, []);
 
-    return () => window.clearTimeout(timer);
-  }, [searchText, selectedLevel]);
+  const vstepLessons = lessons.filter((l) =>
+    l.title.toLowerCase().includes('vstep listening part')
+  );
+
+  const displayLessons =
+    vstepLessons.length === 3
+      ? vstepLessons
+      : lessons.slice(0, 3).length > 0
+        ? lessons.slice(0, 3)
+        : [];
 
   const handleAddLesson = () => {
     setEditingLesson(null);
@@ -72,7 +85,7 @@ const ListeningPage = () => {
         const result = await updateLesson(editingLesson.id, values);
         if (result.success) {
           message.success('Đã cập nhật bài nghe');
-          loadLessons();
+          void loadLessons();
         } else {
           message.error(result.message || 'Không thể cập nhật');
         }
@@ -80,7 +93,7 @@ const ListeningPage = () => {
         const result = await createLesson(values);
         if (result.success) {
           message.success('Đã thêm bài nghe');
-          loadLessons();
+          void loadLessons();
         } else {
           message.error(result.message || 'Không thể thêm bài nghe');
         }
@@ -108,82 +121,87 @@ const ListeningPage = () => {
     }
   };
 
-  const handlePlayLesson = (id: string) => {
-    navigate(`/listening/${id}`);
-  };
-
-  const filteredLessons = lessons.filter((lesson) => selectedLevel === 'Tất cả' || lesson.level === selectedLevel);
-  const normalizedSearch = searchText.trim();
-  const isSearchActive = normalizedSearch.length > 0;
-
-  const clearSearch = () => setSearchText('');
-  const clearLevel = () => setSelectedLevel('Tất cả');
-  const clearFilters = () => {
-    setSearchText('');
-    setSelectedLevel('Tất cả');
-    void loadLessons(undefined, 'Tất cả');
-  };
-
-  const totalVisible = filteredLessons.length;
-  let emptyMessage = 'Chưa có bài nghe phù hợp.';
-  let emptyHint = 'Thử chọn cấp độ khác hoặc thêm bài nghe mới nếu bạn là admin.';
-
-  if (isSearchActive) {
-    emptyMessage = 'Không có bài nghe khớp từ khóa này.';
-    emptyHint = 'Thử đổi từ khóa tìm kiếm hoặc bỏ lọc cấp độ.';
-  } else if (selectedLevel !== 'Tất cả') {
-    emptyMessage = `Chưa có bài nghe cấp độ ${selectedLevel}.`;
-    emptyHint = 'Thử chọn cấp độ khác hoặc quay lại toàn bộ danh sách.';
-  }
-
   return (
-    <div className="max-w-6xl mx-auto">
-      <ListeningHero totalLessons={lessons.length} />
-
-      <ListeningToolbar
-        searchText={searchText}
-        onSearchTextChange={setSearchText}
-        onClearSearch={clearSearch}
-        levels={['Tất cả', ...LEVELS]}
-        selectedLevel={selectedLevel}
-        onSelectLevel={setSelectedLevel}
-      />
-
-      <div className="text-xs text-on-surface-variant mb-4">
-        {isSearchActive ? `Đang tìm: ${normalizedSearch}` : 'Tìm kiếm theo tiêu đề hoặc chủ đề để chọn bài nghe nhanh hơn.'}
+    <div className="max-w-6xl mx-auto pb-20">
+      <div className="mb-10 pt-8">
+        <h1 className="font-headline text-4xl font-extrabold text-on-surface">
+          Luyện nghe VSTEP
+        </h1>
+        <p className="mt-2 text-on-surface-variant max-w-2xl">
+          Bộ đề luyện nghe VSTEP gồm 3 phần với các dạng bài
+          Announcement, Conversation và Talk. Mỗi phần có một file
+          nghe duy nhất kèm câu hỏi trắc nghiệm và bài chép chính tả.
+        </p>
       </div>
 
-      {totalVisible > 0 ? (
-        <ListeningGrid
-          lessons={filteredLessons}
-          isAdmin={isAdmin}
-          onEditLesson={handleEditLesson}
-          onDeleteLesson={handleDeleteLesson}
-          onPlayLesson={handlePlayLesson}
-        />
-      ) : (
-        <ListeningEmptyState
-          title={emptyMessage}
-          hint={emptyHint}
-          searchActive={isSearchActive}
-          selectedLevel={selectedLevel}
-          onClearSearch={clearSearch}
-          onClearLevel={clearLevel}
-          onResetAll={clearFilters}
-        />
-      )}
+      <div className="grid gap-6 md:grid-cols-3">
+        {displayLessons.map((lesson, index) => {
+          const levelColor =
+            LEVEL_COLORS[lesson.level] || 'bg-surface-container text-on-surface';
+          const partNum = index + 1;
 
-      <div className="text-xs text-on-surface-variant mt-4">
-        Đang hiển thị {totalVisible} bài nghe phù hợp.
+          return (
+            <div key={lesson.id} className="relative group">
+              <button
+                onClick={() => navigate(`/listening/${lesson.id}`)}
+                className="flex w-full flex-col items-start rounded-[1.5rem] border border-outline-variant/10 bg-surface-container-lowest p-6 text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+              >
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+                  {PART_ICONS[index]}
+                </div>
+
+                <span className={`mb-2 rounded-full px-3 py-0.5 text-xs font-headline font-bold ${levelColor}`}>
+                  Part {partNum} - {lesson.level}
+                </span>
+
+                <h3 className="font-headline text-lg font-bold text-on-surface">
+                  {lesson.title}
+                </h3>
+
+                <p className="mt-1 text-sm text-on-surface-variant line-clamp-2">
+                  {lesson.description}
+                </p>
+
+                <div className="mt-4 flex items-center gap-4 text-xs text-on-surface-variant">
+                  <span>
+                    {Math.floor(lesson.duration / 60)}:
+                    {(lesson.duration % 60).toString().padStart(2, '0')}
+                  </span>
+                </div>
+              </button>
+
+              {isAdmin && (
+                <div className="absolute right-3 top-3 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditLesson(lesson);
+                    }}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-primary shadow hover:bg-primary/10"
+                  >
+                    <EditOutlined />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteLesson(lesson.id);
+                    }}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-red-500 shadow hover:bg-red-50"
+                  >
+                    <DeleteOutlined />
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
-
-      <ListeningJourneyCta />
 
       {isAdmin && (
         <div className="fixed bottom-10 right-10 z-50">
           <button
             onClick={handleAddLesson}
-            className="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
+            className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-on-primary shadow-lg hover:scale-105 transition-transform"
           >
             <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>add</span>
           </button>

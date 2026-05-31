@@ -26,14 +26,14 @@ export const createWord = async (data: {
   return response.data;
 };
 
-export const updateWord = async (id: string, data: Partial<{
-  term: string;
-  pronunciation: string;
-  definition: string;
-  exampleSentence: string;
-  topic: string;
-  levels: string[];
-}>) => {
+export const updateWord = async (id: string, data: {
+  term?: string;
+  pronunciation?: string;
+  definition?: string;
+  exampleSentence?: string;
+  topic?: string;
+  levels?: string[];
+}) => {
   const response = await api.put<ApiResponse<WordDto>>(`/api/words/${id}`, data);
   return response.data;
 };
