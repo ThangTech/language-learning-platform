@@ -56,7 +56,7 @@ const ProfileOverview = ({ activities }: ProfileOverviewProps) => {
             <span className="material-symbols-outlined text-tertiary text-[2rem]" style={{ fontVariationSettings: "'FILL' 1" }}>leaderboard</span>
             <div>
               <p className="font-headline font-bold text-on-surface">Bảng xếp hạng</p>
-              <p className="text-xs text-on-surface-variant">Đang xếp hạng #8</p>
+              <p className="text-xs text-on-surface-variant">Xem bảng xếp hạng của bạn</p>
             </div>
           </div>
         </Link>
