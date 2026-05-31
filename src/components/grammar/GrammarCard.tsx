@@ -79,11 +79,13 @@ const GrammarCard = ({
       )}
 
       <div className="flex items-center justify-between gap-3 pt-2">
-        <Link to="/listening" className="text-primary font-headline text-sm font-bold no-underline">
-          Học qua Listening
+        <Link to={`/grammar/${topic.id}`} className="text-primary font-headline text-sm font-bold no-underline flex items-center gap-1 hover:opacity-85">
+          <span className="material-symbols-outlined text-[1.1rem]">menu_book</span>
+          Học bài này
         </Link>
-        <Link to="/progress" className="text-secondary font-headline text-sm font-bold no-underline">
-          Xem tiến độ
+        <Link to="/progress" className="text-secondary font-headline text-sm font-bold no-underline flex items-center gap-1 hover:opacity-85">
+          <span className="material-symbols-outlined text-[1.1rem]">insights</span>
+          Tiến độ
         </Link>
         <div className="flex items-center gap-2">
           {isAdmin ? (
