@@ -1,6 +1,6 @@
 import api from "./api";
 import type { ApiResponse } from "../interfaces/common";
-import type { CreateQuizRequest, QuizDto, UpdateQuizRequest } from "../interfaces/quiz";
+import type { CreateQuizRequest, QuizDto, UpdateQuizRequest, QuizResultDto } from "../interfaces/quiz";
 
 export const getQuizzes = async () => {
   const response = await api.get<ApiResponse<QuizDto[]>>("/api/quizzes");
@@ -14,6 +14,11 @@ export const getQuizById = async (id: string) => {
 
 export const getQuizzesByLesson = async (lessonId: string) => {
   const response = await api.get<ApiResponse<QuizDto[]>>(`/api/quizzes/by-lesson/${lessonId}`);
+  return response.data;
+};
+
+export const getQuizzesByGrammar = async (grammarTopicId: string) => {
+  const response = await api.get<ApiResponse<QuizDto[]>>(`/api/quizzes/by-grammar/${grammarTopicId}`);
   return response.data;
 };
 
@@ -33,7 +38,7 @@ export const deleteQuiz = async (id: string) => {
 };
 
 export const submitQuiz = async (quizId: string, answers: { questionId: string; answer: string }[]) => {
-  const response = await api.post<ApiResponse<boolean>>("/api/quizzes/submit", {
+  const response = await api.post<ApiResponse<QuizResultDto>>("/api/quizzes/submit", {
     quizId,
     answers,
   });
