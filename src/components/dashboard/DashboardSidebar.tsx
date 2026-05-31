@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { getUser } from '../../services/auth';
+import type { UserDto } from '../../interfaces/common';
 
 const USER_NAV_ITEMS = [
   { label: 'Tổng quan', icon: 'dashboard', to: '/dashboard/user' },
@@ -26,9 +28,19 @@ const BOTTOM_ITEMS = [
 ];
 
 const DashboardSidebar = () => {
-  const user = getUser();
+  const [user, setUser] = useState<UserDto | null>(getUser());
   const isAdmin = user?.role?.toLowerCase() === 'admin';
   const navItems = isAdmin ? ADMIN_NAV_ITEMS : USER_NAV_ITEMS;
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setUser(getUser());
+    };
+    window.addEventListener('user-profile-updated', handleProfileUpdate);
+    return () => {
+      window.removeEventListener('user-profile-updated', handleProfileUpdate);
+    };
+  }, []);
 
   return (
     <aside
@@ -44,7 +56,7 @@ const DashboardSidebar = () => {
         </p>
       </div>
 
-      <nav className="flex-1 flex flex-col gap-1">
+      <nav className="flex-1 flex flex-col gap-1 overflow-y-auto">
         {navItems.map((item) => (
           <NavLink
             key={item.to + item.label}
@@ -155,10 +167,14 @@ const DashboardSidebar = () => {
         {!isAdmin && (
           <NavLink to="/profile" className="no-underline">
             <div className="mt-5 flex items-center gap-3 p-2 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer">
-              <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
-                <span className="font-headline font-bold text-primary">
-                  {user?.initials || 'U'}
-                </span>
+              <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center shrink-0 border border-outline-variant/30 overflow-hidden">
+                {user?.avatarUrl ? (
+                  <img src={user.avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="font-headline font-bold text-primary">
+                    {user?.initials || 'U'}
+                  </span>
+                )}
               </div>
               <div className="overflow-hidden flex-1">
                 <p className="font-headline font-bold text-sm text-on-surface leading-tight truncate">
