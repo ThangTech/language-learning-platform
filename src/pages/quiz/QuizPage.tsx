@@ -216,7 +216,9 @@ const QuizPage = () => {
     });
   };
 
-  const lessonQuizzes = lessonId ? quizzes.filter((quiz) => quiz.lessonId === lessonId) : quizzes;
+  const lessonQuizzes = lessonId
+    ? quizzes.filter((quiz) => quiz.lessonId === lessonId)
+    : quizzes.filter((quiz) => quiz.grammarTopicId || !quiz.lessonId);
 
   const filteredQuizzes = lessonQuizzes.filter((quiz) => {
     const difficultyMap: Record<string, string> = {
