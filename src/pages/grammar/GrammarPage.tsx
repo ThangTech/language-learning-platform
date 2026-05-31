@@ -111,6 +111,7 @@ const GrammarPage = () => {
     explanation?: string;
     examples?: string;
     level: string;
+    youTubeUrl?: string;
   }) => {
     setLoading(true);
     try {
