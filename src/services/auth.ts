@@ -28,7 +28,7 @@ export const login = async (request: { email: string; password: string }) => {
   return response.data;
 };
 
-export const register = async (request: { email: string; password: string; fullName: string }) => {
+export const register = async (request: { email: string; password: string; fullName: string; level?: string }) => {
   const response = await api.post<ApiResponse<AuthResponse>>("/api/auth/register", request);
   return response.data;
 };
@@ -38,7 +38,7 @@ export const getProfile = async () => {
   return response.data;
 };
 
-export const updateProfile = async (request: { fullName: string; avatarUrl?: string }) => {
+export const updateProfile = async (request: { fullName: string; avatarUrl?: string; level?: string }) => {
   const response = await api.put<ApiResponse<UserDto>>("/api/auth/profile", request);
   if (response.data.success && response.data.data) {
     localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(response.data.data));
