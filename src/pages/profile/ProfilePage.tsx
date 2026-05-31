@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, message } from 'antd';
+import { Form, message, Modal, Button } from 'antd';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import ProfileHero from '../../components/profile/ProfileHero';
@@ -23,6 +23,11 @@ const ProfilePage = () => {
   const [streak, setStreak] = useState<StreakDto | null>(null);
   const [saving, setSaving] = useState(false);
   const [form] = Form.useForm();
+
+  // Xem trước ảnh đại diện trong modal trước khi lưu
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [savingAvatar, setSavingAvatar] = useState(false);
 
   // Load dữ liệu thực từ API
   useEffect(() => {
@@ -85,7 +90,7 @@ const ProfilePage = () => {
   }[] = [];
 
   const handleEdit = () => {
-    form.setFieldsValue({ name: user?.fullName ?? '', bio: '' });
+    form.setFieldsValue({ name: user?.fullName ?? '', bio: user?.bio ?? '' });
     setIsEditing(true);
   };
 
@@ -96,10 +101,14 @@ const ProfilePage = () => {
   const handleSave = async (values: { name: string; bio: string }) => {
     setSaving(true);
     try {
-      const result = await updateProfile({ fullName: values.name, avatarUrl: user?.avatarUrl });
+      const result = await updateProfile({
+        fullName: values.name,
+        avatarUrl: user?.avatarUrl,
+        bio: values.bio,
+      });
       if (result.success && result.data) {
         setUser(result.data);
-        message.success('Đã cập nhật hồ sơ');
+        message.success('Đã cập nhật hồ sơ thành công');
         setIsEditing(false);
       } else {
         message.error(result.message || 'Không thể cập nhật hồ sơ');
@@ -111,35 +120,40 @@ const ProfilePage = () => {
     }
   };
 
-  // Xử lý upload ảnh đại diện — dùng base64 để preview, sau đó gửi URL lên API
-  const handleAvatarChange = async (info: UploadChangeParam<UploadFile>) => {
-    const file = info.file.originFileObj;
-    if (!file) return;
+  // Mở modal xem trước ảnh đại diện
+  const handleAvatarChange = (_info: UploadChangeParam<UploadFile>, previewBase64: string) => {
+    setAvatarPreview(previewBase64);
+    setIsPreviewModalOpen(true);
+  };
 
-    // Chuyển sang base64 để preview ngay lập tức
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64 = e.target?.result as string;
-      if (!base64) return;
-
-      // Cập nhật preview local
-      setUser((prev) => prev ? { ...prev, avatarUrl: base64 } : prev);
-
-      // Gửi lên API (dùng base64 làm avatarUrl hoặc URL blob)
-      try {
-        const result = await updateProfile({
-          fullName: user?.fullName ?? '',
-          avatarUrl: base64,
-        });
-        if (result.success && result.data) {
-          setUser(result.data);
-          message.success('Đã cập nhật ảnh đại diện');
-        }
-      } catch {
-        message.error('Không thể cập nhật ảnh đại diện');
+  // Lưu ảnh đại diện từ modal
+  const handleSaveAvatar = async () => {
+    if (!avatarPreview) return;
+    setSavingAvatar(true);
+    try {
+      const result = await updateProfile({
+        fullName: user?.fullName ?? '',
+        avatarUrl: avatarPreview,
+        bio: user?.bio,
+      });
+      if (result.success && result.data) {
+        setUser(result.data);
+        message.success('Đã cập nhật ảnh đại diện thành công');
+        setIsPreviewModalOpen(false);
+        setAvatarPreview(null);
+      } else {
+        message.error(result.message || 'Không thể lưu ảnh đại diện');
       }
-    };
-    reader.readAsDataURL(file);
+    } catch {
+      message.error('Không thể cập nhật ảnh đại diện');
+    } finally {
+      setSavingAvatar(false);
+    }
+  };
+
+  const handleCancelAvatarPreview = () => {
+    setIsPreviewModalOpen(false);
+    setAvatarPreview(null);
   };
 
   return (
@@ -148,9 +162,9 @@ const ProfilePage = () => {
         isEditing={isEditing}
         name={user?.fullName ?? user?.displayName ?? 'Học Viên'}
         avatarUrl={user?.avatarUrl}
+        bio={user?.bio}
         initials={user?.initials ?? '?'}
         streakDays={streak?.currentStreak ?? progress?.currentStreak ?? 0}
-        joinedAt={undefined}
         saving={saving}
         onEdit={handleEdit}
         onCancel={handleCancel}
@@ -168,6 +182,50 @@ const ProfilePage = () => {
       )}
       {activeTab === 'Thống kê' && <ProfileStatsTab progress={progress} streak={streak} />}
       {activeTab === 'Cài đặt' && <ProfileSettingsTab />}
+
+      {/* Modal Xem Trước Ảnh Đại Diện */}
+      <Modal
+        title={
+          <span className="font-headline font-bold text-lg text-on-surface">
+            Xem trước ảnh đại diện
+          </span>
+        }
+        open={isPreviewModalOpen}
+        onCancel={handleCancelAvatarPreview}
+        footer={[
+          <Button
+            key="cancel"
+            onClick={handleCancelAvatarPreview}
+            className="rounded-full px-5 border border-outline-variant text-on-surface-variant"
+          >
+            Hủy
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={savingAvatar}
+            onClick={handleSaveAvatar}
+            className="rounded-full px-5 bg-primary text-on-primary font-bold"
+          >
+            Lưu ảnh đại diện
+          </Button>,
+        ]}
+        centered
+        className="max-w-sm"
+      >
+        <div className="flex flex-col items-center justify-center gap-4 py-6">
+          {avatarPreview && (
+            <img
+              src={avatarPreview}
+              alt="Preview"
+              className="w-40 h-40 rounded-full object-cover shadow-2xl border-4 border-primary/20"
+            />
+          )}
+          <p className="text-on-surface-variant text-sm text-center">
+            Bạn có chắc chắn muốn chọn ảnh này làm ảnh đại diện của mình?
+          </p>
+        </div>
+      </Modal>
     </div>
   );
 };
