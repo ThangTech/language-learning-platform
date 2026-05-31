@@ -9,6 +9,7 @@ export interface GrammarTopicDto {
   levelColor: string;
   createdAt: string;
   isCompleted?: boolean;
+  youTubeUrl?: string;
 }
 
 export interface UserGrammarDto {
