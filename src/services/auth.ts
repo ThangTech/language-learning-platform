@@ -42,6 +42,7 @@ export const updateProfile = async (request: { fullName: string; avatarUrl?: str
   const response = await api.put<ApiResponse<UserDto>>("/api/auth/profile", request);
   if (response.data.success && response.data.data) {
     localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(response.data.data));
+    window.dispatchEvent(new Event("user-profile-updated"));
   }
   return response.data;
 };
