@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Form, Input, Button, Upload } from 'antd';
 import { CameraOutlined } from '@ant-design/icons';
 import type { UploadChangeParam } from 'antd/es/upload';
@@ -7,14 +8,14 @@ interface ProfileHeroProps {
   isEditing: boolean;
   name: string;
   avatarUrl?: string;
+  bio?: string;
   initials?: string;
   streakDays?: number;
-  joinedAt?: string;
   saving?: boolean;
   onEdit: () => void;
   onCancel: () => void;
   onSave: (values: { name: string; bio: string }) => void;
-  onAvatarChange?: (info: UploadChangeParam<UploadFile>) => void;
+  onAvatarChange?: (info: UploadChangeParam<UploadFile>, previewUrl: string) => void;
   form: any;
 }
 
@@ -22,6 +23,7 @@ const ProfileHero = ({
   isEditing,
   name,
   avatarUrl,
+  bio,
   initials = '?',
   streakDays = 0,
   saving = false,
@@ -31,15 +33,38 @@ const ProfileHero = ({
   onAvatarChange,
   form,
 }: ProfileHeroProps) => {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const handleUploadChange = (info: UploadChangeParam<UploadFile>) => {
+    const file = info.file.originFileObj;
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      if (!base64) return;
+      setPreviewUrl(base64);
+      onAvatarChange?.(info, base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCancel = () => {
+    setPreviewUrl(null);
+    onCancel();
+  };
+
+  const displayAvatar = previewUrl ?? avatarUrl;
+
   return (
     <section className="mb-8">
       <div className="bg-gradient-to-br from-primary/10 to-secondary/5 rounded-[2rem] p-8 border border-outline-variant/10">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          {/* Avatar với nút upload */}
+
           <div className="relative shrink-0">
-            {avatarUrl ? (
+            {displayAvatar ? (
               <img
-                src={avatarUrl}
+                src={displayAvatar}
                 alt="Avatar"
                 className="w-24 h-24 rounded-full object-cover shadow-xl border-2 border-primary/20"
               />
@@ -49,13 +74,18 @@ const ProfileHero = ({
               </div>
             )}
 
-            {/* Nút thay ảnh */}
-            {onAvatarChange && (
+            {previewUrl && isEditing && (
+              <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] text-primary font-bold whitespace-nowrap">
+                Ảnh mới
+              </span>
+            )}
+
+            {isEditing && onAvatarChange && (
               <Upload
                 accept="image/*"
                 showUploadList={false}
                 beforeUpload={() => false}
-                onChange={onAvatarChange}
+                onChange={handleUploadChange}
               >
                 <button
                   type="button"
@@ -91,6 +121,8 @@ const ProfileHero = ({
                     rows={2}
                     className="px-4 py-2 rounded-xl border-2 border-outline bg-surface-container-lowest text-sm outline-none resize-none"
                     placeholder="Nói gì đó về bản thân..."
+                    maxLength={200}
+                    showCount
                   />
                 </Form.Item>
 
@@ -104,7 +136,7 @@ const ProfileHero = ({
                     Lưu
                   </Button>
                   <Button
-                    onClick={onCancel}
+                    onClick={handleCancel}
                     className="px-5 py-2 border border-outline-variant text-on-surface-variant rounded-full text-sm"
                   >
                     Huỷ
@@ -114,11 +146,13 @@ const ProfileHero = ({
             ) : (
               <>
                 <h1 className="font-headline text-2xl font-extrabold text-on-surface">{name}</h1>
+
                 <p className="text-on-surface-variant text-sm mt-1">
-                  Đang luyện tập tiếng Anh chuẩn VSTEP 🎓
+                  {bio || 'Đang luyện tập tiếng Anh chuẩn VSTEP 🎓'}
                 </p>
+
                 <div className="flex items-center gap-3 mt-3 justify-center md:justify-start flex-wrap">
-                  {streakDays > 0 && (
+                  {streakDays > 0 ? (
                     <span className="text-xs text-primary flex items-center gap-1">
                       <span
                         className="material-symbols-outlined text-[0.9rem]"
@@ -128,8 +162,7 @@ const ProfileHero = ({
                       </span>
                       {streakDays} ngày liên tiếp
                     </span>
-                  )}
-                  {streakDays === 0 && (
+                  ) : (
                     <span className="text-xs text-outline flex items-center gap-1">
                       <span className="material-symbols-outlined text-[0.9rem]">
                         local_fire_department
