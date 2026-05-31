@@ -8,8 +8,9 @@ import VocabularyEmptyState from '../../components/vocabulary/VocabularyEmptySta
 import VocabularyJourneyCta from '../../components/vocabulary/VocabularyJourneyCta';
 import AddWordModal from '../../components/vocabulary/AddWordModal';
 import type { WordData } from '../../components/vocabulary/WordCard';
-import { getUser } from '../../services/auth';
+import { getUser, updateProfile } from '../../services/auth';
 import { addFavorite, createWord, deleteWord, getFavorites, getWords, removeFavorite, updateWord } from '../../services/vocabulary';
+import { getStats } from '../../services/progress';
 
 interface ApiWord {
   id: string;
@@ -25,12 +26,24 @@ const CATEGORIES = ['Tất cả', 'Văn học', 'Triết học', 'Kinh doanh', '
 const DIFFICULTIES = ['Tất cả', 'Sơ cấp', 'Trung cấp', 'Nâng cao'];
 
 const VocabularyPage = () => {
+  const [userLevel, setUserLevel] = useState<string>(() => {
+    const u = getUser();
+    return u?.level || 'Beginner';
+  });
+
   const user = getUser();
   const isAdmin = user?.role?.toLowerCase() === 'admin';
 
   const [words, setWords] = useState<WordData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
-  const [selectedDifficulty, setSelectedDifficulty] = useState('Tất cả');
+  const [selectedDifficulty, setSelectedDifficulty] = useState(() => {
+    const u = getUser();
+    const lvl = u?.level?.toLowerCase() || 'beginner';
+    if (lvl === 'beginner') return 'Sơ cấp';
+    if (lvl === 'intermediate') return 'Trung cấp';
+    if (lvl === 'advanced') return 'Nâng cao';
+    return 'Tất cả';
+  });
   const [searchText, setSearchText] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWord, setEditingWord] = useState<WordData | null>(null);
@@ -79,6 +92,47 @@ const VocabularyPage = () => {
   useEffect(() => {
     loadWords();
   }, []);
+
+  // Logic tự động nâng trình độ dựa trên tiến độ học
+  useEffect(() => {
+    const checkAndUpgradeLevel = async () => {
+      try {
+        const statsRes = await getStats();
+        if (statsRes.success && statsRes.data) {
+          const wordsLearned = statsRes.data.wordsLearned;
+          let currentLevel = userLevel;
+          let newLevel = currentLevel;
+
+          if (currentLevel === 'Beginner' && wordsLearned >= 5) {
+            newLevel = 'Intermediate';
+          } else if (currentLevel === 'Intermediate' && wordsLearned >= 15) {
+            newLevel = 'Advanced';
+          }
+
+          if (newLevel !== currentLevel) {
+            const updateRes = await updateProfile({
+              fullName: user?.fullName || 'Học Viên',
+              level: newLevel,
+            });
+            if (updateRes.success && updateRes.data) {
+              setUserLevel(newLevel);
+              // Cập nhật bộ lọc
+              const mapLvl = newLevel.toLowerCase();
+              if (mapLvl === 'beginner') setSelectedDifficulty('Sơ cấp');
+              else if (mapLvl === 'intermediate') setSelectedDifficulty('Trung cấp');
+              else if (mapLvl === 'advanced') setSelectedDifficulty('Nâng cao');
+              
+              message.success(`🎉 Chúc mừng! Bạn đã được thăng cấp trình độ học lên: ${newLevel === 'Intermediate' ? 'Trung cấp' : 'Nâng cao'}!`);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Lỗi khi nâng cấp độ khó:', err);
+      }
+    };
+
+    void checkAndUpgradeLevel();
+  }, [words]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
