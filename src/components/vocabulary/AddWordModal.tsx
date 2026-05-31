@@ -26,7 +26,19 @@ const LEVEL_OPTIONS: LevelInfo[] = [
   { label: 'B2', bgColor: 'bg-secondary-fixed', textColor: 'text-on-secondary-fixed' },
 ];
 
-const CATEGORIES = ['Văn học', 'Triết học', 'Kinh doanh', 'Công nghệ', 'Học thuật'];
+const CATEGORIES = [
+  'Văn học',
+  'Triết học',
+  'Kinh doanh',
+  'Công nghệ',
+  'Học thuật',
+  'Đời sống',
+  'Du lịch',
+  'Ẩm thực',
+  'Khoa học',
+  'Nghệ thuật',
+  'Sức khỏe',
+];
 
 const AddWordModal = ({
   isOpen,

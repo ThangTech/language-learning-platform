@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Button, Tooltip, Switch } from 'antd';
 
-// Speech synthesis helper
+
 export const speakText = (text: string, rate: number = 1.0, lang: string = "en-US", onEnd?: () => void) => {
   if (!('speechSynthesis' in window)) return;
   
-  // Cancel current speak
+
   window.speechSynthesis.cancel();
   
   const utterance = new SpeechSynthesisUtterance(text);
@@ -19,7 +19,7 @@ export const speakText = (text: string, rate: number = 1.0, lang: string = "en-U
   window.speechSynthesis.speak(utterance);
 };
 
-// 1. Clickable Interactive Text to pronounce each word individually
+
 interface InteractiveTextProps {
   text: string;
   rate?: number;
@@ -28,7 +28,7 @@ interface InteractiveTextProps {
 
 export const InteractiveText = ({ text, rate = 1.0, className = "" }: InteractiveTextProps) => {
   const speakWord = (word: string) => {
-    // Strip punctuation for pure word pronunciation
+
     const cleanWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
     if (!cleanWord) return;
     speakText(cleanWord, rate);
@@ -61,7 +61,6 @@ export const InteractiveText = ({ text, rate = 1.0, className = "" }: Interactiv
   );
 };
 
-// 2. Beautiful TTS Control Bar with Slow speed, Repeat, Autoplay and Shadowing Mode
 interface TtsPlayerProps {
   text: string;
   autoplay?: boolean;
@@ -82,15 +81,15 @@ export const TtsPlayer = ({
   const [shadowingState, setShadowingState] = useState<'idle' | 'listening' | 'shadowing' | 'done'>('idle');
   const [shadowingTimer, setShadowingTimer] = useState(0);
 
-  // Play audio
+
   const handlePlay = () => {
     setIsPlaying(true);
     if (isShadowingMode) {
       setShadowingState('listening');
       speakText(text, speed, "en-US", () => {
-        // After reading, transition to shadowing state
+
         setShadowingState('shadowing');
-        setShadowingTimer(4); // 4 seconds countdown for shadowing practice
+        setShadowingTimer(4); 
       });
     } else {
       speakText(text, speed, "en-US", () => {

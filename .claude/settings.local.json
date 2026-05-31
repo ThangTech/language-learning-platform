@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/tmp/**)",
+      "Read(//proc/1/**)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(dir D:\\\\language-learning-platform-be\\\\language-learning-platform\\\\src\\\\services *)",
+      "Bash(cat \"C:\\\\\\\\Users\\\\\\\\Admin\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\D--language-learning-platform-be-language-learning-platform\\\\\\\\80f8b494-816b-419a-a6f5-97123d87da31\\\\\\\\tasks\\\\\\\\bkh8z0k58.output\")"
+    ]
+  }
+}

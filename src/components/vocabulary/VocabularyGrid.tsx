@@ -9,6 +9,7 @@ interface VocabularyGridProps {
   onAddNewWord?: () => void;
   onEditWord?: (word: WordData) => void;
   onDeleteWord?: (id: string) => void;
+  onMarkLearned?: (id: string) => void;
 }
 
 const VocabularyGrid = ({
@@ -19,6 +20,7 @@ const VocabularyGrid = ({
   onAddNewWord,
   onEditWord,
   onDeleteWord,
+  onMarkLearned,
 }: VocabularyGridProps) => {
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -31,6 +33,7 @@ const VocabularyGrid = ({
           onPlayAudio={onPlayAudio}
           onEdit={onEditWord}
           onDelete={onDeleteWord}
+          onMarkLearned={onMarkLearned}
         />
       ))}
 

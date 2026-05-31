@@ -9,7 +9,7 @@ import VocabularyJourneyCta from '../../components/vocabulary/VocabularyJourneyC
 import AddWordModal from '../../components/vocabulary/AddWordModal';
 import type { WordData } from '../../components/vocabulary/WordCard';
 import { getUser, updateProfile } from '../../services/auth';
-import { addFavorite, createWord, deleteWord, getFavorites, getWords, removeFavorite, updateWord } from '../../services/vocabulary';
+import { addFavorite, createWord, deleteWord, getFavorites, getFlashcards, getWords, removeFavorite, updateWord, addFlashcard, markFlashcardLearned } from '../../services/vocabulary';
 import { getStats } from '../../services/progress';
 
 interface ApiWord {
@@ -22,7 +22,20 @@ interface ApiWord {
   levels: { label: string; bgColor: string; textColor: string }[];
 }
 
-const CATEGORIES = ['Tất cả', 'Văn học', 'Triết học', 'Kinh doanh', 'Công nghệ', 'Học thuật'];
+const CATEGORIES = [
+  'Tất cả',
+  'Văn học',
+  'Triết học',
+  'Kinh doanh',
+  'Công nghệ',
+  'Học thuật',
+  'Đời sống',
+  'Du lịch',
+  'Ẩm thực',
+  'Khoa học',
+  'Nghệ thuật',
+  'Sức khỏe',
+];
 const DIFFICULTIES = ['Tất cả', 'Sơ cấp', 'Trung cấp', 'Nâng cao'];
 
 const VocabularyPage = () => {
@@ -49,6 +62,7 @@ const VocabularyPage = () => {
   const [editingWord, setEditingWord] = useState<WordData | null>(null);
   const [loading, setLoading] = useState(false);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const [learnedToday, setLearnedToday] = useState(0);
 
   const loadWords = async (search?: string) => {
     try {
@@ -60,18 +74,39 @@ const VocabularyPage = () => {
 
       const apiWords = result.data.items as ApiWord[];
       const favIds = new Set<string>();
+      const learnedWordIds = new Set<string>();
       const token = localStorage.getItem('token');
+
+      let todayCount = 0;
 
       if (token) {
         try {
-          const favResult = await getFavorites();
+          const [favResult, flashcardsResult] = await Promise.all([
+            getFavorites(),
+            getFlashcards()
+          ]);
+
           if (favResult.success && favResult.data) {
             favResult.data.forEach((item: any) => favIds.add(item.id));
           }
+
+          if (flashcardsResult.success && flashcardsResult.data) {
+            const today = new Date().toDateString();
+            flashcardsResult.data.forEach((card: any) => {
+              if (card.isLearned) {
+                learnedWordIds.add(card.wordId);
+                if (card.learnedAt && new Date(card.learnedAt).toDateString() === today) {
+                  todayCount++;
+                }
+              }
+            });
+          }
         } catch {
-          // bỏ qua lỗi riêng của favorites
+          // ignore error
         }
       }
+
+      setLearnedToday(todayCount);
 
       const mapped = apiWords.map((item) => ({
         id: item.id,
@@ -82,6 +117,7 @@ const VocabularyPage = () => {
         example: item.exampleSentence || '',
         levels: item.levels,
         isFavorite: favIds.has(item.id),
+        isLearned: learnedWordIds.has(item.id),
       }));
 
       setWords(mapped);
@@ -187,6 +223,21 @@ const VocabularyPage = () => {
     console.log(`Play audio for word ID: ${id}`);
   };
 
+  const handleMarkLearned = async (id: string) => {
+    try {
+      await addFlashcard(id).catch(() => {});
+      const result = await markFlashcardLearned(id);
+      if (result.success) {
+        message.success('Chúc mừng! Bạn đã học thuộc từ này.');
+        await loadWords(searchText.trim() || undefined);
+      } else {
+        message.error(result.message || 'Không thể cập nhật trạng thái');
+      }
+    } catch (error: any) {
+      message.error(error?.response?.data?.message || 'Lỗi kết nối');
+    }
+  };
+
   const handleSaveWord = async (values: {
     word: string;
     pronunciation?: string;
@@ -283,7 +334,7 @@ const VocabularyPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <VocabularyHero wordsToday={words.length} dailyGoal={30} level={currentLevel} />
+      <VocabularyHero wordsToday={learnedToday} dailyGoal={30} level={currentLevel} />
 
       <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <Input
@@ -317,6 +368,7 @@ const VocabularyPage = () => {
           onAddNewWord={handleAddNewWord}
           onEditWord={handleEditWord}
           onDeleteWord={handleDeleteWord}
+          onMarkLearned={handleMarkLearned}
         />
       ) : (
         <VocabularyEmptyState

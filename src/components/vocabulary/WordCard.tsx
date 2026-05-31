@@ -1,7 +1,8 @@
-import { Button, Popconfirm } from 'antd';
+import { Button, Popconfirm, Tooltip } from 'antd';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { InteractiveText, TtsPlayer, speakText } from '../common/TtsPlayer';
+import { CheckCircleFilled, CheckOutlined } from '@ant-design/icons';
 
 export interface LevelInfo {
   label: string;
@@ -18,6 +19,7 @@ export interface WordData {
   example: string;
   levels: LevelInfo[];
   isFavorite: boolean;
+  isLearned?: boolean;
   isActive?: boolean;
 }
 
@@ -28,6 +30,7 @@ interface WordCardProps {
   onPlayAudio: (id: string) => void;
   onEdit?: (word: WordData) => void;
   onDelete?: (id: string) => void;
+  onMarkLearned?: (id: string) => void;
 }
 
 const WordCard = ({
@@ -37,6 +40,7 @@ const WordCard = ({
   onPlayAudio: _onPlayAudio,
   onEdit,
   onDelete,
+  onMarkLearned,
 }: WordCardProps) => {
   const [showTrainer, setShowTrainer] = useState(false);
 
@@ -47,8 +51,9 @@ const WordCard = ({
 
   return (
     <div
-      className={`bg-surface-container-lowest rounded-[1.5rem] p-8 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col justify-between
-                  ${word.isActive ? 'border-l-4 border-primary' : ''}`}
+      className={`bg-surface-container-lowest rounded-[1.5rem] p-8 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col justify-between relative
+                  ${word.isActive ? 'border-l-4 border-primary' : ''}
+                  ${word.isLearned ? 'border-t-2 border-green-500/20' : ''}`}
     >
       <div>
         <div className="flex justify-between items-start mb-4">
@@ -71,19 +76,26 @@ const WordCard = ({
             </p>
           </div>
           {!isAdmin && (
-            <button
-              onClick={() => onToggleFavorite(word.id)}
-              className={`transition-colors focus:outline-none
-                         ${word.isFavorite ? 'text-error' : 'text-outline hover:text-error'}`}
-              aria-label={word.isFavorite ? 'Bỏ yêu thích' : 'Yêu thích'}
-            >
-              <span
-                className="material-symbols-outlined text-[1.5rem]"
-                style={{ fontVariationSettings: `'FILL' ${word.isFavorite ? 1 : 0}` }}
+            <div className="flex items-center gap-3">
+              {word.isLearned && (
+                <Tooltip title="Bạn đã học thuộc từ này">
+                  <CheckCircleFilled className="text-green-500 text-xl" />
+                </Tooltip>
+              )}
+              <button
+                onClick={() => onToggleFavorite(word.id)}
+                className={`transition-colors focus:outline-none
+                           ${word.isFavorite ? 'text-error' : 'text-outline hover:text-error'}`}
+                aria-label={word.isFavorite ? 'Bỏ yêu thích' : 'Yêu thích'}
               >
-                favorite
-              </span>
-            </button>
+                <span
+                  className="material-symbols-outlined text-[1.5rem]"
+                  style={{ fontVariationSettings: `'FILL' ${word.isFavorite ? 1 : 0}` }}
+                >
+                  favorite
+                </span>
+              </button>
+            </div>
           )}
         </div>
 
@@ -118,36 +130,51 @@ const WordCard = ({
         </div>
       </div>
 
-      <div className="mt-auto flex items-center justify-between gap-3 pt-2">
-        <button
-          onClick={() => _onPlayAudio(word.id)}
-          className="text-primary font-headline text-sm font-bold flex items-center gap-1.5 no-underline group-hover:gap-2.5 transition-all focus:outline-none"
-        >
-          Nghe bài liên quan <span className="material-symbols-outlined text-lg">headphones</span>
-        </button>
-        <Link to="/progress" className="text-secondary font-headline text-sm font-bold flex items-center gap-1.5 no-underline transition-all focus:outline-none">
-          Xem tiến độ <span className="material-symbols-outlined text-lg">insights</span>
-        </Link>
+      <div className="mt-auto flex flex-col gap-4 pt-2">
+        <div className="flex items-center justify-between gap-3">
+          <button
+            onClick={() => _onPlayAudio(word.id)}
+            className="text-primary font-headline text-sm font-bold flex items-center gap-1.5 no-underline group-hover:gap-2.5 transition-all focus:outline-none"
+          >
+            Nghe bài liên quan <span className="material-symbols-outlined text-lg">headphones</span>
+          </button>
+          <Link to="/progress" className="text-secondary font-headline text-sm font-bold flex items-center gap-1.5 no-underline transition-all focus:outline-none">
+            Xem tiến độ <span className="material-symbols-outlined text-lg">insights</span>
+          </Link>
+        </div>
 
-        <div className="flex items-center gap-2">
-          {isAdmin && (
-            <>
-              <Button size="small" onClick={() => onEdit?.(word)}>
-                Sửa
-              </Button>
-              <Popconfirm
-                title="Xóa từ vựng?"
-                description="Hành động này không thể hoàn tác."
-                onConfirm={() => onDelete?.(word.id)}
-                okText="Xóa"
-                cancelText="Hủy"
+        <div className="flex items-center justify-between gap-2 border-t border-outline-variant/10 pt-4">
+          <div className="flex items-center gap-2">
+            {!isAdmin && !word.isLearned && (
+              <Button
+                type="primary"
+                size="small"
+                icon={<CheckOutlined />}
+                onClick={() => onMarkLearned?.(word.id)}
+                className="rounded-full bg-green-600 hover:bg-green-700 border-none font-bold text-[11px] h-8"
               >
-                <Button size="small" danger>
-                  Xóa
+                Đã thuộc
+              </Button>
+            )}
+            {isAdmin && (
+              <>
+                <Button size="small" onClick={() => onEdit?.(word)}>
+                  Sửa
                 </Button>
-              </Popconfirm>
-            </>
-          )}
+                <Popconfirm
+                  title="Xóa từ vựng?"
+                  description="Hành động này không thể hoàn tác."
+                  onConfirm={() => onDelete?.(word.id)}
+                  okText="Xóa"
+                  cancelText="Hủy"
+                >
+                  <Button size="small" danger>
+                    Xóa
+                  </Button>
+                </Popconfirm>
+              </>
+            )}
+          </div>
 
           <div className="flex -space-x-2">
             {word.levels.map((level, idx) => (
