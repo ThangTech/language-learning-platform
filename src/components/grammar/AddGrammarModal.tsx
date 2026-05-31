@@ -19,6 +19,7 @@ interface AddGrammarModalProps {
     explanation?: string;
     examples?: string;
     level: string;
+    youTubeUrl?: string;
   }) => void;
 }
 
@@ -39,6 +40,7 @@ const AddGrammarModal = ({
         explanation: editingTopic.explanation,
         examples: editingTopic.examples,
         level: editingTopic.level,
+        youTubeUrl: editingTopic.youTubeUrl,
       });
       return;
     }
@@ -89,6 +91,13 @@ const AddGrammarModal = ({
           label="Ví dụ"
         >
           <Input.TextArea rows={2} placeholder="Nhập ví dụ minh họa..." />
+        </Form.Item>
+
+        <Form.Item
+          name="youTubeUrl"
+          label="Đường dẫn YouTube bài học (tùy chọn)"
+        >
+          <Input placeholder="Ví dụ: https://www.youtube.com/watch?v=..." />
         </Form.Item>
 
         <Form.Item
