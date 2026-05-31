@@ -66,3 +66,13 @@ export interface QuizResultDto {
   score: number;
   answers: QuizAnswerResultDto[];
 }
+
+export interface QuizHistoryDto {
+  id: string;
+  quizId: string;
+  quizTitle: string;
+  score: number;
+  totalQuestions: number;
+  correctAnswers: number;
+  completedAt: string;
+}

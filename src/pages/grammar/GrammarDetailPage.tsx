@@ -10,7 +10,7 @@ import {
   CloseCircleOutlined
 } from '@ant-design/icons';
 import { getGrammarTopicById, markTopicCompleted, getUserGrammarProgress } from '../../services/grammar';
-import { getQuizzesByGrammar, submitQuiz } from '../../services/quiz';
+import { getMyQuizResults, getQuizzesByGrammar, submitQuiz } from '../../services/quiz';
 import type { GrammarTopicDto } from '../../interfaces/grammar';
 import type { QuizDto } from '../../interfaces/quiz';
 
@@ -57,6 +57,7 @@ const GrammarDetailPage = () => {
   const [quizScore, setQuizScore] = useState<number | null>(null);
   const [quizResultDetails, setQuizResultDetails] = useState<any[]>([]);
   const [deadline, setDeadline] = useState<number>(0);
+  const [perfectQuizIds, setPerfectQuizIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!id) return;
@@ -83,6 +84,19 @@ const GrammarDetailPage = () => {
           const quizRes = await getQuizzesByGrammar(id);
           if (quizRes.success && quizRes.data) {
             setQuizzes(quizRes.data);
+          }
+
+          try {
+            const resultsRes = await getMyQuizResults();
+            if (resultsRes.success && resultsRes.data) {
+              setPerfectQuizIds(new Set(
+                resultsRes.data
+                  .filter((result) => result.score >= 100)
+                  .map((result) => result.quizId)
+              ));
+            }
+          } catch {
+            setPerfectQuizIds(new Set());
           }
         } else {
           message.error(topicRes.message || 'Không tìm thấy bài học ngữ pháp');
@@ -118,6 +132,11 @@ const GrammarDetailPage = () => {
   };
 
   const handleStartQuiz = (quiz: QuizDto) => {
+    if (perfectQuizIds.has(quiz.id)) {
+      message.info('Bạn đã đạt điểm tối đa cho bài quiz này nên không cần làm lại.');
+      return;
+    }
+
     setActiveQuiz(quiz);
     setUserAnswers({});
     setQuizSubmitted(false);
@@ -163,6 +182,9 @@ const GrammarDetailPage = () => {
         setQuizScore(res.data.score);
         setQuizResultDetails(res.data.answers || []);
         setQuizSubmitted(true);
+        if (res.data.score >= 100) {
+          setPerfectQuizIds((prev) => new Set(prev).add(activeQuiz.id));
+        }
         message.success(`Nộp bài thành công! Điểm số: ${res.data.score}/100`);
 
         // If score is high, let's mark the topic as completed automatically!
@@ -331,6 +353,11 @@ const GrammarDetailPage = () => {
               <div className="flex flex-col gap-4">
                 {quizzes.map((quiz) => (
                   <div key={quiz.id} className="p-5 bg-surface-container-low rounded-2xl border border-outline-variant/20 hover:border-primary/30 transition-all">
+                    {perfectQuizIds.has(quiz.id) && (
+                      <div className="mb-3 inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                        <CheckCircleOutlined /> Đã đạt 100 điểm
+                      </div>
+                    )}
                     <h3 className="font-headline text-sm font-black text-on-surface leading-tight mb-2">
                       {quiz.title}
                     </h3>
@@ -346,11 +373,12 @@ const GrammarDetailPage = () => {
                       </span>
                     </div>
                     <Button
-                      type="primary"
+                      type={perfectQuizIds.has(quiz.id) ? 'default' : 'primary'}
                       onClick={() => handleStartQuiz(quiz)}
+                      disabled={perfectQuizIds.has(quiz.id)}
                       className="w-full rounded-full bg-primary font-headline font-bold text-sm h-10 shadow-md shadow-primary/10"
                     >
-                      Bắt đầu làm bài
+                      {perfectQuizIds.has(quiz.id) ? 'Đã hoàn thành tối đa' : 'Bắt đầu làm bài'}
                     </Button>
                   </div>
                 ))}
@@ -489,9 +517,10 @@ const GrammarDetailPage = () => {
                       <Button
                         type="default"
                         onClick={() => handleStartQuiz(activeQuiz)}
+                        disabled={perfectQuizIds.has(activeQuiz.id)}
                         className="flex-1 rounded-full h-10 font-headline font-bold text-sm"
                       >
-                        Làm lại
+                        {perfectQuizIds.has(activeQuiz.id) ? 'Đã đạt 100 điểm' : 'Làm lại'}
                       </Button>
                       <Button
                         type="primary"

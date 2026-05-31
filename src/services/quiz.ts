@@ -1,6 +1,6 @@
 import api from "./api";
 import type { ApiResponse } from "../interfaces/common";
-import type { CreateQuizRequest, QuizDto, UpdateQuizRequest, QuizResultDto } from "../interfaces/quiz";
+import type { CreateQuizRequest, QuizDto, UpdateQuizRequest, QuizResultDto, QuizHistoryDto } from "../interfaces/quiz";
 
 export const getQuizzes = async () => {
   const response = await api.get<ApiResponse<QuizDto[]>>("/api/quizzes");
@@ -42,5 +42,10 @@ export const submitQuiz = async (quizId: string, answers: { questionId: string; 
     quizId,
     answers,
   });
+  return response.data;
+};
+
+export const getMyQuizResults = async () => {
+  const response = await api.get<ApiResponse<QuizHistoryDto[]>>("/api/quizzes/my-results");
   return response.data;
 };

@@ -200,8 +200,8 @@ const QuizPage = () => {
                 <p className="font-bold text-sm">Câu {idx + 1}: {q.questionText}</p>
                 <div className="mt-2 flex flex-col gap-1">
                   {q.options?.map((opt, oIdx) => (
-                    <div key={oIdx} className={`text-xs p-2 rounded ${opt === q.correctAnswer ? 'bg-green-500/10 text-green-700 font-bold' : 'bg-white/50'}`}>
-                      {opt} {opt === q.correctAnswer && ' (Đáp án đúng)'}
+                    <div key={oIdx} className="text-xs p-2 rounded bg-white/50">
+                      {opt}
                     </div>
                   ))}
                 </div>
