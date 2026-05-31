@@ -13,6 +13,7 @@ export interface QuizDto {
   title: string;
   description?: string;
   lessonId?: string;
+  grammarTopicId?: string;
   difficulty: string;
   difficultyColor: string;
   type: string;
@@ -26,6 +27,7 @@ export interface QuizDto {
 export interface CreateQuizRequest {
   title: string;
   lessonId?: string;
+  grammarTopicId?: string;
   difficulty: string;
   type: string;
   durationMinutes: number;
@@ -43,6 +45,8 @@ export interface CreateQuizQuestionRequest {
 
 export interface UpdateQuizRequest {
   title: string;
+  lessonId?: string;
+  grammarTopicId?: string;
   difficulty: string;
   type: string;
   durationMinutes: number;

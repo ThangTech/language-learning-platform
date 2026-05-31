@@ -6,8 +6,8 @@ interface QuizGridProps {
   isAdmin: boolean;
   onEditQuiz?: (quiz: QuizDto) => void;
   onDeleteQuiz?: (id: string) => void;
-  onStartQuiz?: (id: string) => void;
-  onPreviewQuiz?: (id: string) => void;
+  onStartQuiz?: (quiz: QuizDto) => void;
+  onPreviewQuiz?: (quiz: QuizDto) => void;
 }
 
 const QuizGrid = ({

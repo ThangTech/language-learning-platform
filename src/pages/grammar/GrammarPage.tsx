@@ -143,7 +143,10 @@ const GrammarPage = () => {
     }
   };
 
-  const filteredTopics = topics.filter((topic) => selectedLevel === 'Tất cả' || topic.level === selectedLevel);
+  const filteredTopics = topics.filter((topic) => {
+    if (selectedLevel === 'Tất cả') return true;
+    return topic.level.toLowerCase() === selectedLevel.toLowerCase();
+  });
   const totalVisible = filteredTopics.length;
   const isFiltered = selectedLevel !== 'Tất cả' || searchText.trim().length > 0;
   let emptyTitle = 'Chưa có chủ đề phù hợp';

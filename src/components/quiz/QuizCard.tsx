@@ -6,8 +6,8 @@ interface QuizCardProps {
   isAdmin: boolean;
   onEdit?: (quiz: QuizDto) => void;
   onDelete?: (id: string) => void;
-  onStart?: (id: string) => void;
-  onPreview?: (id: string) => void;
+  onStart?: (quiz: QuizDto) => void;
+  onPreview?: (quiz: QuizDto) => void;
 }
 
 const getDifficultyColor = (difficulty: string) => {
@@ -67,6 +67,9 @@ const QuizCard = ({
       <div className="flex gap-3 mt-auto">
         {isAdmin ? (
           <>
+            <Button size="small" className="flex-1" onClick={() => onPreview?.(quiz)}>
+              Xem trước
+            </Button>
             <Button size="small" className="flex-1" onClick={() => onEdit?.(quiz)}>
               Sửa
             </Button>
@@ -85,13 +88,13 @@ const QuizCard = ({
         ) : (
           <>
             <button
-              onClick={() => onStart?.(quiz.id)}
+              onClick={() => onStart?.(quiz)}
               className="flex-1 bg-secondary text-on-secondary py-2.5 rounded-full font-headline font-bold text-sm hover:opacity-90 active:scale-95 transition-all"
             >
               Bắt đầu
             </button>
             <button
-              onClick={() => onPreview?.(quiz.id)}
+              onClick={() => onPreview?.(quiz)}
               className="px-4 py-2.5 rounded-full border border-outline-variant text-on-surface-variant text-sm hover:bg-surface-container transition-colors"
             >
               Xem trước

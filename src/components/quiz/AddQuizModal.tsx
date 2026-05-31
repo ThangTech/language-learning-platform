@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Form, Input, Select, InputNumber, Button } from 'antd';
 import type { QuizDto } from '../../interfaces/quiz';
+import { getGrammarTopics } from '../../services/grammar';
+import { getLessons } from '../../services/listening';
 
 const LEVEL_OPTIONS = [
   { value: 'Easy', label: 'Dễ' },
@@ -10,9 +12,29 @@ const LEVEL_OPTIONS = [
 
 const TYPE_OPTIONS = [
   { value: 'MultipleChoice', label: 'Trắc nghiệm' },
-  { value: 'TrueFalse', label: 'Đúng/Sai' },
-  { value: 'Matching', label: 'Nối' },
+  { value: 'FillInBlank', label: 'Điền vào chỗ trống' },
+  { value: 'Dictation', label: 'Chép chính tả' },
 ];
+
+const normalizeDifficulty = (difficulty?: string) => {
+  const map: Record<string, string> = {
+    'Dễ': 'Easy',
+    'Trung bình': 'Medium',
+    'Khó': 'Hard',
+  };
+
+  return difficulty ? map[difficulty] || difficulty : 'Medium';
+};
+
+const normalizeType = (type?: string) => {
+  const map: Record<string, string> = {
+    'Trắc nghiệm': 'MultipleChoice',
+    'Điền vào chỗ trống': 'FillInBlank',
+    'Chép chính tả': 'Dictation',
+  };
+
+  return type ? map[type] || type : 'MultipleChoice';
+};
 
 interface AddQuizModalProps {
   isOpen: boolean;
@@ -24,6 +46,8 @@ interface AddQuizModalProps {
     difficulty: string;
     type: string;
     durationMinutes: number;
+    grammarTopicId?: string;
+    lessonId?: string;
   }) => void;
 }
 
@@ -35,14 +59,29 @@ const AddQuizModal = ({
   onSave,
 }: AddQuizModalProps) => {
   const [form] = Form.useForm();
+  const [grammarTopics, setGrammarTopics] = useState<{ id: string; title: string }[]>([]);
+  const [lessons, setLessons] = useState<{ id: string; title: string }[]>([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      void getGrammarTopics(1, 100).then(res => {
+        if (res.success && res.data) setGrammarTopics(res.data.items);
+      });
+      void getLessons(1, 100).then(res => {
+        if (res.success && res.data) setLessons(res.data.items);
+      });
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (editingQuiz) {
       form.setFieldsValue({
         title: editingQuiz.title,
-        difficulty: editingQuiz.difficulty,
-        type: editingQuiz.type,
+        difficulty: normalizeDifficulty(editingQuiz.difficulty),
+        type: normalizeType(editingQuiz.type),
         durationMinutes: editingQuiz.durationMinutes,
+        grammarTopicId: editingQuiz.grammarTopicId,
+        lessonId: editingQuiz.lessonId,
       });
       return;
     }
@@ -99,13 +138,35 @@ const AddQuizModal = ({
           <InputNumber min={1} className="w-full" />
         </Form.Item>
 
+        <Form.Item
+          name="grammarTopicId"
+          label="Gắn với chủ đề Ngữ pháp (tùy chọn)"
+        >
+          <Select 
+            placeholder="Chọn chủ đề ngữ pháp..." 
+            allowClear
+            options={grammarTopics.map(t => ({ value: t.id, label: t.title }))} 
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="lessonId"
+          label="Gắn với bài nghe Listening (tùy chọn)"
+        >
+          <Select 
+            placeholder="Chọn bài nghe..." 
+            allowClear
+            options={lessons.map(l => ({ value: l.id, label: l.title }))} 
+          />
+        </Form.Item>
+
         <Form.Item className="mb-0 pt-4">
           <div className="flex items-center justify-end gap-3">
             <Button onClick={onClose}>
               Hủy
             </Button>
             <Button type="primary" htmlType="submit" loading={loading}>
-              {editingQuiz ? 'Lưu' : 'Thêm'}
+              {editingQuiz ? 'Lưu' : 'Tiếp tục thêm câu hỏi'}
             </Button>
           </div>
         </Form.Item>

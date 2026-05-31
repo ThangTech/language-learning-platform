@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Input, message } from 'antd';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Input, message, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { getUser } from '../../services/auth';
-import { createQuiz, deleteQuiz, getQuizzes, updateQuiz } from '../../services/quiz';
+import { createQuiz, deleteQuiz, getQuizById, getQuizzes, updateQuiz } from '../../services/quiz';
 import QuizHero from '../../components/quiz/QuizHero';
 import QuizGrid from '../../components/quiz/QuizGrid';
 import QuizFilters from '../../components/quiz/QuizFilters';
@@ -17,6 +17,7 @@ const DIFFICULTY_OPTIONS = ['All', 'Easy', 'Medium', 'Hard'];
 
 const QuizPage = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const user = getUser();
   const isAdmin = user?.role?.toLowerCase() === 'admin';
   const lessonId = searchParams.get('lessonId');
@@ -32,6 +33,8 @@ const QuizPage = () => {
     difficulty: string;
     type: string;
     durationMinutes: number;
+    grammarTopicId?: string;
+    lessonId?: string;
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [questionsLoading, setQuestionsLoading] = useState(false);
@@ -84,6 +87,8 @@ const QuizPage = () => {
     difficulty: string;
     type: string;
     durationMinutes: number;
+    grammarTopicId?: string;
+    lessonId?: string;
   }) => {
     if (editingQuiz) {
       setLoading(true);
@@ -123,7 +128,8 @@ const QuizPage = () => {
     try {
       const result = await createQuiz({
         title: pendingQuizValues.title,
-        lessonId: lessonId || undefined,
+        lessonId: pendingQuizValues.lessonId || (lessonId || undefined),
+        grammarTopicId: pendingQuizValues.grammarTopicId,
         difficulty: pendingQuizValues.difficulty,
         type: pendingQuizValues.type,
         durationMinutes: pendingQuizValues.durationMinutes,
@@ -158,18 +164,68 @@ const QuizPage = () => {
     }
   };
 
-  const handleStartQuiz = () => {
-    message.info('Hãy bắt đầu từ Listening để luyện nghe hiểu trước.');
+  const handleStartQuiz = (quiz: QuizDto) => {
+    if (quiz.grammarTopicId) {
+      navigate(`/grammar/${quiz.grammarTopicId}`);
+    } else if (quiz.lessonId) {
+      navigate(`/listening/${quiz.lessonId}`);
+    } else {
+      message.info('Bài quiz này chưa được gắn với bài học nào.');
+    }
   };
 
-  const handlePreviewQuiz = () => {
-    message.info('Tính năng xem trước quiz sẽ sớm được phát triển.');
+  const handlePreviewQuiz = async (quiz: QuizDto) => {
+    let quizToPreview = quiz;
+
+    if (!quizToPreview.questions || quizToPreview.questions.length === 0) {
+      try {
+        const result = await getQuizById(quiz.id);
+        if (result.success && result.data) {
+          quizToPreview = result.data;
+        }
+      } catch (error: any) {
+        message.error(error?.response?.data?.message || 'Không thể tải câu hỏi xem trước');
+        return;
+      }
+    }
+
+    Modal.info({
+      title: `Xem trước: ${quizToPreview.title}`,
+      width: 600,
+      content: (
+        <div className="flex flex-col gap-4 mt-4 max-h-[60vh] overflow-y-auto pr-2">
+          {quizToPreview.questions && quizToPreview.questions.length > 0 ? (
+            quizToPreview.questions.map((q, idx) => (
+              <div key={q.id} className="p-4 bg-surface-container-low rounded-xl border border-outline-variant/10">
+                <p className="font-bold text-sm">Câu {idx + 1}: {q.questionText}</p>
+                <div className="mt-2 flex flex-col gap-1">
+                  {q.options?.map((opt, oIdx) => (
+                    <div key={oIdx} className={`text-xs p-2 rounded ${opt === q.correctAnswer ? 'bg-green-500/10 text-green-700 font-bold' : 'bg-white/50'}`}>
+                      {opt} {opt === q.correctAnswer && ' (Đáp án đúng)'}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-10 italic text-outline">Chưa có câu hỏi nào.</div>
+          )}
+        </div>
+      ),
+      okText: 'Đóng',
+    });
   };
 
   const lessonQuizzes = lessonId ? quizzes.filter((quiz) => quiz.lessonId === lessonId) : quizzes;
 
   const filteredQuizzes = lessonQuizzes.filter((quiz) => {
-    const matchDifficulty = selectedDifficulty === 'All' || quiz.difficulty === selectedDifficulty;
+    const difficultyMap: Record<string, string> = {
+      'Dễ': 'Easy',
+      'Trung bình': 'Medium',
+      'Khó': 'Hard',
+    };
+    const quizDifficulty = difficultyMap[quiz.difficulty] || quiz.difficulty;
+    const matchDifficulty = selectedDifficulty === 'All' || quizDifficulty === selectedDifficulty;
     const search = searchText.trim().toLowerCase();
     const matchSearch =
       search.length === 0 ||

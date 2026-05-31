@@ -4,8 +4,8 @@ import type { CreateQuizQuestionRequest } from '../../interfaces/quiz';
 
 const QUESTION_TYPES = [
   { value: 'MultipleChoice', label: 'Trắc nghiệm' },
-  { value: 'TrueFalse', label: 'Đúng/Sai' },
-  { value: 'Matching', label: 'Nối' },
+  { value: 'FillInBlank', label: 'Điền vào chỗ trống' },
+  { value: 'Dictation', label: 'Chép chính tả' },
 ];
 
 interface QuizQuestionsModalProps {
