@@ -297,10 +297,10 @@ const GrammarDetailPage = () => {
                         {quiz.difficulty}
                       </Tag>
                       <span className="text-xs text-outline font-medium">
-                        ⏱️ {quiz.durationMinutes} phút
+                        {quiz.durationMinutes} phút
                       </span>
                       <span className="text-xs text-outline font-medium">
-                        📝 {quiz.questions.length} câu hỏi
+                        {quiz.questions.length} câu hỏi
                       </span>
                     </div>
                     <Button

@@ -5,6 +5,8 @@ interface VocabularyFiltersProps {
   difficulties: string[];
   selectedDifficulty: string;
   onSelectDifficulty: (difficulty: string) => void;
+  showOnlyFavorites?: boolean;
+  onToggleShowOnlyFavorites?: (val: boolean) => void;
 }
 
 const VocabularyFilters = ({
@@ -14,6 +16,8 @@ const VocabularyFilters = ({
   difficulties,
   selectedDifficulty,
   onSelectDifficulty,
+  showOnlyFavorites = false,
+  onToggleShowOnlyFavorites,
 }: VocabularyFiltersProps) => {
   return (
     <section className="mb-10 flex flex-wrap items-center justify-between gap-4">
@@ -35,8 +39,28 @@ const VocabularyFilters = ({
         ))}
       </div>
 
-      {/* Difficulty Dropdown */}
-      <div className="flex items-center gap-3 shrink-0">
+      {/* Difficulty Dropdown & Favorites Switch */}
+      <div className="flex items-center gap-3 shrink-0 flex-wrap">
+        {onToggleShowOnlyFavorites && (
+          <button
+            onClick={() => onToggleShowOnlyFavorites(!showOnlyFavorites)}
+            className={`px-5 py-2.5 rounded-full text-sm font-headline font-bold transition-all whitespace-nowrap flex items-center gap-2 border
+              ${
+                showOnlyFavorites
+                  ? 'bg-error text-on-error border-error shadow-md hover:opacity-90'
+                  : 'bg-surface-container-low text-error border-outline-variant/30 hover:bg-error/10'
+              }`}
+          >
+            <span
+              className="material-symbols-outlined text-[1.1rem]"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              favorite
+            </span>
+            Từ yêu thích của tôi
+          </button>
+        )}
+
         <div className="relative">
           <select
             value={selectedDifficulty}

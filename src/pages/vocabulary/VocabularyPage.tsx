@@ -48,6 +48,7 @@ const VocabularyPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWord, setEditingWord] = useState<WordData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   const loadWords = async (search?: string) => {
     try {
@@ -259,17 +260,21 @@ const VocabularyPage = () => {
       if (selectedDifficulty === 'Sơ cấp' && (hasAdvanced || hasIntermediate)) matchDifficulty = false;
     }
 
-    return matchCategory && matchDifficulty;
+    const matchFavorite = !showOnlyFavorites || word.isFavorite;
+
+    return matchCategory && matchDifficulty && matchFavorite;
   });
 
   const totalVisible = filteredWords.length;
-  const isFiltered = selectedCategory !== 'Tất cả' || selectedDifficulty !== 'Tất cả' || searchText.trim().length > 0;
+  const isFiltered = selectedCategory !== 'Tất cả' || selectedDifficulty !== 'Tất cả' || searchText.trim().length > 0 || showOnlyFavorites;
   let emptyTitle = 'Chưa có từ phù hợp';
   let emptyHint = 'Thử đổi danh mục, độ khó hoặc từ khóa tìm kiếm.';
 
   if (isFiltered) {
-    emptyTitle = 'Không có từ vựng phù hợp';
-    emptyHint = 'Thử bỏ bớt bộ lọc hoặc đổi từ khóa để xem thêm từ vựng.';
+    emptyTitle = showOnlyFavorites ? 'Chưa có từ yêu thích nào' : 'Không có từ vựng phù hợp';
+    emptyHint = showOnlyFavorites 
+      ? 'Nhấp vào biểu tượng trái tim ở các thẻ từ vựng để lưu các từ bạn yêu thích nhé!' 
+      : 'Thử bỏ bớt bộ lọc hoặc đổi từ khóa để xem thêm từ vựng.';
   }
 
   const clearCategory = () => setSelectedCategory('Tất cả');
@@ -299,6 +304,8 @@ const VocabularyPage = () => {
         difficulties={DIFFICULTIES}
         selectedDifficulty={selectedDifficulty}
         onSelectDifficulty={setSelectedDifficulty}
+        showOnlyFavorites={showOnlyFavorites}
+        onToggleShowOnlyFavorites={setShowOnlyFavorites}
       />
 
       {totalVisible > 0 ? (
