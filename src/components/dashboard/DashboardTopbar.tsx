@@ -9,6 +9,7 @@ import { Button } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import type { ListeningLessonDto } from '../../interfaces/listening';
 import type { WordDto } from '../../interfaces/vocabulary';
+import type { UserDto } from '../../interfaces/common';
 
 interface SearchResult {
   id: string;
@@ -25,8 +26,18 @@ const DashboardTopbar = () => {
   const [streakDays, setStreakDays] = useState(0);
   const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
-  const user = getUser();
+  const [user, setUser] = useState<UserDto | null>(getUser());
   const isAdmin = user?.role?.toLowerCase() === 'admin';
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setUser(getUser());
+    };
+    window.addEventListener('user-profile-updated', handleProfileUpdate);
+    return () => {
+      window.removeEventListener('user-profile-updated', handleProfileUpdate);
+    };
+  }, []);
 
   useEffect(() => {
     if (isAdmin) return;
